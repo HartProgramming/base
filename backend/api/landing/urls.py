@@ -1,43 +1,58 @@
-from django.urls import path, include
-from rest_framework.routers import DefaultRouter
+from django.urls import path
 from .views import (
     HeroBlockAPIView,
     PricingPlanListCreateView,
     PricingPlanRetrieveUpdateDestroy,
     FeatureViewSet,
     SupportedSiteViewSet,
-    TileViewSet,
     ItemViewSet,
     TitleBlockAPIView,
     TitleBlockDetailAPIView,
     TestimonialViewSet,
     ProcessViewSet,
+    HeroBlockMainAPIView,
+    HeroBlockDetailAPIView,
+    TitleBlockUpdateAPIView,
 )
 
 
-router = DefaultRouter()
-router.register(r"features", FeatureViewSet)
-router.register(r"supported_sites", SupportedSiteViewSet)
-router.register(r"tiles", TileViewSet)
-router.register(r"processes", ProcessViewSet)
-router.register(r"items", ItemViewSet, basename="items")
-router.register(r"testimonials", TestimonialViewSet, basename="testimonials")
-
-
 urlpatterns = [
-    path("", include(router.urls)),
-    path("heroblock/", HeroBlockAPIView.as_view(), name="hero-block"),
-    path("titleblock/", TitleBlockAPIView.as_view(), name="title-block"),
+    path("feature/", FeatureViewSet.as_view(), name="feature-list"),
+    path("supportedsites/", SupportedSiteViewSet.as_view(), name="sites-list"),
+    path("item/", ItemViewSet.as_view({"get": "list"}), name="item-list"),
     path(
-        "titleblock/<str:name>/", TitleBlockDetailAPIView.as_view(), name="title-block"
+        "item/<int:pk>/",
+        ItemViewSet.as_view({"patch": "update", "put": "update"}),
+        name="item2-list",
+    ),
+    path("testimonial/", TestimonialViewSet.as_view(), name="testimonial-list"),
+    path("process/", ProcessViewSet.as_view(), name="process-list"),
+    path("process/<int:pk>/", ProcessViewSet.as_view(), name="process-list"),
+    path("heroblock/main/", HeroBlockMainAPIView.as_view(), name="heroblock-single"),
+    path("heroblock/", HeroBlockAPIView.as_view(), name="heroblock-list"),
+    path(
+        "heroblock/<int:pk>/",
+        HeroBlockDetailAPIView.as_view(),
+        name="heroblock-detail",
+    ),
+    path("titleblock/", TitleBlockAPIView.as_view(), name="titleblock-list"),
+    path(
+        "titleblock/<int:pk>/",
+        TitleBlockUpdateAPIView.as_view(),
+        name="titleblock-update",
     ),
     path(
-        "pricing_plans/",
+        "titleblock/<str:name>/",
+        TitleBlockDetailAPIView.as_view(),
+        name="titleblock-search",
+    ),
+    path(
+        "pricingplan/",
         PricingPlanListCreateView.as_view(),
-        name="article-list-create",
+        name="pricingplan-list",
     ),
     path(
-        "pricing_plans/<int:pk>/",
+        "pricingplan/<int:pk>/",
         PricingPlanRetrieveUpdateDestroy.as_view(),
         name="article-detail-update-delete",
     ),

@@ -125,6 +125,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function Hero({ contactData, form = true }) {
+  console.log("test: ", contactData[0]);
   const classes = useStyles();
   const [heroData, setHeroData] = useState({
     title: "",
@@ -136,7 +137,7 @@ function Hero({ contactData, form = true }) {
   useEffect(() => {
     const fetchData = async () => {
       axiosInstance
-        .get("/heroblock/")
+        .get("/heroblock/main/")
         .then((response) => {
           setHeroData(response.data);
         })
@@ -174,12 +175,10 @@ function Hero({ contactData, form = true }) {
           </Typography>
           <StyledButton buttonText={heroData.buttonText} />
           <Grid item xs={12} md={12} className={classes.contactContainer}>
-            {contactData ? <ContactButtons contactData={contactData} /> : null}
-            {contactData ? (
-              <Grid container flex justifyContent="center">
-                <Social contactData={contactData} color="light" />
-              </Grid>
-            ) : null}
+            <ContactButtons contactData={contactData[0]} />
+            <Grid container flex justifyContent="center">
+              <Social contactData={contactData[0]} color="light" />
+            </Grid>
           </Grid>
         </div>
       </Grid>

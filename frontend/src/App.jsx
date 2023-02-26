@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  useLocation,
+} from "react-router-dom";
 import LandingPage from "./components/Landing/_Page/LandingPage";
 import AboutPage from "./components/About/_Page/AboutPage";
 import SupportPage from "./components/WIP/Support/SupportPage";
@@ -26,6 +31,11 @@ import { setTheme } from "./lib/Actions/auth";
 import chroma from "chroma-js";
 import GeneratorPage from "./components/WIP/EndPointGenerator/EndPointGeneratorPage";
 import Loading from "./components/Elements/Layout/Loading";
+import JobIndividualView from "./components/Contact/Jobs/_Pages/JobIndividualView";
+import PanelPage from "./components/Admin/Panels/PanelPage";
+import AdminSidebar from "./components/Admin/Navigation/AdminSidebar";
+import DashboardPage from "./components/Admin/Dashboard/DashboardPage";
+import ObjectPage from "./components/Admin/Objects/ObjectPage";
 
 {
   /* 
@@ -73,12 +83,12 @@ function App() {
         );
         const primaryColor =
           response.data.primary_color || baseTheme.palette.primary.main;
-        const primaryColorLight = chroma(primaryColor).brighten(1).hex();
+        const primaryColorLight = chroma(primaryColor).brighten(2).hex();
         const primaryColorDark = chroma(primaryColor).darken(1).hex();
 
         const secondaryColor =
           response.data.secondary_color || baseTheme.palette.primary.main;
-        const secondaryColorLight = chroma(secondaryColor).brighten(1).hex();
+        const secondaryColorLight = chroma(secondaryColor).brighten(2).hex();
         const secondaryColorDark = chroma(secondaryColor).darken(1).hex();
 
         setThemeUpdate(
@@ -116,7 +126,6 @@ function App() {
         console.error(error);
       });
   };
-
   return (
     <>
       {isLoading && <Loading />}
@@ -124,54 +133,71 @@ function App() {
         <ThemeProvider theme={theme ? theme : baseTheme}>
           <CssBaseline />
           <Router>
-            <ScrollToTop />
-            <Navigation
-              links={linkData}
-              appName={"EDGELORDS"}
-              handleUpdate={handleUpdate}
-            />
-
-            <Routes>
-              {/* Auth Routes */}
-              <Route
-                path="/login"
-                element={
-                  <LoginForm
-                    handleUpdate={handleUpdate}
-                    setIsLoading={setIsLoading}
-                  />
-                }
-              />
-              <Route path="/register" element={<RegisterForm />} />
-              <Route path="/profile" element={<Profile />} />
-
-              {/* Page Routes */}
-              <Route path="/" element={<LandingPage />} />
-              <Route path="/about" element={<AboutPage />} />
-              <Route path="/support" element={<SupportPage />} />
-              <Route path="/services" element={<ServicesPage />} />
-              <Route path="/contact" element={<ContactPage />} />
-
-              {/* Demo Routes */}
-              <Route path="/WIP" element={<WIPDemo />} />
-              <Route path="/generator" element={<GeneratorPage />} />
-
-              {/* Feature Routes */}
-              <Route path="/articles" element={<ArticlesPage />} />
-              <Route path="/articles/:id" element={<IndividualArticleView />} />
-              <Route
-                path="/articles/:id/update"
-                element={
-                  <div style={{ width: "100vw" }}>
-                    <UpdateArticleView />
-                  </div>
-                }
-              />
-            </Routes>
-            <Footer />
+            <MyRoutes handleUpdate={handleUpdate} setIsLoading={setIsLoading} />
           </Router>
         </ThemeProvider>
       )}
+    </>
+  );
+}
+
+function MyRoutes({ handleUpdate, setIsLoading }) {
+  const location = useLocation();
+  const isAdminPath = location.pathname.startsWith("/admin");
+
+  return (
+    <>
+      <ScrollToTop />
+      {!isAdminPath ? (
+        <Navigation
+          links={linkData}
+          appName={"EDGELORDS"}
+          handleUpdate={handleUpdate}
+        />
+      ) : (
+        <AdminSidebar appName={"EDGELORDS"} />
+      )}
+      <Routes>
+        {/* Auth Routes */}
+        <Route
+          path="/login"
+          element={
+            <LoginForm
+              handleUpdate={handleUpdate}
+              setIsLoading={setIsLoading}
+            />
+          }
+        />
+        <Route path="/register" element={<RegisterForm />} />
+        <Route path="/profile" element={<Profile />} />
+        {/* Page Routes */}
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/support" element={<SupportPage />} />
+        <Route path="/services" element={<ServicesPage />} />
+        <Route path="/contact" element={<ContactPage />} />
+        {/* Demo Routes */}
+        <Route path="/WIP" element={<WIPDemo />} />
+        <Route path="/generator" element={<GeneratorPage />} />
+        <Route path="/jobposting/:id" element={<JobIndividualView />} />
+        {/* Feature Routes */}
+        <Route path="/articles" element={<ArticlesPage />} />
+        <Route path="/articles/:id" element={<IndividualArticleView />} />
+        <Route
+          path="/articles/:id/update"
+          element={
+            <div style={{ width: "100vw" }}>
+              <UpdateArticleView />
+            </div>
+          }
+        />
+        {/* Admin Routes */}
+        <Route path="/admin" element={<DashboardPage />} />
+        <Route path="/admin/:id" element={<PanelPage />} />
+        <Route path="/admin/:id/control" element={<ObjectPage />} />
+        {/* <Route path="/admin/editarticle/:id" element={<EditPage />} /> */}
+      </Routes>
+      {!isAdminPath ? <Footer /> : <Footer />}
     </>
   );
 }

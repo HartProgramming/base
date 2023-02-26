@@ -14,6 +14,8 @@ from .models import (
 
 
 class AboutBlockSerializer(serializers.ModelSerializer):
+    FIELD_KEYS = ["title", "image"]
+
     class Meta:
         model = AboutBlock
         fields = "__all__"
@@ -29,24 +31,47 @@ class AboutBlockSerializer(serializers.ModelSerializer):
 
 
 class MissionStatementSerializer(serializers.ModelSerializer):
+    FIELD_KEYS = ["title", "body"]
+
     class Meta:
         model = MissionStatement
         fields = "__all__"
 
 
 class CompanyHistorySerializer(serializers.ModelSerializer):
+    FIELD_KEYS = ["title", "body"]
+
     class Meta:
         model = CompanyHistory
         fields = "__all__"
 
 
 class ValueSerializer(serializers.ModelSerializer):
+    FIELD_KEYS = ["title", "icon"]
+
     class Meta:
         model = Value
         fields = "__all__"
 
 
 class ContactInformationSerializer(serializers.ModelSerializer):
+    FIELD_KEYS = [
+        "email",
+        "phone",
+        "address",
+        "monday",
+        "tuesday",
+        "wednesday",
+        "thursday",
+        "friday",
+        "saturday",
+        "sunday",
+        "facebook",
+        "linkedin",
+        "instagram",
+        "twitter",
+    ]
+
     class Meta:
         model = ContactInformation
         fields = "__all__"
@@ -65,11 +90,25 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class FAQSerializer(serializers.ModelSerializer):
-    category = serializers.StringRelatedField(source="category.name", read_only=True)
+    category = serializers.StringRelatedField(source="category.name")
+    FIELD_KEYS = ["category", "question", "answer"]
 
     class Meta:
         model = FAQ
-        fields = ("id", "category", "question", "answer")
+        fields = "__all__"
+
+    def create(self, validated_data):
+        category_data = validated_data.pop("category", None)
+
+        if category_data:
+            if isinstance(category_data, str):
+                category_data = {"name": category_data}
+            category, created = Category.objects.get_or_create(**category_data)
+        else:
+            category = None
+        faq = FAQ.objects.create(category=category, **validated_data)
+
+        return faq
 
     def update(self, instance, validated_data):
         instance.question = validated_data.get("question", instance.question)
@@ -86,6 +125,14 @@ class FAQSerializer(serializers.ModelSerializer):
 
 class TeamMemberSerializer(serializers.ModelSerializer):
     image = serializers.ImageField(required=False, allow_null=True)
+    FIELD_KEYS = [
+        "name",
+        "role",
+        "bio",
+        "linkedIn",
+        "github",
+        "twitter",
+    ]
 
     class Meta:
         model = TeamMember
@@ -125,3 +172,12 @@ class AboutFullSerializer(serializers.Serializer):
     core_values = ValueSerializer(many=True)
     team_members = TeamMemberSerializer(many=True)
     contact_information = ContactInformationSerializer()
+
+
+AboutBlock.serializer_class = AboutBlockSerializer
+CompanyHistory.serializer_class = CompanyHistorySerializer
+MissionStatement.serializer_class = MissionStatementSerializer
+ContactInformation.serializer_class = ContactInformationSerializer
+TeamMember.serializer_class = TeamMemberSerializer
+FAQ.serializer_class = FAQSerializer
+Value.serializer_class = ValueSerializer

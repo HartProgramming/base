@@ -2,24 +2,16 @@ from rest_framework import generics
 from django.conf import settings
 from django.http import JsonResponse
 from rest_framework.response import Response
-from .models import User, Article
-from .serializers import ArticleSerializer
+from .models import User, Articles, Tags
+from .serializers import ArticleSerializer, TagsSerializer
 from authorization.authentication import JWTTokenAuthentication
 import jwt
 from django.contrib import admin
 from django.shortcuts import render
 
 
-def custom_view(request):
-    app_list = admin.site._registry
-    context = {
-        "app_list": app_list,
-    }
-    return render(request, "admin/dashboard.html", context)
-
-
 class ArticleListCreateView(generics.ListCreateAPIView):
-    queryset = Article.objects.all()
+    queryset = Articles.objects.all()
     serializer_class = ArticleSerializer
     # authentication_classes = [JWTTokenAuthentication]
     # permission_classes = [IsAuthenticated]
@@ -70,7 +62,7 @@ class RecentArticlesView(ArticleListCreateView):
 
 
 class HighlightedArticlesView(generics.ListCreateAPIView):
-    queryset = Article.objects.filter(is_highlighted=True)
+    queryset = Articles.objects.filter(is_highlighted=True)
     serializer_class = ArticleSerializer
 
 
@@ -84,7 +76,7 @@ class HighlightedArticlesView(generics.ListCreateAPIView):
 
 
 class ArticleRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Article.objects.all()
+    queryset = Articles.objects.all()
     serializer_class = ArticleSerializer
 
     def update(self, request, *args, **kwargs):
@@ -115,3 +107,13 @@ class ArticleRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
             return JsonResponse(serializer.data, status=200)
 
         return JsonResponse(serializer.errors, status=400)
+
+
+class TagsView(generics.ListCreateAPIView):
+    queryset = Tags.objects.all()
+    serializer_class = TagsSerializer
+
+
+class TagsRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Tags.objects.all()
+    serializer_class = TagsSerializer
