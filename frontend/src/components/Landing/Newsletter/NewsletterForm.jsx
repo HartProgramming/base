@@ -10,6 +10,7 @@ import {
   withStyles,
 } from "@material-ui/core";
 import CheckIcon from "@material-ui/icons/Check";
+import { NewsletterStyles1, NewsletterStyles2 } from "./NewsletterStyles";
 
 const CustomButton = withStyles({
   label: {
@@ -19,156 +20,153 @@ const CustomButton = withStyles({
   },
 })(Button);
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    padding: 40,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: theme.palette.background.light,
-    paddingBottom: theme.spacing(10),
-  },
-  container: {
-    maxWidth: "600px",
-    backgroundColor: theme.palette.background.light,
-    color: theme.palette.text.dark,
-    boxShadow: theme.shadows[10],
-    borderRadius: 14,
-    padding: theme.spacing(4),
-    direction: "column",
-  },
-  heading: {
-    fontFamily: "Poppins",
-    fontSize: "2.25rem",
-    textAlign: "center",
-    fontWeight: 700,
-    marginBottom: theme.spacing(5),
-    [theme.breakpoints.down("md")]: {
-      fontSize: "1.75rem",
-    },
-  },
-  form: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: theme.spacing(2),
-  },
-  input: {
-    margin: theme.spacing(1),
-    "& .MuiOutlinedInput-root": {
-      "&.Mui-focused fieldset": {
-        borderColor: theme.palette.text.dark,
-      },
-      "& fieldset": {
-        borderColor: theme.palette.text.dark,
-      },
-      "&:hover fieldset": {
-        borderColor: theme.palette.text.dark,
-      },
-    },
-    "& .MuiFormLabel-root": {
-      color: theme.palette.text.dark,
-      fontWeight: "700",
-      fontSize: "0.9rem",
-    },
-    "& input": {
-      color: theme.palette.text.dark,
-    },
-  },
-  submit: {
-    margin: theme.spacing(2, 0, 2),
-    transition: "0.3s",
-    "&:hover": {
-      transform: "translateY(-2px)",
-      boxShadow: theme.shadows[7],
-      backgroundColor: theme.palette.primary.dark,
-    },
-  },
-  error: {
-    color: theme.palette.error.main,
-  },
-  text: {
-    color: theme.palette.secondary.main,
-    fontWeight: 700,
-  },
-}));
-
 export default function NewsletterForm() {
-  const classes = useStyles();
+  let classes;
   const [email, setEmail] = useState("");
   const [state, setState] = useState("initial");
   const [error, setError] = useState(false);
+  const [design, setDesign] = useState(2);
+
+  if (design === 1) {
+    classes = NewsletterStyles1();
+  }else if(design === 2){
+    classes = NewsletterStyles2();
+  }
 
   return (
-    <Box className={classes.root}>
-      <Container className={classes.container}>
-        <Typography variant="h2" className={classes.heading}>
-          Subscribe to our Newsletter
-        </Typography>
-        <form
-          className={classes.form}
-          onSubmit={(e) => {
-            e.preventDefault();
-            setError(false);
-            setState("submitting");
+    <>
+      {design === 1 && (
+        <Box className={classes.root}>
+          <Container className={classes.container}>
+            <Typography variant="h2" className={classes.heading}>
+              Subscribe to our Newsletter
+            </Typography>
+            <form
+              className={classes.form}
+              onSubmit={(e) => {
+                e.preventDefault();
+                setError(false);
+                setState("submitting");
 
-            setTimeout(() => {
-              if (email === "fail@example.com") {
-                setError(true);
-                setState("initial");
-                return;
-              }
+                setTimeout(() => {
+                  if (email === "fail@example.com") {
+                    setError(true);
+                    setState("initial");
+                    return;
+                  }
 
-              setState("success");
-            }, 1000);
-          }}
-        >
-          <TextField
-            className={classes.input}
-            autoComplete="email"
-            name="emailaddress"
-            variant="outlined"
-            notchedOutline
-            placeholder="Your Email"
-            required
-            fullWidth
-            id="emailaddress"
-            label="Email Address"
-          />
-          <Grid container spacing={2}>
-            <Grid
-              item
-              xs={12}
-              style={{
-                display: "flex",
-                width: "100%",
-                justifyContent: "center",
+                  setState("success");
+                }, 1000);
               }}
             >
-              <CustomButton
-                variant="contained"
-                color="primary"
-                disabled={state !== "initial"}
-                type={state === "success" ? "button" : "submit"}
-                className={classes.submit}
-                endIcon={state === "success" ? <CheckIcon /> : null}
-              >
-                {state === "success" ? "Subscribed" : "Submit"}
-              </CustomButton>
-            </Grid>
-          </Grid>
-        </form>
-        <Typography
-          variant="subtitle1"
-          className={error ? classes.error : classes.text}
-          align="center"
-          gutterBottom
-        >
-          {error
-            ? "Oh no an error occured! 😢 Please try again later."
-            : "No spam, just news."}
-        </Typography>
-      </Container>
-    </Box>
+              <TextField
+                className={classes.input}
+                autoComplete="email"
+                name="emailaddress"
+                variant="outlined"
+                notchedOutline
+                placeholder="Your Email"
+                required
+                fullWidth
+                id="emailaddress"
+                label="Email Address"
+              />
+              <Grid container spacing={2}>
+                <Grid
+                  item
+                  xs={12}
+                  style={{
+                    display: "flex",
+                    width: "100%",
+                    justifyContent: "center",
+                  }}
+                >
+                  <CustomButton
+                    variant="contained"
+                    color="primary"
+                    disabled={state !== "initial"}
+                    type={state === "success" ? "button" : "submit"}
+                    className={classes.submit}
+                    endIcon={state === "success" ? <CheckIcon /> : null}
+                  >
+                    {state === "success" ? "Subscribed" : "Submit"}
+                  </CustomButton>
+                </Grid>
+              </Grid>
+            </form>
+            <Typography
+              variant="subtitle1"
+              className={error ? classes.error : classes.text}
+              align="center"
+              gutterBottom
+            >
+              {error
+                ? "Oh no an error occured! 😢 Please try again later."
+                : "No spam, just news."}
+            </Typography>
+          </Container>
+        </Box>
+      )}
+            {design === 2 && (
+        <Box className={classes.root}>
+          <Container className={classes.container}>
+            <Typography variant="h2" className={classes.heading}>
+              Subscribe to our Newsletter
+            </Typography>
+            <form
+              className={classes.form}
+              onSubmit={(e) => {
+                e.preventDefault();
+                setError(false);
+                setState("submitting");
+
+                setTimeout(() => {
+                  if (email === "fail@example.com") {
+                    setError(true);
+                    setState("initial");
+                    return;
+                  }
+
+                  setState("success");
+                }, 1000);
+              }}
+            >
+              <TextField
+                className={classes.input}
+                autoComplete="email"
+                name="emailaddress"
+                variant="outlined"
+                notchedOutline
+                placeholder="Your Email"
+                required
+                fullWidth
+                id="emailaddress"
+                label="Email Address"
+              />
+                  <CustomButton
+                    variant="contained"
+                    color="primary"
+                    disabled={state !== "initial"}
+                    type={state === "success" ? "button" : "submit"}
+                    className={classes.submit}
+                    endIcon={state === "success" ? <CheckIcon /> : null}
+                  >
+                    {state === "success" ? "Subscribed" : "Submit"}
+                  </CustomButton>
+            </form>
+            <Typography
+              variant="subtitle1"
+              className={error ? classes.error : classes.text}
+              align="center"
+              gutterBottom
+            >
+              {error
+                ? "Oh no an error occured! 😢 Please try again later."
+                : "No spam, just news."}
+            </Typography>
+          </Container>
+        </Box>
+      )}
+    </>
   );
 }

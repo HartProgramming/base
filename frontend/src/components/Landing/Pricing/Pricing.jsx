@@ -66,7 +66,7 @@ export default function Pricing() {
               item
               xs={12}
               sm={12}
-              md={6}
+              md={12}
               lg={6}
               xl={4}
               className={classes.cardContainer}

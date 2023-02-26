@@ -96,7 +96,7 @@ const fontSizes = {
   five: "1.75rem",
   six: "2rem",
   seven: "2.25rem",
-};
+};  
 
 const baseTheme = createTheme({
   palette: {
