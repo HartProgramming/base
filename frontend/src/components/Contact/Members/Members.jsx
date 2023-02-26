@@ -47,7 +47,9 @@ const Members = ({ membersData }) => {
             </Typography>
           </Grid>
           {members.map((member) => (
-            <Member member={member} />
+            <Grid>
+              <Member member={member} />
+            </Grid>
           ))}
         </Grid>
       ) : null}
