@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Typography,
@@ -9,53 +9,7 @@ import {
   makeStyles,
 } from "@material-ui/core";
 import { Rating } from "@material-ui/lab";
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    padding: theme.spacing(0, 3, 0, 3),
-    margin: theme.spacing(3),
-    maxWidth: 1200,
-    [theme.breakpoints.down("md")]: {
-      padding: theme.spacing(0),
-      margin: theme.spacing(3),
-    },
-  },
-  avatar: {
-    width: theme.spacing(7),
-    height: theme.spacing(7),
-    marginRight: theme.spacing(2),
-  },
-  reviewContainer: {
-    display: "flex",
-    alignItems: "center",
-    marginBottom: theme.spacing(2),
-  },
-  reviewDate: {
-    color: theme.palette.text.secondary,
-  },
-  reviewRating: {
-    marginBottom: theme.spacing(2),
-  },
-  reviewDivider: {
-    margin: `${theme.spacing(2)}px 0`,
-  },
-  reviewText: {
-    color: theme.palette.text.secondary,
-  },
-  reviewPaper: {
-    padding: theme.spacing(2),
-    borderRadius: 16,
-  },
-  reviewGrid: {
-    display: "flex",
-    flexWrap: "wrap",
-    alignItems: "stretch",
-    justifyContent: "center",
-    "& > *": {
-      flexBasis: "100%",
-    },
-  },
-}));
+import { ReviewStyles1, ReviewStyles2 } from "./ReviewsStyles";
 
 const reviewsData = [
   {
@@ -65,6 +19,7 @@ const reviewsData = [
     avatar: "https://i.pravatar.cc/150?img=67",
     platform: "Google Reviews",
     date: "July 12, 2022",
+    title: "Life Changing",
   },
   {
     name: "Jane Smith",
@@ -73,6 +28,7 @@ const reviewsData = [
     avatar: "https://i.pravatar.cc/150?img=42",
     platform: "Facebook",
     date: "June 23, 2022",
+    title: "Cleaned my Urethra out",
   },
   {
     name: "Bob Johnson",
@@ -81,55 +37,124 @@ const reviewsData = [
     avatar: "https://i.pravatar.cc/150?img=69",
     platform: "Yelp",
     date: "May 5, 2022",
+    title: "Areolas feel great",
   },
 ];
 
 const Reviews = () => {
-  const classes = useStyles();
+  let classes;
+  const [design, setDesign] = useState(2);
+
+  if (design === 1) {
+    classes = ReviewStyles1();
+  } else if (design === 2) {
+    classes = ReviewStyles2();
+  }
 
   return (
-    <Box className={classes.root}>
-      <Typography variant="h4" gutterBottom>
-        What Our Customers Are Saying
-      </Typography>
-      <Grid container spacing={2} className={classes.reviewGrid}>
-        {reviewsData.map((review, index) => (
-          <Grid item xs={12} md={4} key={index}>
-            <Paper elevation={3} className={classes.reviewPaper}>
-              <Box>
-                <Box className={classes.reviewContainer}>
-                  <Avatar
-                    alt={review.name}
-                    src={review.avatar}
-                    className={classes.avatar}
-                  />
+    <>
+      {design === 1 && (
+        <Box className={classes.root}>
+          <Typography variant="h4" gutterBottom>
+            What Our Customers Are Saying
+          </Typography>
+          <Grid container spacing={2} className={classes.reviewGrid}>
+            {reviewsData.map((review, index) => (
+              <Grid item xs={12} md={4} key={index}>
+                <Paper elevation={3} className={classes.reviewPaper}>
                   <Box>
-                    <Typography variant="subtitle1">{review.name}</Typography>
-                    <Typography
-                      variant="subtitle2"
-                      className={classes.reviewDate}
-                    >
-                      {review.platform} - {review.date}
+                    <Box className={classes.reviewContainer}>
+                      <Avatar
+                        alt={review.name}
+                        src={review.avatar}
+                        className={classes.avatar}
+                      />
+                      <Box>
+                        <Typography variant="subtitle1">
+                          {review.name}
+                        </Typography>
+                        <Typography
+                          variant="subtitle2"
+                          className={classes.reviewDate}
+                        >
+                          {review.platform} - {review.date}
+                        </Typography>
+                      </Box>
+                    </Box>
+                    <Box className={classes.reviewRating}>
+                      <Rating
+                        name={`rating-${index}`}
+                        value={review.rating}
+                        readOnly
+                      />
+                    </Box>
+                    <Divider
+                      variant="middle"
+                      className={classes.reviewDivider}
+                    />
+                    <Typography variant="body1" className={classes.reviewText}>
+                      {review.review}
                     </Typography>
                   </Box>
-                </Box>
-                <Box className={classes.reviewRating}>
-                  <Rating
-                    name={`rating-${index}`}
-                    value={review.rating}
-                    readOnly
-                  />
-                </Box>
-                <Divider variant="middle" className={classes.reviewDivider} />
-                <Typography variant="body1" className={classes.reviewText}>
-                  {review.review}
-                </Typography>
-              </Box>
-            </Paper>
+                </Paper>
+              </Grid>
+            ))}
           </Grid>
-        ))}
-      </Grid>
-    </Box>
+        </Box>
+      )}
+      {design === 2 && (
+        <Box className={classes.root}>
+          <Typography variant="h4" gutterBottom>
+            What Our Customers Are Saying
+          </Typography>
+          <Grid container spacing={2} className={classes.reviewGrid}>
+            {reviewsData.map((review, index) => (
+              <Grid item xs={12} md={4} key={index}>
+                <Paper elevation={3} className={classes.reviewPaper}>
+                  <Box>
+                    <Typography variant="h4" className={classes.reviewTitle}>
+                      {review.title}
+                    </Typography>
+                    <Typography variant="body1" className={classes.reviewText}>
+                      {review.review}
+                    </Typography>
+                    <Divider
+                      variant="middle"
+                      className={classes.reviewDivider}
+                    />
+                    <Box className={classes.reviewContainer}>
+                      <Avatar
+                        alt={review.name}
+                        src={review.avatar}
+                        className={classes.avatar}
+                      />
+                      <Box>
+                        <Typography variant="subtitle1">
+                          {review.name}
+                        </Typography>
+                        <Typography
+                          variant="subtitle2"
+                          className={classes.reviewDate}
+                        >
+                          {review.platform} - {review.date}
+                        </Typography>
+                      </Box>
+                    </Box>
+                    <Box className={classes.reviewRating}>
+                      <Rating
+                        name={`rating-${index}`}
+                        value={review.rating}
+                        readOnly
+                      />
+                    </Box>
+                  </Box>
+                </Paper>
+              </Grid>
+            ))}
+          </Grid>
+        </Box>
+      )}
+    </>
   );
 };
 

@@ -1,5 +1,7 @@
 import { makeStyles } from "@material-ui/core/styles";
 import { Grid, Typography, Button } from "@material-ui/core";
+import { useState } from "react";
+import { useEffect } from "react";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -22,11 +24,40 @@ const useStyles = makeStyles((theme) => ({
   },
   button: {
     marginTop: theme.spacing(2),
+    
   },
+  btnCenter: {
+    display: "flex",
+    margin: "auto",
+    width: '100%',
+    justifyContent: 'center'
+  },
+  btnLeft: {
+    display: "flex",
+    margin: "auto",
+    width: '100%',
+    justifyContent: 'flex-start'
+  },
+  caseStudiesContainer: {
+    borderRadius: '15px',
+    border: '1px solid blue',
+    margin: theme.spacing(1)
+  }
 }));
 
-const CaseStudiesBasic = () => {
+const CaseStudiesBasic = ({ btnAlign = "left" }) => {
   const classes = useStyles();
+  const [align, setAlign] = useState();
+
+  useEffect(() => {
+    if ({btnAlign} === "left") {
+      setAlign(classes.btnLeft);
+
+    } else if (btnAlign === "center") {
+      setAlign(classes.btnCenter);
+
+    }
+  }, [align]);
 
   const caseStudies = [
     {
@@ -60,7 +91,7 @@ const CaseStudiesBasic = () => {
       </Typography>
       <Grid container spacing={3}>
         {caseStudies.map((caseStudy) => (
-          <Grid item xs={12} sm={6} md={4} key={caseStudy.title}>
+          <Grid item className={classes.caseStudiesContainer} xs={12} sm={6} md={4} key={caseStudy.title}>
             <img
               src={caseStudy.image}
               alt={caseStudy.title}
@@ -72,20 +103,22 @@ const CaseStudiesBasic = () => {
             <Typography variant="body1" className={classes.description}>
               {caseStudy.description}
             </Typography>
-            <a
-              href={caseStudy.link}
-              target="_blank"
-              rel="noreferrer"
-              className={classes.link}
-            >
-              <Button
-                variant="contained"
-                color="primary"
-                className={classes.button}
+            <div className={align}>
+              <a
+                href={caseStudy.link}
+                target="_blank"
+                rel="noreferrer"
+                className={classes.link}
               >
-                Read More
-              </Button>
-            </a>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  className={classes.button}
+                >
+                  Read More
+                </Button>
+              </a>
+            </div>
           </Grid>
         ))}
       </Grid>
