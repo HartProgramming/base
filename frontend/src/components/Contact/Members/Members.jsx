@@ -4,6 +4,7 @@ import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import { useState } from "react";
 import Member from "./Member";
+import { Select } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -32,13 +33,23 @@ const useStyles = makeStyles((theme) => ({
 const Members = ({ membersData }) => {
   const classes = useStyles();
   const [members, setMembers] = useState([]);
+  const [def, setDef] = useState('layout-1')
 
   useEffect(() => {
     setMembers(membersData);
   }, []);
 
+  const handleChange = (e) => {
+    setDef(e.target.value)
+  }
+
   return (
     <div className={classes.root}>
+      <Select value={def} onChange={handleChange}>
+        <option value="layout-1"></option>
+        <option value="layout-2"></option>
+        <option value="layout-3"></option>
+      </Select>
       {members ? (
         <Grid container spacing={0} className={classes.container}>
           <Grid item xs={12} sm={12}>
@@ -48,7 +59,7 @@ const Members = ({ membersData }) => {
           </Grid>
           {members.map((member) => (
             <Grid>
-              <Member member={member} />
+              <Member layout={def} member={member} />
             </Grid>
           ))}
         </Grid>

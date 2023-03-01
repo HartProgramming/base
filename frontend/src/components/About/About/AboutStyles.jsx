@@ -48,6 +48,7 @@ const AboutStyles1 = makeStyles((theme) => ({
         display: 'flex',
         [theme.breakpoints.up('md')]: {
             flexDirection: 'row',
+            alignItems: 'center'
         },
         [theme.breakpoints.down('md')]: {
             flexDirection: 'column',

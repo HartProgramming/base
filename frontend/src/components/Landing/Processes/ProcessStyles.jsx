@@ -1,9 +1,9 @@
 import { makeStyles } from "@material-ui/core";
 
 const ProcessStylesCenter = makeStyles((theme) => ({
-    iconContainer: {
-      textAlign: "center",
+    iconContainer:{
       marginTop: 20,
+      textAlign: 'center'
     },
     icon: {
       fontSize: theme.fontSize.six,
@@ -11,7 +11,6 @@ const ProcessStylesCenter = makeStyles((theme) => ({
     },
     heading: {
       fontFamily: "Poppins",
-      textAlign: "center",
       fontWeight: 700,
       fontSize: theme.fontSize.h4,
       border: 0,
@@ -47,19 +46,19 @@ const ProcessStylesCenter = makeStyles((theme) => ({
 
   const ProcessStylesLeft = makeStyles((theme) => ({
     iconContainer: {
-      textAlign: "left",
       marginTop: 20,
+      textAlign: 'left'
     },
     icon: {
-      fontSize: theme.fontSize.h2,
+      fontSize: theme.fontSize.six,
       color: theme.palette.secondary.main,
     },
     heading: {
       fontFamily: "Poppins",
-      textAlign: "left",
       fontWeight: 700,
       fontSize: theme.fontSize.h4,
       border: 0,
+      textAlign: 'left'
     },
     description: {
       fontSize: theme.fontSize.body1,
@@ -89,5 +88,4 @@ const ProcessStylesCenter = makeStyles((theme) => ({
       },
     },
   }));
-
   export {ProcessStylesCenter, ProcessStylesLeft}

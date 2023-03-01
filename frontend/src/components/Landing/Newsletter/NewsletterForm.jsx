@@ -9,8 +9,10 @@ import {
   TextField,
   withStyles,
 } from "@material-ui/core";
+import {Select} from "@material-ui/core";
 import CheckIcon from "@material-ui/icons/Check";
 import { NewsletterStyles1, NewsletterStyles2 } from "./NewsletterStyles";
+import { useEffect } from "react";
 
 const CustomButton = withStyles({
   label: {
@@ -21,28 +23,43 @@ const CustomButton = withStyles({
 })(Button);
 
 export default function NewsletterForm() {
-  let classes;
+  const column = NewsletterStyles1();
+  const row = NewsletterStyles2();
   const [email, setEmail] = useState("");
   const [state, setState] = useState("initial");
   const [error, setError] = useState(false);
   const [design, setDesign] = useState(2);
+  const [def, setDef] = useState('column');
+  const [align, setAlign] = useState(column)
 
-  if (design === 1) {
-    classes = NewsletterStyles1();
-  }else if(design === 2){
-    classes = NewsletterStyles2();
+  useEffect(() => {
+    if(def === 'column'){
+      setAlign(column)
+      setDesign(1)
+    }else if(def === 'row'){
+      setAlign(row)
+      setDesign(2)
+    }
+  }, [def])
+
+  const handleChange = (e) => {
+    setDef(e.target.value)
   }
 
   return (
     <>
-      {design === 1 && (
-        <Box className={classes.root}>
-          <Container className={classes.container}>
-            <Typography variant="h2" className={classes.heading}>
-              Subscribe to our Newsletter
-            </Typography>
+      <Box className={align.root}>
+        <Container className={align.container}>
+          <Typography variant="h2" className={align.heading}>
+            Subscribe to our Newsletter
+          </Typography>
+          <Select value={def} onChange={handleChange}>
+            <option value="column">Column</option>
+            <option value="row">Row</option>
+          </Select>
+          {design === 1 && (
             <form
-              className={classes.form}
+              className={align.form}
               onSubmit={(e) => {
                 e.preventDefault();
                 setError(false);
@@ -60,7 +77,7 @@ export default function NewsletterForm() {
               }}
             >
               <TextField
-                className={classes.input}
+                className={align.input}
                 autoComplete="email"
                 name="emailaddress"
                 variant="outlined"
@@ -86,7 +103,7 @@ export default function NewsletterForm() {
                     color="primary"
                     disabled={state !== "initial"}
                     type={state === "success" ? "button" : "submit"}
-                    className={classes.submit}
+                    className={align.submit}
                     endIcon={state === "success" ? <CheckIcon /> : null}
                   >
                     {state === "success" ? "Subscribed" : "Submit"}
@@ -94,27 +111,10 @@ export default function NewsletterForm() {
                 </Grid>
               </Grid>
             </form>
-            <Typography
-              variant="subtitle1"
-              className={error ? classes.error : classes.text}
-              align="center"
-              gutterBottom
-            >
-              {error
-                ? "Oh no an error occured! 😢 Please try again later."
-                : "No spam, just news."}
-            </Typography>
-          </Container>
-        </Box>
-      )}
-            {design === 2 && (
-        <Box className={classes.root}>
-          <Container className={classes.container}>
-            <Typography variant="h2" className={classes.heading}>
-              Subscribe to our Newsletter
-            </Typography>
+          )}
+          {design === 2 && (
             <form
-              className={classes.form}
+              className={align.form}
               onSubmit={(e) => {
                 e.preventDefault();
                 setError(false);
@@ -132,7 +132,7 @@ export default function NewsletterForm() {
               }}
             >
               <TextField
-                className={classes.input}
+                className={align.input}
                 autoComplete="email"
                 name="emailaddress"
                 variant="outlined"
@@ -143,30 +143,30 @@ export default function NewsletterForm() {
                 id="emailaddress"
                 label="Email Address"
               />
-                  <CustomButton
-                    variant="contained"
-                    color="primary"
-                    disabled={state !== "initial"}
-                    type={state === "success" ? "button" : "submit"}
-                    className={classes.submit}
-                    endIcon={state === "success" ? <CheckIcon /> : null}
-                  >
-                    {state === "success" ? "Subscribed" : "Submit"}
-                  </CustomButton>
+              <CustomButton
+                variant="contained"
+                color="primary"
+                disabled={state !== "initial"}
+                type={state === "success" ? "button" : "submit"}
+                className={align.submit}
+                endIcon={state === "success" ? <CheckIcon /> : null}
+              >
+                {state === "success" ? "Subscribed" : "Submit"}
+              </CustomButton>
             </form>
-            <Typography
-              variant="subtitle1"
-              className={error ? classes.error : classes.text}
-              align="center"
-              gutterBottom
-            >
-              {error
-                ? "Oh no an error occured! 😢 Please try again later."
-                : "No spam, just news."}
-            </Typography>
-          </Container>
-        </Box>
-      )}
+          )}
+          <Typography
+            variant="subtitle1"
+            className={error ? align.error : align.text}
+            align="center"
+            gutterBottom
+          >
+            {error
+              ? "Oh no an error occured! 😢 Please try again later."
+              : "No spam, just news."}
+          </Typography>
+        </Container>
+      </Box>
     </>
   );
 }

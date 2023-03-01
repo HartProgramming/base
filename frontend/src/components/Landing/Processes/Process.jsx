@@ -14,13 +14,17 @@ import ProcessEdit from "./ProcessEdit";
 import { SlideIntoViewPort } from "../../Elements/Animations/IntoView/SlideIntoViewPort/SlideIntoViewPort";
 import EditButton from "../../Elements/Buttons/EditButton";
 import Icon from "../../Elements/Icon/Icon";
+import {Select} from "@material-ui/core";
 import EditDeleteButtonMenu from "../../Elements/Buttons/EditDeleteButtonMenu";
 import { ProcessStylesCenter, ProcessStylesLeft } from "./ProcessStyles";
+import { useEffect } from "react";
 export default function Process({ step }) {
-  let classes;
-  const [design, setDesign] = useState(2)
+  const center = ProcessStylesCenter()
+  const left = ProcessStylesLeft()
+  const [align, setAlign] = useState(center)
   const [featureData, setFeatureData] = useState(step);
   const [editing, setEditing] = useState(false);
+  const [def, setDef] = useState('center-align')
   const auth = useSelector((state) => state.auth);
 
   const updateProcess = (updateProcess) => {
@@ -28,29 +32,40 @@ export default function Process({ step }) {
     setEditing(false);
   };
 
-  if(design === 1){
-    classes = ProcessStylesCenter();
-  }else{
-    classes = ProcessStylesLeft();
+
+  const handleChange = (e) => {
+      console.log(e.target.value)
+      setDef(e.target.value)
   }
+
+  useEffect(() => {
+    if(def === 'center-align'){
+    setAlign(center)
+    }else if(def === 'left-align'){
+      setAlign(left)
+    }
+  }, [def])
 
   return (
     <>
-    {design === 1 && (
-      <SlideIntoViewPort direction="down" className={classes.fadeIn}>
-        <Grid container spacing={1} className={classes.stepContainer}>
+      <SlideIntoViewPort direction="down" className={align.fadeIn}>
+        <Select value={def} onChange={handleChange}>
+          <option value={'left-align'}>Left</option>
+          <option value={'center-align'}>Center</option>
+        </Select>
+        <Grid container spacing={1} className={align.stepContainer}>
           {!editing ? (
             <>
-              <Grid className={classes.iconContainer} item xs={12}>
-                <Icon icon={featureData.icon} className={classes.icon} />
+              <Grid className={align.iconContainer} item xs={12}>
+                <Icon icon={featureData.icon} className={`${align.icon}`} />
               </Grid>
               <Grid item xs={12}>
-                <Typography className={classes.heading}>
+                <Typography className={align.heading}>
                   {featureData.title}
                 </Typography>
               </Grid>
               <Grid item xs={12}>
-                <Typography variant="body1" className={classes.description}>
+                <Typography variant="body1" className={align.description}>
                   {featureData.description}
                 </Typography>
               </Grid>
@@ -73,45 +88,7 @@ export default function Process({ step }) {
           )}
         </Grid>
       </SlideIntoViewPort>
-    )}
-    {design === 2 &&(
-      <SlideIntoViewPort direction="down" className={classes.fadeIn}>
-      <Grid container spacing={1} className={classes.stepContainer}>
-        {!editing ? (
-          <>
-            <Grid className={classes.iconContainer} item xs={12}>
-              <Icon icon={featureData.icon} className={classes.icon} />
-            </Grid>
-            <Grid item xs={12}>
-              <Typography className={classes.heading}>
-                {featureData.title}
-              </Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant="body1" className={classes.description}>
-                {featureData.description}
-              </Typography>
-            </Grid>
-            {!editing && auth.is_superuser ? (
-              <div style={{ width: "95%" }}>
-                <EditDeleteButtonMenu
-                  editClick={() => setEditing(!editing)}
-                  hideDelete
-                  position="end"
-                />
-              </div>
-            ) : null}
-          </>
-        ) : (
-          <ProcessEdit
-            process={featureData}
-            updateProcess={updateProcess}
-            handleCancel={() => setEditing(!editing)}
-          />
-        )}
-      </Grid>
-    </SlideIntoViewPort>
-    )}
+    
     </>
   );
 }

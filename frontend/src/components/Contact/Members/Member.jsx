@@ -17,26 +17,34 @@ import CardContent from "@material-ui/core/CardContent";
 import LinkedInIcon from "@material-ui/icons/LinkedIn";
 import GitHubIcon from "@material-ui/icons/GitHub";
 import TwitterIcon from "@material-ui/icons/Twitter";
-const Member = ({ member }) => {
-  let classes;
+import { useEffect } from "react";
+const Member = ({ member, layout }) => {
+  const layout1 = MemberStyles1();
+  const layout2 = MemberStyles2();
+  const layout3 = MemberStyles3();
   const { fadeIn } = baseClasses();
   const [editing, setEditing] = useState(false);
   const [memberData, setMemberData] = useState(member);
   const [design, setDesign] = useState(3);
+  const [align, setAlign] = useState(layout1)
   const auth = useSelector((state) => state.auth);
+
+  console.log(layout);
 
   const updateMember = (updateMember) => {
     setMemberData(updateMember);
     setEditing(false);
   };
 
-  if (design === 1) {
-    classes = MemberStyles1();
-  } else if (design === 2) {
-    classes = MemberStyles2();
-  } else if (design === 3) {
-    classes = MemberStyles3();
-  }
+  useEffect(() => {
+    if (layout === 'layout-1') {
+      setAlign(layout1)
+    } else if (layout === 'layout-2') {
+      setAlign(layout2)
+    } else if (layout === 'layout-3') {
+      setAlign(layout3)
+    }
+  },[layout]);
 
   return (
     <>
@@ -47,23 +55,23 @@ const Member = ({ member }) => {
           sm={6}
           md={6}
           key={memberData.name}
-          className={`${classes.container}`}
+          className={`${align.container}`}
         >
           {!editing ? (
-            <Card className={`${classes.card} ${fadeIn}`}>
+            <Card className={`${align.card} ${fadeIn}`}>
               <CardHeader
                 avatar={
                   <Avatar
                     variant="rounded"
                     src={memberData.image}
-                    className={classes.avatar}
+                    className={align.avatar}
                   />
                 }
                 title={memberData.name}
                 subheader={memberData.role}
                 classes={{
-                  title: classes.title,
-                  subheader: classes.subheader,
+                  title: align.title,
+                  subheader: align.subheader,
                 }}
               />
               <MemberContent member={memberData} />
@@ -94,30 +102,29 @@ const Member = ({ member }) => {
           sm={6}
           md={6}
           key={memberData.name}
-          className={`${classes.container}`}
+          className={`${align.container}`}
         >
           {!editing ? (
-            <Card className={`${classes.card} ${fadeIn}`}>
+            <Card className={`${align.card} ${fadeIn}`}>
               <MemberContent member={memberData} />
-              <div className={classes.avatarContainer}>
+              <div className={align.avatarContainer}>
                 <CardHeader
                   avatar={
                     <Avatar
                       variant="rounded"
                       src={memberData.image}
-                      className={classes.avatar}
+                      className={align.avatar}
                     />
                   }
                   title={memberData.name}
                   subheader={memberData.role}
                   classes={{
-                    title: classes.title,
-                    subheader: classes.subheader,
+                    title: align.title,
+                    subheader: align.subheader,
                   }}
                 />
               </div>
 
-              
               {!editing && auth.is_superuser ? (
                 <div style={{ marginTop: 4, marginBottom: 4, marginRight: 8 }}>
                   <EditDeleteButtonMenu
@@ -145,53 +152,53 @@ const Member = ({ member }) => {
           sm={6}
           md={6}
           key={memberData.name}
-          className={`${classes.container}`}
+          className={`${align.container}`}
         >
           {!editing ? (
-            <Card className={`${classes.card} ${fadeIn}`}>
-              <div className={classes.avatarContainer}>
+            <Card className={`${align.card} ${fadeIn}`}>
+              <div className={align.avatarContainer}>
                 <CardHeader
                   avatar={
                     <Avatar
                       variant="rounded"
                       src={memberData.image}
-                      className={classes.avatar}
+                      className={align.avatar}
                     />
                   }
                   title={memberData.name}
                   subheader={memberData.role}
                   classes={{
-                    title: classes.title,
-                    subheader: classes.subheader,
-                    root: classes.avatarContainer
+                    title: align.title,
+                    subheader: align.subheader,
+                    root: align.avatarContainer,
                   }}
                 />
-                <div className={classes.socialIcons}>
-                <IconButton
-                  className={classes.iconButton}
-                  href={member.linkedIn}
-                  target="_blank"
-                  aria-label="LinkedIn"
-                >
-                  <LinkedInIcon />
-                </IconButton>
-                <IconButton
-                  className={classes.iconButton}
-                  href={member.github}
-                  target="_blank"
-                  aria-label="GitHub"
-                >
-                  <GitHubIcon />
-                </IconButton>
-                <IconButton
-                  className={classes.iconButton}
-                  href={member.twitter}
-                  target="_blank"
-                  aria-label="Twitter"
-                >
-                  <TwitterIcon />
-                </IconButton>
-              </div>
+                <div className={align.socialIcons}>
+                  <IconButton
+                    className={align.iconButton}
+                    href={member.linkedIn}
+                    target="_blank"
+                    aria-label="LinkedIn"
+                  >
+                    <LinkedInIcon />
+                  </IconButton>
+                  <IconButton
+                    className={align.iconButton}
+                    href={member.github}
+                    target="_blank"
+                    aria-label="GitHub"
+                  >
+                    <GitHubIcon />
+                  </IconButton>
+                  <IconButton
+                    className={align.iconButton}
+                    href={member.twitter}
+                    target="_blank"
+                    aria-label="Twitter"
+                  >
+                    <TwitterIcon />
+                  </IconButton>
+                </div>
               </div>
 
               <MemberContent member={memberData} />

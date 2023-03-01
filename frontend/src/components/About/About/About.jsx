@@ -11,6 +11,7 @@ import Heading from "../Heading/Heading";
 import ContentSection from "../Content/ContentSection";
 import useInput from "../../../hooks/useInput";
 import { AboutStyles1, AboutStyles2 } from "./AboutStyles";
+import { Select } from "@material-ui/core";
 export default function About() {
   const {
     value: missionData,
@@ -18,10 +19,12 @@ export default function About() {
     setValue: setMissionData,
   } = useInput([]);
   const auth = useSelector((state) => state.auth);
-  let classes;
+  const layout1 = AboutStyles1();
+  const layout2 = AboutStyles2();
   const [data, setData] = useState([]);
 
   // const [missionData, setMissionData] = useState([]);
+
   const [historyData, setHistoryData] = useState([]);
   const [valuesData, setValuesData] = useState(null);
 
@@ -30,17 +33,9 @@ export default function About() {
   const [editHistory, setEditHistory] = useState(false);
   const [missionBody, setMissionBody] = useState(false);
   const [historyBody, setHistoryBody] = useState(false);
+  const [def, setDef] = useState("layout-1");
   const [design, setDesign] = useState(4);
-
-  if (design === 1) {
-    classes = AboutStyles1();
-  } else if (design === 2) {
-    classes = AboutStyles2();
-  } else if (design === 3) {
-    classes = AboutStyles2();
-  } else if (design === 4) {
-    classes = AboutStyles1();
-  }
+  const [styles, setStyles] = useState(layout1);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -80,106 +75,72 @@ export default function About() {
     setEditHistory(false);
   };
 
+  const handleChange = (e) => {
+    setDef(e.target.value);
+  };
+
+  useEffect(() => {
+    if (def === "layout-1") {
+      setDesign(1);
+      setStyles(layout1);
+    } else if (def === "layout-2") {
+      setDesign(2);
+      setStyles(layout2);
+    } else if (def === "layout-3") {
+      setDesign(3);
+      setStyles(layout2);
+    } else if (def === "layout-4") {
+      setDesign(4);
+      
+      setStyles(layout1);
+    }
+  }, [def]);
+
   return (
     <>
-      {design === 1 && missionData && (
-        <div className={classes.root}>
-          <Paper className={classes.paper} elevation={0}>
-            <Grid
-              container
-              spacing={2}
-              style={{ display: "flex", justifyContent: "left" }}
-            >
+      <div className={styles.root}>
+        <Paper className={styles.paper} elevation={0}>
+          <Grid
+            container
+            spacing={2}
+            style={{ display: "flex", justifyContent: "left" }}
+          >
+            <>
+              {!editTitle && auth.is_superuser ? (
+                <div
+                  style={{
+                    width: "100%",
+                    display: "flex",
+                    justifyContent: "flex-end",
+                  }}
+                >
+                  <EditButton
+                    onClick={() => setEditTitle(!editTitle)}
+                    editState={editTitle}
+                    position="end"
+                  />
+                </div>
+              ) : null}
+              {!editTitle ? (
+                <Heading data={data} />
+              ) : (
+                <Grid item xs={12} sm={12}>
+                  <AboutHeadingEdit
+                    aboutBlock={data}
+                    onUpdate={updateBlock}
+                    handleCancel={() => setEditTitle(!editTitle)}
+                  />
+                </Grid>
+              )}
+            </>
+            <Select value={def} onChange={handleChange}>
+              <option value="layout-1">Layout 1</option>
+              <option value="layout-2">Layout 2</option>
+              <option value="layout-3">Layout 3</option>
+              <option value="layout-4">Layout 4</option>
+            </Select>
+            {design === 1 && missionData && (
               <>
-                {!editTitle && auth.is_superuser ? (
-                  <div
-                    style={{
-                      width: "100%",
-                      display: "flex",
-                      justifyContent: "flex-end",
-                    }}
-                  >
-                    <EditButton
-                      onClick={() => setEditTitle(!editTitle)}
-                      editState={editTitle}
-                      position="end"
-                    />
-                  </div>
-                ) : null}
-                {!editTitle ? (
-                  <Heading data={data} />
-                ) : (
-                  <Grid item xs={12} sm={12}>
-                    <AboutHeadingEdit
-                      aboutBlock={data}
-                      onUpdate={updateBlock}
-                      handleCancel={() => setEditTitle(!editTitle)}
-                    />
-                  </Grid>
-                )}
-              </>
-              <ContentSection
-                title={missionData.title}
-                body={missionBody}
-                editState={editMission}
-                setEdit={setEditMission}
-                onUpdate={updateMission}
-                type={"missionstatement"}
-                auth={auth}
-              />
-              <ContentSection
-                title={historyData.title}
-                body={historyBody}
-                editState={editHistory}
-                setEdit={setEditHistory}
-                onUpdate={updateHistory}
-                type={"companyhistory"}
-                auth={auth}
-              />
-              <Grid item xs={12} sm={12} className={classes.section}>
-                {valuesData ? <Values valuesData={valuesData} /> : null}
-              </Grid>
-            </Grid>
-          </Paper>
-        </div>
-      )}
-      {design === 2 && missionData && (
-        <div className={classes.root}>
-          <Paper className={classes.paper} elevation={0}>
-            <Grid
-              container
-              spacing={2}
-              style={{ display: "flex", justifyContent: "left" }}
-            >
-              <>
-                {!editTitle && auth.is_superuser ? (
-                  <div
-                    style={{
-                      width: "100%",
-                      display: "flex",
-                      justifyContent: "flex-end",
-                    }}
-                  >
-                    <EditButton
-                      onClick={() => setEditTitle(!editTitle)}
-                      editState={editTitle}
-                      position="end"
-                    />
-                  </div>
-                ) : null}
-                {!editTitle ? (
-                  <Heading data={data} />
-                ) : (
-                  <Grid item xs={12} sm={12}>
-                    <AboutHeadingEdit
-                      aboutBlock={data}
-                      onUpdate={updateBlock}
-                      handleCancel={() => setEditTitle(!editTitle)}
-                    />
-                  </Grid>
-                )}
-              </>
-              <div className={classes.aboutRow}>
                 <ContentSection
                   title={missionData.title}
                   body={missionBody}
@@ -189,19 +150,6 @@ export default function About() {
                   type={"missionstatement"}
                   auth={auth}
                 />
-                <img
-                  className={classes.image}
-                  src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.mm.bing.net%2Fth%3Fid%3DOIP.wa5d1VFclZ6hFCnC1WEfDAHaE8%26pid%3DApi&f=1&ipt=a13a8029008208845a264275170e1d85c5fa1cdab7dfe30097d601ddf9211a94&ipo=images"
-                  alt=""
-                />
-              </div>
-              <div className={classes.aboutRow}>
-                <img
-                  className={classes.image}
-                  src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.mm.bing.net%2Fth%3Fid%3DOIP.wa5d1VFclZ6hFCnC1WEfDAHaE8%26pid%3DApi&f=1&ipt=a13a8029008208845a264275170e1d85c5fa1cdab7dfe30097d601ddf9211a94&ipo=images"
-                  alt=""
-                />
-
                 <ContentSection
                   title={historyData.title}
                   body={historyBody}
@@ -211,55 +159,96 @@ export default function About() {
                   type={"companyhistory"}
                   auth={auth}
                 />
-              </div>
-
-              <Grid item xs={12} sm={12} className={classes.section}>
-                {valuesData ? <Values valuesData={valuesData} /> : null}
-              </Grid>
-            </Grid>
-          </Paper>
-        </div>
-      )}
-      {design === 3 && missionData && (
-        <div className={classes.root}>
-          <Paper className={classes.paper} elevation={0}>
-            <Grid
-              container
-              spacing={2}
-              style={{ display: "flex", justifyContent: "left" }}
-            >
-              <>
-                {!editTitle && auth.is_superuser ? (
-                  <div
-                    style={{
-                      width: "100%",
-                      display: "flex",
-                      justifyContent: "flex-end",
-                    }}
-                  >
-                    <EditButton
-                      onClick={() => setEditTitle(!editTitle)}
-                      editState={editTitle}
-                      position="end"
-                    />
-                  </div>
-                ) : null}
-                {!editTitle ? (
-                  <Heading data={data} />
-                ) : (
-                  <Grid item xs={12} sm={12}>
-                    <AboutHeadingEdit
-                      aboutBlock={data}
-                      onUpdate={updateBlock}
-                      handleCancel={() => setEditTitle(!editTitle)}
-                    />
-                  </Grid>
-                )}
+                <Grid item xs={12} sm={12} className={styles.section}>
+                  {valuesData ? <Values valuesData={valuesData} /> : null}
+                </Grid>
               </>
-              <Grid item xs={12} sm={12} className={classes.section}>
-                {valuesData ? <Values valuesData={valuesData} /> : null}
-              </Grid>
-              <div className={classes.aboutRow}>
+            )}
+            {design === 2 && missionData && (
+              <>
+                <div className={styles.aboutRow}>
+                  <ContentSection
+                    title={missionData.title}
+                    body={missionBody}
+                    editState={editMission}
+                    setEdit={setEditMission}
+                    onUpdate={updateMission}
+                    type={"missionstatement"}
+                    auth={auth}
+                  />
+                  <img
+                    className={styles.image}
+                    src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.mm.bing.net%2Fth%3Fid%3DOIP.wa5d1VFclZ6hFCnC1WEfDAHaE8%26pid%3DApi&f=1&ipt=a13a8029008208845a264275170e1d85c5fa1cdab7dfe30097d601ddf9211a94&ipo=images"
+                    alt=""
+                  />
+                </div>
+                <div className={styles.aboutRow}>
+                  <img
+                    className={styles.image}
+                    src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.mm.bing.net%2Fth%3Fid%3DOIP.wa5d1VFclZ6hFCnC1WEfDAHaE8%26pid%3DApi&f=1&ipt=a13a8029008208845a264275170e1d85c5fa1cdab7dfe30097d601ddf9211a94&ipo=images"
+                    alt=""
+                  />
+
+                  <ContentSection
+                    title={historyData.title}
+                    body={historyBody}
+                    editState={editHistory}
+                    setEdit={setEditHistory}
+                    onUpdate={updateHistory}
+                    type={"companyhistory"}
+                    auth={auth}
+                  />
+                </div>
+
+                <Grid item xs={12} sm={12} className={styles.section}>
+                  {valuesData ? <Values valuesData={valuesData} /> : null}
+                </Grid>
+              </>
+            )}
+            {design === 3 && missionData && (
+              <>
+                <Grid item xs={12} sm={12} className={styles.section}>
+                  {valuesData ? <Values valuesData={valuesData} /> : null}
+                </Grid>
+                <div className={styles.aboutRow}>
+                  <ContentSection
+                    title={missionData.title}
+                    body={missionBody}
+                    editState={editMission}
+                    setEdit={setEditMission}
+                    onUpdate={updateMission}
+                    type={"missionstatement"}
+                    auth={auth}
+                  />
+                  <img
+                    className={styles.image}
+                    src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.mm.bing.net%2Fth%3Fid%3DOIP.wa5d1VFclZ6hFCnC1WEfDAHaE8%26pid%3DApi&f=1&ipt=a13a8029008208845a264275170e1d85c5fa1cdab7dfe30097d601ddf9211a94&ipo=images"
+                    alt=""
+                  />
+                </div>
+                <div className={styles.aboutRow}>
+                  <img
+                    className={styles.image}
+                    src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.mm.bing.net%2Fth%3Fid%3DOIP.wa5d1VFclZ6hFCnC1WEfDAHaE8%26pid%3DApi&f=1&ipt=a13a8029008208845a264275170e1d85c5fa1cdab7dfe30097d601ddf9211a94&ipo=images"
+                    alt=""
+                  />
+                  <ContentSection
+                    title={historyData.title}
+                    body={historyBody}
+                    editState={editHistory}
+                    setEdit={setEditHistory}
+                    onUpdate={updateHistory}
+                    type={"companyhistory"}
+                    auth={auth}
+                  />
+                </div>
+              </>
+            )}
+            {design === 4 && missionData && (
+              <>
+                <Grid item xs={12} sm={12} className={styles.section}>
+                  {valuesData ? <Values valuesData={valuesData} /> : null}
+                </Grid>
                 <ContentSection
                   title={missionData.title}
                   body={missionBody}
@@ -269,19 +258,6 @@ export default function About() {
                   type={"missionstatement"}
                   auth={auth}
                 />
-                <img
-                  className={classes.image}
-                  src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.mm.bing.net%2Fth%3Fid%3DOIP.wa5d1VFclZ6hFCnC1WEfDAHaE8%26pid%3DApi&f=1&ipt=a13a8029008208845a264275170e1d85c5fa1cdab7dfe30097d601ddf9211a94&ipo=images"
-                  alt=""
-                />
-              </div>
-              <div className={classes.aboutRow}>
-                <img
-                  className={classes.image}
-                  src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.mm.bing.net%2Fth%3Fid%3DOIP.wa5d1VFclZ6hFCnC1WEfDAHaE8%26pid%3DApi&f=1&ipt=a13a8029008208845a264275170e1d85c5fa1cdab7dfe30097d601ddf9211a94&ipo=images"
-                  alt=""
-                />
-
                 <ContentSection
                   title={historyData.title}
                   body={historyBody}
@@ -291,73 +267,11 @@ export default function About() {
                   type={"companyhistory"}
                   auth={auth}
                 />
-              </div>
-            </Grid>
-          </Paper>
-        </div>
-      )}
-      {design === 4 && missionData && (
-        <div className={classes.root}>
-          <Paper className={classes.paper} elevation={0}>
-            <Grid
-              container
-              spacing={2}
-              style={{ display: "flex", justifyContent: "left" }}
-            >
-              <>
-                {!editTitle && auth.is_superuser ? (
-                  <div
-                    style={{
-                      width: "100%",
-                      display: "flex",
-                      justifyContent: "flex-end",
-                    }}
-                  >
-                    <EditButton
-                      onClick={() => setEditTitle(!editTitle)}
-                      editState={editTitle}
-                      position="end"
-                    />
-                  </div>
-                ) : null}
-                {!editTitle ? (
-                  <Heading data={data} />
-                ) : (
-                  <Grid item xs={12} sm={12}>
-                    <AboutHeadingEdit
-                      aboutBlock={data}
-                      onUpdate={updateBlock}
-                      handleCancel={() => setEditTitle(!editTitle)}
-                    />
-                  </Grid>
-                )}
               </>
-              <Grid item xs={12} sm={12} className={classes.section}>
-                {valuesData ? <Values valuesData={valuesData} /> : null}
-              </Grid>
-              <ContentSection
-                title={missionData.title}
-                body={missionBody}
-                editState={editMission}
-                setEdit={setEditMission}
-                onUpdate={updateMission}
-                type={"missionstatement"}
-                auth={auth}
-              />
-              <ContentSection
-                title={historyData.title}
-                body={historyBody}
-                editState={editHistory}
-                setEdit={setEditHistory}
-                onUpdate={updateHistory}
-                type={"companyhistory"}
-                auth={auth}
-              />
-              
-            </Grid>
-          </Paper>
-        </div>
-      )}
+            )}
+          </Grid>
+        </Paper>
+      </div>
     </>
   );
 }
