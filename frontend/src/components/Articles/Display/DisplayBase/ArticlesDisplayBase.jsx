@@ -177,7 +177,7 @@ const ArticlesDisplayBase = ({
     <>
       <Grid
         container
-        spacing={0}
+        spacing={2}
         flex
         justifyContent="center"
         style={{ flexWrap: "wrap" }}

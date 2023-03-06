@@ -13,6 +13,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
     marginTop: theme.spacing(5),
     backgroundColor: "white",
+    flexDirection: "column",
   },
   container: {
     display: "flex",
@@ -33,30 +34,31 @@ const useStyles = makeStyles((theme) => ({
 const Members = ({ membersData }) => {
   const classes = useStyles();
   const [members, setMembers] = useState([]);
-  const [def, setDef] = useState('layout-1')
+  const [def, setDef] = useState("layout-1");
 
   useEffect(() => {
     setMembers(membersData);
   }, []);
 
   const handleChange = (e) => {
-    setDef(e.target.value)
-  }
+    setDef(e.target.value);
+  };
 
   return (
     <div className={classes.root}>
-      <Select value={def} onChange={handleChange}>
-        <option value="layout-1"></option>
-        <option value="layout-2"></option>
-        <option value="layout-3"></option>
-      </Select>
       {members ? (
         <Grid container spacing={0} className={classes.container}>
           <Grid item xs={12} sm={12}>
             <Typography variant="h2" className={classes.sectionTitle}>
               Company Management
             </Typography>
+            <Select value={def} onChange={handleChange}>
+              <option value="layout-1">Layout 1</option>
+              <option value="layout-2">Layout 2</option>
+              <option value="layout-3">Layout 3</option>
+            </Select>
           </Grid>
+
           {members.map((member) => (
             <Grid>
               <Member layout={def} member={member} />

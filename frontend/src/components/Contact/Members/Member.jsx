@@ -25,8 +25,8 @@ const Member = ({ member, layout }) => {
   const { fadeIn } = baseClasses();
   const [editing, setEditing] = useState(false);
   const [memberData, setMemberData] = useState(member);
-  const [design, setDesign] = useState(3);
-  const [align, setAlign] = useState(layout1)
+  const [design, setDesign] = useState(2);
+  const [align, setAlign] = useState(layout1);
   const auth = useSelector((state) => state.auth);
 
   console.log(layout);
@@ -37,14 +37,17 @@ const Member = ({ member, layout }) => {
   };
 
   useEffect(() => {
-    if (layout === 'layout-1') {
-      setAlign(layout1)
-    } else if (layout === 'layout-2') {
-      setAlign(layout2)
-    } else if (layout === 'layout-3') {
-      setAlign(layout3)
+    if (layout === "layout-1") {
+      setAlign(layout1);
+      setDesign(1)
+    } else if (layout === "layout-2") {
+      setAlign(layout2);
+      setDesign(2)
+    } else if (layout === "layout-3") {
+      setAlign(layout3);
+      setDesign(3)
     }
-  },[layout]);
+  }, [layout]);
 
   return (
     <>
@@ -74,6 +77,32 @@ const Member = ({ member, layout }) => {
                   subheader: align.subheader,
                 }}
               />
+              <div className={align.socialIcons}>
+                <IconButton
+                  className={align.iconButton}
+                  href={member.linkedIn}
+                  target="_blank"
+                  aria-label="LinkedIn"
+                >
+                  <LinkedInIcon />
+                </IconButton>
+                <IconButton
+                  className={align.iconButton}
+                  href={member.github}
+                  target="_blank"
+                  aria-label="GitHub"
+                >
+                  <GitHubIcon />
+                </IconButton>
+                <IconButton
+                  className={align.iconButton}
+                  href={member.twitter}
+                  target="_blank"
+                  aria-label="Twitter"
+                >
+                  <TwitterIcon />
+                </IconButton>
+              </div>
               <MemberContent member={memberData} />
               {!editing && auth.is_superuser ? (
                 <div style={{ marginTop: 4, marginBottom: 4, marginRight: 8 }}>
@@ -123,6 +152,32 @@ const Member = ({ member, layout }) => {
                     subheader: align.subheader,
                   }}
                 />
+              </div>
+              <div className={align.socialIcons}>
+                <IconButton
+                  className={align.iconButton}
+                  href={member.linkedIn}
+                  target="_blank"
+                  aria-label="LinkedIn"
+                >
+                  <LinkedInIcon />
+                </IconButton>
+                <IconButton
+                  className={align.iconButton}
+                  href={member.github}
+                  target="_blank"
+                  aria-label="GitHub"
+                >
+                  <GitHubIcon />
+                </IconButton>
+                <IconButton
+                  className={align.iconButton}
+                  href={member.twitter}
+                  target="_blank"
+                  aria-label="Twitter"
+                >
+                  <TwitterIcon />
+                </IconButton>
               </div>
 
               {!editing && auth.is_superuser ? (

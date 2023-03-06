@@ -9,7 +9,10 @@ import {
   makeStyles,
 } from "@material-ui/core";
 import { Rating } from "@material-ui/lab";
+import { Select } from "@mui/material";
 import { ReviewStyles1, ReviewStyles2 } from "./ReviewsStyles";
+import { useEffect } from "react";
+import { useFetcher } from "react-router-dom";
 
 const reviewsData = [
   {
@@ -42,118 +45,137 @@ const reviewsData = [
 ];
 
 const Reviews = () => {
-  let classes;
-  const [design, setDesign] = useState(2);
+  const layout1 = ReviewStyles1();
+  const layout2 = ReviewStyles2();
+  const [design, setDesign] = useState("top");
+  const [def, setDef] = useState("layout-1");
+  const [align, setAlign] = useState(layout1);
 
-  if (design === 1) {
-    classes = ReviewStyles1();
-  } else if (design === 2) {
-    classes = ReviewStyles2();
-  }
+  const handleChange = (e) => {
+    console.log(e.target.value);
+    setDef(e.target.value);
+  };
+
+  useEffect(() => {
+    if (def === "layout-1") {
+      console.log(design);
+      setAlign(layout1);
+      setDesign("top");
+    } else if (def === "layout-2") {
+      setAlign(layout2);
+      setDesign("bottom");
+    }
+  }, [def]);
 
   return (
     <>
-      {design === 1 && (
-        <Box className={classes.root}>
+      <Box className={align.root}>
+        <>
           <Typography variant="h4" gutterBottom>
             What Our Customers Are Saying
           </Typography>
-          <Grid container spacing={2} className={classes.reviewGrid}>
-            {reviewsData.map((review, index) => (
-              <Grid item xs={12} md={4} key={index}>
-                <Paper elevation={3} className={classes.reviewPaper}>
-                  <Box>
-                    <Box className={classes.reviewContainer}>
-                      <Avatar
-                        alt={review.name}
-                        src={review.avatar}
-                        className={classes.avatar}
+          <select name="review" value={def} onChange={handleChange}>
+            <option value="layout-1">Layout 1</option>
+            <option value="layout-2">Layout 2</option>
+          </select>
+        </>
+        <>
+          {design === "top" && (
+            <Grid container spacing={2} className={align.reviewGrid}>
+              {reviewsData.map((review, index) => (
+                <Grid item xs={12} md={4} key={index}>
+                  <Paper elevation={3} className={align.reviewPaper}>
+                    <Box>
+                      <Box className={align.reviewContainer}>
+                        <Avatar
+                          alt={review.name}
+                          src={review.avatar}
+                          className={align.avatar}
+                        />
+                        <Box>
+                          <Typography variant="subtitle1">
+                            {review.name}
+                          </Typography>
+                          <Typography
+                            variant="subtitle2"
+                            className={align.reviewDate}
+                          >
+                            {review.platform} - {review.date}
+                          </Typography>
+                        </Box>
+                      </Box>
+                      <Box className={align.reviewRating}>
+                        <Rating
+                          name={`rating-${index}`}
+                          value={review.rating}
+                          readOnly
+                        />
+                      </Box>
+                      <Divider
+                        variant="middle"
+                        className={align.reviewDivider}
                       />
-                      <Box>
-                        <Typography variant="subtitle1">
-                          {review.name}
-                        </Typography>
-                        <Typography
-                          variant="subtitle2"
-                          className={classes.reviewDate}
-                        >
-                          {review.platform} - {review.date}
-                        </Typography>
+                      <Typography variant="h4" className={align.reviewTitle}>
+                        {review.title}
+                      </Typography>
+                      <Typography variant="body1" className={align.reviewText}>
+                        {review.review}
+                      </Typography>
+                    </Box>
+                  </Paper>
+                </Grid>
+              ))}
+            </Grid>
+          )}
+          {design === "bottom" && (
+            <Grid container spacing={2} className={align.reviewGrid}>
+              {reviewsData.map((review, index) => (
+                <Grid item xs={12} md={4} key={index}>
+                  <Paper elevation={3} className={align.reviewPaper}>
+                    <Box>
+                      <Typography variant="h4" className={align.reviewTitle}>
+                        {review.title}
+                      </Typography>
+                      <Typography variant="body1" className={align.reviewText}>
+                        {review.review}
+                      </Typography>
+                      <Divider
+                        variant="middle"
+                        className={align.reviewDivider}
+                      />
+                      <Box className={align.reviewContainer}>
+                        <Avatar
+                          alt={review.name}
+                          src={review.avatar}
+                          className={align.avatar}
+                        />
+                        <Box>
+                          <Typography variant="subtitle1">
+                            {review.name}
+                          </Typography>
+                          <Typography
+                            variant="subtitle2"
+                            className={align.reviewDate}
+                          >
+                            {review.platform} - {review.date}
+                          </Typography>
+                        </Box>
+                      </Box>
+                      <Box className={align.reviewRating}>
+                        <Rating
+                          name={`rating-${index}`}
+                          value={review.rating}
+                          readOnly
+                        />
                       </Box>
                     </Box>
-                    <Box className={classes.reviewRating}>
-                      <Rating
-                        name={`rating-${index}`}
-                        value={review.rating}
-                        readOnly
-                      />
-                    </Box>
-                    <Divider
-                      variant="middle"
-                      className={classes.reviewDivider}
-                    />
-                    <Typography variant="body1" className={classes.reviewText}>
-                      {review.review}
-                    </Typography>
-                  </Box>
-                </Paper>
-              </Grid>
-            ))}
-          </Grid>
-        </Box>
-      )}
-      {design === 2 && (
-        <Box className={classes.root}>
-          <Typography variant="h4" gutterBottom>
-            What Our Customers Are Saying
-          </Typography>
-          <Grid container spacing={2} className={classes.reviewGrid}>
-            {reviewsData.map((review, index) => (
-              <Grid item xs={12} md={4} key={index}>
-                <Paper elevation={3} className={classes.reviewPaper}>
-                  <Box>
-                    <Typography variant="h4" className={classes.reviewTitle}>
-                      {review.title}
-                    </Typography>
-                    <Typography variant="body1" className={classes.reviewText}>
-                      {review.review}
-                    </Typography>
-                    <Divider
-                      variant="middle"
-                      className={classes.reviewDivider}
-                    />
-                    <Box className={classes.reviewContainer}>
-                      <Avatar
-                        alt={review.name}
-                        src={review.avatar}
-                        className={classes.avatar}
-                      />
-                      <Box>
-                        <Typography variant="subtitle1">
-                          {review.name}
-                        </Typography>
-                        <Typography
-                          variant="subtitle2"
-                          className={classes.reviewDate}
-                        >
-                          {review.platform} - {review.date}
-                        </Typography>
-                      </Box>
-                    </Box>
-                    <Box className={classes.reviewRating}>
-                      <Rating
-                        name={`rating-${index}`}
-                        value={review.rating}
-                        readOnly
-                      />
-                    </Box>
-                  </Box>
-                </Paper>
-              </Grid>
-            ))}
-          </Grid>
-        </Box>
-      )}
+                  </Paper>
+                </Grid>
+              ))}
+            </Grid>
+          )}
+        </>
+      </Box>
     </>
   );
 };

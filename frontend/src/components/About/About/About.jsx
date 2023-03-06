@@ -76,6 +76,7 @@ export default function About() {
   };
 
   const handleChange = (e) => {
+    console.log(e.target.value)
     setDef(e.target.value);
   };
 
