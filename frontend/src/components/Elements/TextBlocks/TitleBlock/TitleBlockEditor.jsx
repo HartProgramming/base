@@ -2,14 +2,16 @@ import React, { useState } from "react";
 import axios from "axios";
 import { getCookie } from "../../../../utils";
 import BaseEditForm from "../../Base/EditForm/BaseEditForm";
+import { useDispatch } from "react-redux";
 
 const TitleBlockEditor = ({
   titleBlock,
   onUpdate,
   handleCancel,
-  description = false,
+  description = true,
 }) => {
   const [state, setState] = useState({ ...titleBlock });
+  const dispatch = useDispatch();
 
   const handleChange = (event) => {
     setState({
@@ -35,23 +37,25 @@ const TitleBlockEditor = ({
       },
     };
     try {
-      await axios.patch(
+      const res = await axios.patch(
         `http://localhost:8000/api/titleblock/${titleBlock.name}/`,
         state,
         config
       );
-    } catch (error) {
-      console.log(error);
-    }
-    try {
-      const res = await axios.get(
-        `http://localhost:8000/api/titleblock/${titleBlock.name}/`
-      );
       onUpdate(res.data);
-      console.log(res.data);
+      dispatch({ type: "ALERT_SUCCESS", message: "Data Updated" });
     } catch (error) {
       console.log(error);
     }
+    // try {
+    //   const res = await axios.get(
+    //     `http://localhost:8000/api/titleblock/${titleBlock.name}/`
+    //   );
+    //   onUpdate(res.data);
+    //   console.log(res.data);
+    // } catch (error) {
+    //   console.log(error);
+    // }
   };
 
   return (
@@ -66,7 +70,7 @@ const TitleBlockEditor = ({
           ? ["name", "id", "alignment", "show_divider"]
           : ["name", "id", "alignment", "show_divider", "description"]
       }
-      multilineKeys={["answer"]}
+      multilineKeys={description ? ["description"] : [""]}
       titleBlockMixin
       handleSwitchChange={handleSwitchChange}
       handleCancel={handleCancel}

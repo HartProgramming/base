@@ -1,13 +1,26 @@
 import React, { useState } from "react";
-import { Grid, makeStyles, Typography } from "@material-ui/core";
+import {
+  makeStyles,
+  Typography,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+} from "@material-ui/core";
 import { useSelector } from "react-redux";
 import InformationEdit from "./InformationEdit";
-import InformationField from "./InformationField";
 import { baseClasses } from "../../../classes";
 import ContactButtons from "../Contact/ContactButtons";
 import EditDeleteButtonMenu from "../../Elements/Buttons/EditDeleteButtonMenu";
+import EmailIcon from "@material-ui/icons/Email";
+import PhoneIcon from "@material-ui/icons/Phone";
+import LocationOnIcon from "@material-ui/icons/LocationOn";
 
 const useStyles = makeStyles((theme) => ({
+  container: {
+    // border: `1px solid ${theme.palette.divider}`,
+    width: "100%",
+  },
   textContainer: {
     display: "flex",
     justifyContent: "center",
@@ -18,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Information({ contactData }) {
+export default function Information({ contactData, showTitle = true }) {
   const classes = useStyles();
   const { fadeIn } = baseClasses();
   const auth = useSelector((state) => state.auth);
@@ -31,22 +44,97 @@ export default function Information({ contactData }) {
   };
 
   return (
-    <>
+    <div className={`{${classes.container}`}>
       {!editing ? (
-        <>
-          <Typography variant="h3" className={`${classes.title} ${fadeIn}`}>
-            Contact Information
-          </Typography>
-          <Grid
-            container
-            spacing={2}
-            className={`${classes.textContainer} ${fadeIn}`}
-          >
-            <InformationField text="Email:" data={data.email} />
-            <InformationField text="Phone:" data={data.phone} />
-            <InformationField text="Address:" data={data.address} />
-            <ContactButtons contactData={data} />
-          </Grid>
+        <div className={fadeIn}>
+          {showTitle && (
+            <Typography variant="h3" className={`${classes.title}`}>
+              Contact Information
+            </Typography>
+          )}
+          <List>
+            <ListItem>
+              <ListItemIcon style={{ justifyContent: "center" }}>
+                <EmailIcon color="primary" style={{ fontSize: "1.75rem" }} />
+              </ListItemIcon>
+              <ListItemText
+                primary={
+                  <Typography
+                    align="center"
+                    color="primary"
+                    variant="subtitle1"
+                  >
+                    {data.email}
+                  </Typography>
+                }
+                secondary={
+                  <Typography
+                    variant="subtitle1"
+                    color="textSecondary"
+                    align="center"
+                  >
+                    Email
+                  </Typography>
+                }
+              />
+            </ListItem>
+            <ListItem>
+              <ListItemIcon style={{ justifyContent: "center" }}>
+                <PhoneIcon color="primary" style={{ fontSize: "1.75rem" }} />
+              </ListItemIcon>
+              <ListItemText
+                primary={
+                  <Typography
+                    align="center"
+                    color="primary"
+                    variant="subtitle1"
+                  >
+                    {data.phone}
+                  </Typography>
+                }
+                secondary={
+                  <Typography
+                    variant="subtitle1"
+                    color="textSecondary"
+                    align="center"
+                  >
+                    Phone
+                  </Typography>
+                }
+              />
+            </ListItem>
+            <ListItem>
+              <ListItemIcon style={{ justifyContent: "center" }}>
+                <LocationOnIcon
+                  color="primary"
+                  style={{ fontSize: "1.75rem" }}
+                />
+              </ListItemIcon>
+              <ListItemText
+                primary={
+                  <Typography
+                    variant="subtitle1"
+                    align="center"
+                    color="primary"
+                  >
+                    {data.address}
+                  </Typography>
+                }
+                secondary={
+                  <Typography
+                    variant="subtitle1"
+                    color="textSecondary"
+                    align="center"
+                  >
+                    Address
+                  </Typography>
+                }
+              />
+            </ListItem>
+            <ListItem>
+              <ContactButtons contactData={data} />
+            </ListItem>
+          </List>
           {!editing && auth.is_superuser ? (
             <div style={{ marginTop: 16 }}>
               <EditDeleteButtonMenu
@@ -57,7 +145,7 @@ export default function Information({ contactData }) {
               />
             </div>
           ) : null}
-        </>
+        </div>
       ) : (
         <InformationEdit
           initialData={data}
@@ -65,6 +153,6 @@ export default function Information({ contactData }) {
           handleCancel={() => setEditing(!editing)}
         />
       )}
-    </>
+    </div>
   );
 }

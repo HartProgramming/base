@@ -10,14 +10,14 @@ import useSnack from "../../../hooks/useEditTitleSnack";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    backgroundColor: "white",
+    backgroundColor: theme.palette.background.light,
     color: "black",
     padding: theme.spacing(1),
     width: "100%",
   },
   containerLayout: {
     display: "flex",
-    width: "100vw",
+    width: "100%",
     marginBottom: 40,
     flexDirection: "column",
     justifyContent: "center",
@@ -33,22 +33,22 @@ const useStyles = makeStyles((theme) => ({
   },
   tab: {
     backgroundColor: theme.palette.primary.main,
-    color: "white",
+    color: theme.palette.background.light,
     fontWeight: "700",
     fontFamily: "Poppins",
     textTransform: "uppercase",
     fontSize: "0.95rem",
     marginRight: 5,
     "&:focus": {
-      color: "white",
+      color: theme.palette.background.light,
     },
     "&: .MuiTab-textColorInherit.Mui-selected": {
-      color: "white",
+      color: theme.palette.background.light,
     },
   },
   tabsIndicator: {
     width: "100%",
-    backgroundColor: "white",
+    backgroundColor: theme.palette.background.light,
     borderBottom: `3px solid ${theme.palette.secondary.dark}`,
   },
   sectionTitle: {
@@ -61,7 +61,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const FAQAccordion = () => {
+const FAQAccordion = ({ setError }) => {
   const classes = useStyles();
   const [currentCategory, setCurrentCategory] = useState([]);
   const [faqs, setFaqs] = useState([]);
@@ -103,7 +103,7 @@ const FAQAccordion = () => {
         setSuccessModeSnack(true);
       })
       .catch((err) => {
-        console.log(err);
+        setError(err.message);
       });
   };
 

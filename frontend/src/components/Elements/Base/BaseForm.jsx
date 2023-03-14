@@ -1,17 +1,17 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
+import { useMediaQuery } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   form: {
-    marginTop: theme.spacing(3),
-    marginBottom: theme.spacing(3),
+    margin: theme.spacing(3),
     backgroundColor: "#FFFFFF",
     padding: theme.spacing(3),
     borderRadius: 10,
     boxShadow: theme.shadows[1],
-    margin: "0 auto",
+    // margin: "0 auto",
     color: theme.palette.text.dark,
   },
   formLimitPadding: {
@@ -100,15 +100,30 @@ function BaseForm({
   handleSubmit,
   children,
   maxWidth = 360,
+  minWidth,
+  minHeight = 0,
   limitPadding = false,
   extraPadding = false,
   noSpacing = false,
-  background = "#FFFFFF",
+  background = "#F5F5F5",
+  boxShadow = 0,
+  justify = "center",
 }) {
   const classes = useStyles();
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("xs"));
 
   return (
-    <Grid item xs={12} style={{ padding: 0, margin: 0 }}>
+    <Grid
+      item
+      xs={12}
+      style={{
+        padding: 0,
+        margin: 0,
+        justifyContent: justify,
+        display: "flex",
+      }}
+    >
       <div
         className={
           limitPadding
@@ -119,10 +134,16 @@ function BaseForm({
             ? classes.formNoSpacing
             : classes.form
         }
-        style={{ maxWidth: maxWidth, background: background }}
+        style={{
+          maxWidth: maxWidth,
+          minWidth: minWidth ? minWidth : null,
+          minHeight: minHeight,
+          background: background,
+          boxShadow: theme.shadows[boxShadow],
+        }}
       >
         {title ? (
-          <Typography variant="h4" className={classes.formTitle}>
+          <Typography variant="h3" className={classes.formTitle}>
             {title}
           </Typography>
         ) : null}

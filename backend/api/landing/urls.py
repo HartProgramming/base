@@ -1,22 +1,9 @@
 from django.urls import path
-from .views import (
-    HeroBlockAPIView,
-    PricingPlanListCreateView,
-    PricingPlanRetrieveUpdateDestroy,
-    FeatureViewSet,
-    SupportedSiteViewSet,
-    ItemViewSet,
-    TitleBlockAPIView,
-    TitleBlockDetailAPIView,
-    TestimonialViewSet,
-    ProcessViewSet,
-    HeroBlockMainAPIView,
-    HeroBlockDetailAPIView,
-    TitleBlockUpdateAPIView,
-)
+from .views import *
 
 
 urlpatterns = [
+    path("landing/", LandingFullView.as_view(), name="landing-full"),
     path("feature/", FeatureViewSet.as_view(), name="feature-list"),
     path("supportedsites/", SupportedSiteViewSet.as_view(), name="sites-list"),
     path("item/", ItemViewSet.as_view({"get": "list"}), name="item-list"),
@@ -27,7 +14,7 @@ urlpatterns = [
     ),
     path("testimonial/", TestimonialViewSet.as_view(), name="testimonial-list"),
     path("process/", ProcessViewSet.as_view(), name="process-list"),
-    path("process/<int:pk>/", ProcessViewSet.as_view(), name="process-list"),
+    path("process/<int:pk>/", ProcessDetailViewSet.as_view(), name="process-detail"),
     path("heroblock/main/", HeroBlockMainAPIView.as_view(), name="heroblock-single"),
     path("heroblock/", HeroBlockAPIView.as_view(), name="heroblock-list"),
     path(
@@ -47,13 +34,13 @@ urlpatterns = [
         name="titleblock-search",
     ),
     path(
-        "pricingplan/",
-        PricingPlanListCreateView.as_view(),
-        name="pricingplan-list",
+        "servicetier/",
+        ServiceTierView.as_view(),
+        name="servicetier-list",
     ),
     path(
-        "pricingplan/<int:pk>/",
-        PricingPlanRetrieveUpdateDestroy.as_view(),
-        name="article-detail-update-delete",
+        "servicetier/<int:pk>/",
+        ServiceTierDetailView.as_view(),
+        name="servicetier-detail",
     ),
 ]

@@ -8,6 +8,7 @@ from .models import (
     TeamMember,
     ContactInformation,
     FAQ,
+    Category,
 )
 from django.http import JsonResponse
 from .serializers import (
@@ -19,8 +20,11 @@ from .serializers import (
     TeamMemberSerializer,
     ContactInformationSerializer,
     FAQSerializer,
+    CategorySerializer,
 )
 from authorization.authentication import JWTTokenAuthentication
+from jobs.models import JobPosting
+from api.views import get_model_metadata
 
 
 class AboutFull(object):
@@ -32,6 +36,7 @@ class AboutFull(object):
         core_values,
         team_members,
         contact_information,
+        jobs,
     ):
         self.about_block = about_block
         self.mission_statement = mission_statement
@@ -39,6 +44,7 @@ class AboutFull(object):
         self.core_values = core_values
         self.team_members = team_members
         self.contact_information = contact_information
+        self.jobs = jobs
 
 
 class AboutFullView(generics.GenericAPIView):
@@ -51,6 +57,7 @@ class AboutFullView(generics.GenericAPIView):
         core_values = Value.objects.all()
         team_members = TeamMember.objects.all()
         contact_information = ContactInformation.objects.first()
+        jobs = JobPosting.objects.filter(filled=False)
 
         about_full = AboutFull(
             about_block,
@@ -59,6 +66,7 @@ class AboutFullView(generics.GenericAPIView):
             core_values,
             team_members,
             contact_information,
+            jobs,
         )
 
         serializer = self.get_serializer(instance=about_full)
@@ -67,46 +75,32 @@ class AboutFullView(generics.GenericAPIView):
 
 
 # Create your views here.
-class AboutBlockAPIView(
-    generics.ListCreateAPIView, generics.RetrieveUpdateDestroyAPIView
-):
+class AboutBlockAPIView(generics.ListCreateAPIView):
     queryset = AboutBlock.objects.all()
     serializer_class = AboutBlockSerializer
 
-    # def get(self, request, *args, **kwargs):
-    #     return self.retrieve(request, *args, **kwargs)
 
-    # def patch(self, request, *args, **kwargs):
-
-    #     return self.partial_update(request, *args, **kwargs)
-
-    # def put(self, request, *args, **kwargs):
-    #     return self.update(request, *args, **kwargs)
-
-    # def perform_update(self, request, *args, **kwargs):
-    #     previous_instance = self.get_object()
-    #     previous_image = previous_instance.image
-
-    #     response = super().perform_update(request, *args, **kwargs)
-
-    #     new_instance = self.get_object()
-    #     new_image = new_instance.image
-    #     if previous_image and previous_image != new_image:
-    #         previous_image.delete(save=False)
-
-    #     return response
+class AboutBlockDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = AboutBlock.objects.all()
+    serializer_class = AboutBlockSerializer
 
 
-class MissionStatementAPIView(
-    generics.ListCreateAPIView, generics.RetrieveUpdateDestroyAPIView
-):
+class MissionStatementAPIView(generics.ListCreateAPIView):
     queryset = MissionStatement.objects.all()
     serializer_class = MissionStatementSerializer
 
 
-class CompanyHistoryAPIView(
-    generics.ListCreateAPIView, generics.RetrieveUpdateDestroyAPIView
-):
+class MissionStatementDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = MissionStatement.objects.all()
+    serializer_class = MissionStatementSerializer
+
+
+class CompanyHistoryAPIView(generics.ListCreateAPIView):
+    queryset = CompanyHistory.objects.all()
+    serializer_class = CompanyHistorySerializer
+
+
+class CompanyHistoryDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = CompanyHistory.objects.all()
     serializer_class = CompanyHistorySerializer
 
@@ -115,17 +109,10 @@ class ContactInformationAPIView(generics.ListCreateAPIView):
     queryset = ContactInformation.objects.all()
     serializer_class = ContactInformationSerializer
 
-    # def get_object(self):
-    #     return ContactInformation.objects.first()
 
-    # def get(self, request, *args, **kwargs):
-    #     return self.retrieve(request, *args, **kwargs)
-
-    # def patch(self, request, *args, **kwargs):
-    #     return self.partial_update(request, *args, **kwargs)
-
-    # def put(self, request, *args, **kwargs):
-    #     return self.update(request, *args, **kwargs)
+class ContactInformationDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = ContactInformation.objects.all()
+    serializer_class = ContactInformationSerializer
 
 
 class FAQListCreateView(generics.ListCreateAPIView):
@@ -175,7 +162,6 @@ class FAQRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
         serializer = FAQSerializer(faq, data=data)
 
         if serializer.is_valid():
-            print("test")
             serializer.update(faq, validated_data=data)
 
             return JsonResponse(serializer.data, status=200)
@@ -183,7 +169,22 @@ class FAQRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
         return JsonResponse(serializer.errors, status=400)
 
 
+class CategoryAPIView(generics.ListCreateAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+
+
+class CategoryDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+
+
 class ValueViewSet(generics.ListCreateAPIView):
+    queryset = Value.objects.all()
+    serializer_class = ValueSerializer
+
+
+class ValueDetailViewSet(generics.RetrieveUpdateDestroyAPIView):
     queryset = Value.objects.all()
     serializer_class = ValueSerializer
 
@@ -200,6 +201,9 @@ class TeamMemberListCreateView(generics.ListCreateAPIView):
         linkedIn = form_data.get("linkedIn")
         github = form_data.get("github")
         twitter = form_data.get("twitter")
+        facebook = form_data.get("facebook")
+        instagram = form_data.get("instagram")
+        youtube = form_data.get("youtube")
 
         if request.FILES.get("image"):
             image = request.FILES.get("image")
@@ -214,6 +218,9 @@ class TeamMemberListCreateView(generics.ListCreateAPIView):
             "linkedIn": linkedIn,
             "github": github,
             "twitter": twitter,
+            "facebook": facebook,
+            "instagram": instagram,
+            "youtube": youtube,
         }
 
         serializer = TeamMemberSerializer(data=data)
@@ -239,6 +246,9 @@ class TeamMemberRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView)
         linkedIn = form_data.get("linkedIn")
         github = form_data.get("github")
         twitter = form_data.get("twitter")
+        facebook = form_data.get("facebook")
+        instagram = form_data.get("instagram")
+        youtube = form_data.get("youtube")
 
         if request.FILES.get("image"):
             image = request.FILES.get("image")
@@ -255,6 +265,9 @@ class TeamMemberRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView)
             "linkedIn": linkedIn,
             "github": github,
             "twitter": twitter,
+            "facebook": facebook,
+            "instagram": instagram,
+            "youtube": youtube,
         }
 
         serializer = TeamMemberSerializer(member, data=data)

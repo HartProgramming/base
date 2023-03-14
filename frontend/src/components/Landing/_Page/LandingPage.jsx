@@ -1,98 +1,101 @@
 import React from "react";
 import { useState } from "react";
 import { useEffect } from "react";
-import {
-  FaTwitter,
-  FaFacebook,
-  FaInstagram,
-  FaLinkedin,
-  FaYoutube,
-  FaGithub,
-  FaStackOverflow,
-} from "react-icons/fa";
 import LatestNews from "../News/News";
-import Testimonials from "../Testimonials/Testimonials";
 import NewsletterForm from "../Newsletter/NewsletterForm";
 import axiosInstance from "../../../lib/Axios/axiosInstance";
-import ContentLayout from "../../Elements/Layout/ContentLayout";
+import PageContainer from "../../Elements/Layout/PageContainer";
 import IconScroller from "../../Elements/Animations/IconScroller/IconScroller";
 import Processes from "../Processes/Processes";
 import Pricing from "../Pricing/Pricing";
 import Hero from "../Hero/Hero";
-import Loading from "../../Elements/Layout/Loading";
+import FABMenu from "../../Elements/Buttons/FABAdminMenu";
+import { ScrollTopFab } from "../../Elements/Buttons/ScrollToTopFAB";
+import { useDispatch } from "react-redux";
+import ErrorPage from "../../Elements/Layout/Errors/ErrorPage";
 
-const partners = [
-  {
-    id: 1,
-    icon: FaTwitter,
-  },
-  {
-    id: 2,
-    icon: FaFacebook,
-  },
-  {
-    id: 3,
-    icon: FaInstagram,
-  },
-  {
-    id: 4,
-    icon: FaLinkedin,
-  },
-  {
-    id: 5,
-    icon: FaYoutube,
-  },
-  {
-    id: 6,
-    icon: FaGithub,
-  },
-  {
-    id: 7,
-    icon: FaStackOverflow,
-  },
-];
-
-function LandingPage() {
-  const [contactData, setContactData] = useState([]);
+function LandingPage({ handleUpdate }) {
+  const [error, setError] = useState();
+  const [data, setData] = useState({});
+  const [metadata, setMetaData] = useState({});
+  const [heroData, setHeroData] = useState({});
+  const [processBlock, setProcessBlock] = useState([]);
+  const [newsBlock, setNewsBlock] = useState([]);
+  const [editing, setEditing] = useState(false);
+  const dispatch = useDispatch();
 
   useEffect(() => {
+    dispatch({ type: "FETCH_DATA_REQUEST" });
     const fetchData = async () => {
       axiosInstance
-        .get("/contactinformation/")
+        .get("/landing/")
         .then((response) => {
-          console.log(response.data);
-          setContactData(response.data);
+          setData(response.data);
+          setHeroData(response.data.hero_block);
+          setProcessBlock(response.data.title_block_process);
+          setNewsBlock(response.data.title_block_news);
+          setMetaData(response.data.metadata);
+          dispatch({ type: "FETCH_DATA_SUCCESS" });
         })
         .catch((err) => {
-          setError(err);
-        });
+          console.log("ERROR: ", err);
+          setError(err.error);
+
+          console.log("message", message);
+        })
+        .then(dispatch({ type: "FETCH_DATA_FAILURE" }));
     };
     fetchData();
   }, []);
 
+  if (error) {
+    return (
+      <ErrorPage
+        message={error.message}
+        description={error.description}
+        instructions={error.instructions}
+        thanks={error.thanks}
+      />
+    );
+  }
+
   return (
-    <ContentLayout
-      title="Landing Page"
-      description="Where the land be yo."
-      keywords="news, posts, articles, touch"
-      image="https://example.com/image.png"
-      url="https://example.com/example-page"
-      backgroundColor="white"
+    <PageContainer
+      editing={editing}
+      setEditing={setEditing}
+      backgroundColor="#F5F5F5"
+      page_name="Landing"
     >
-      {Object.keys(contactData).length > 0 ? (
+      <ScrollTopFab />
+      <FABMenu
+        editing={editing}
+        setEditing={setEditing}
+        handleUpdate={handleUpdate}
+      />
+      {Object.keys(data).length > 0 && (
         <>
-          <Hero contactData={contactData} form={true} />
-          <Pricing />
-          <Processes />
-          <LatestNews />
-          {/* <Testimonials /> */}
+          <Hero
+            heroData={heroData}
+            setHeroData={setHeroData}
+            contactData={data.contact_information}
+            form={true}
+          />
+          <Pricing serviceData={data.service_tiers} />
+          <Processes
+            processData={data.processes}
+            block={processBlock}
+            setBlock={setProcessBlock}
+          />
+          <LatestNews
+            articlesData={data.articles}
+            block={newsBlock}
+            setBlock={setNewsBlock}
+          />
           <NewsletterForm />
-          <IconScroller data={partners} />
+          <IconScroller />
         </>
-      ) : (
-        <Loading loading={true} />
       )}
-    </ContentLayout>
+    </PageContainer>
   );
 }
 

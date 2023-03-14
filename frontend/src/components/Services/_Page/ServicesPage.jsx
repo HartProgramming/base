@@ -1,9 +1,11 @@
-import React from "react";
-import ContentLayout from "../../Elements/Layout/ContentLayout";
-import Benefits from "../Benefits/Benefits";
-import Timeline from "../../WIP/Timeline/Timeline";
+import React, { useEffect, useState } from "react";
+import PageContainer from "../../Elements/Layout/PageContainer";
 import { Grid, makeStyles } from "@material-ui/core";
 import Quiz from "../Quiz/Quiz/Quiz";
+import FABMenu from "../../Elements/Buttons/FABAdminMenu";
+import { useDispatch } from "react-redux";
+import axiosInstance from "../../../lib/Axios/axiosInstance";
+import ErrorPage from "../../Elements/Layout/Errors/ErrorPage";
 
 const useStyles = makeStyles((theme) => ({
   quizContainer: {
@@ -12,25 +14,69 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function ServicesPage() {
+function ServicesPage({ handleUpdate }) {
   const classes = useStyles();
+  const [error, setError] = useState();
+  const [data, setData] = useState(false);
+  const [metadata, setMetaData] = useState({});
+  const [services, setServices] = useState(false);
+  const [benefitsBlock, setBenefitsBlock] = useState([]);
+  const [editing, setEditing] = useState(false);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch({ type: "FETCH_DATA_REQUEST" });
+    const fetchData = async () => {
+      axiosInstance
+        .get("/services/")
+        .then((response) => {
+          setData(response.data);
+          setServices(response.data.service_tier);
+          setBenefitsBlock(response.data.title_block_benefits);
+          setMetaData(response.data.metadata);
+        })
+        .then(dispatch({ type: "FETCH_DATA_SUCCESS" }))
+        .catch((err) => {
+          setError(err.error);
+        })
+        .then(dispatch({ type: "FETCH_DATA_FAILURE" }));
+    };
+    fetchData();
+  }, []);
+
+  if (error) {
+    return (
+      <ErrorPage
+        message={error.message}
+        description={error.description}
+        instructions={error.instructions}
+        thanks={error.thanks}
+      />
+    );
+  }
+
   return (
-    <ContentLayout
-      title="About Company"
-      description="Where the info be yo."
-      keywords="news, posts, articles, touch"
-      image="https://example.com/image.png"
-      url="https://example.com/example-page"
-      backgroundColor="white"
+    <PageContainer
+      editing={editing}
+      setEditing={setEditing}
+      backgroundColor="#F5F5F5"
+      page_name="Services"
     >
-      <Grid container justifyContent="center" style={{ display: "flex" }}>
-        <div style={{ maxWidth: 1400, width: "100%" }}>
-          <div className={classes.quizContainer}>
-            <Quiz />
-          </div>
-        </div>
-      </Grid>
-    </ContentLayout>
+      <FABMenu
+        editing={editing}
+        setEditing={setEditing}
+        handleUpdate={handleUpdate}
+      />
+
+      <Quiz
+        services={services}
+        setServices={setServices}
+        tableData={data.service_table_full}
+        benefitsData={data.benefits}
+        benefitsBlock={benefitsBlock}
+        setBenefitsBlock={setBenefitsBlock}
+      />
+    </PageContainer>
   );
 }
 

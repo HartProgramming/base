@@ -1,19 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { Box, Button, Grid, Typography, withStyles } from "@material-ui/core";
+import { Box, Grid, Typography } from "@material-ui/core";
 import { Link } from "react-router-dom";
-import { CSSTransition } from "react-transition-group";
-import { useSpring, animated } from "react-spring";
-
-const CustomButton = withStyles({
-  label: {
-    fontWeight: "700 !important",
-    fontFamily: "Poppins !important",
-    fontSize: "0.85rem !important",
-  },
-})(Button);
+import CallToActionIcon from "@mui/icons-material/CallToAction";
+import StyledButton from "../../Buttons/StyledButton";
+import { FaPhone, FaVoicemail } from "react-icons/fa";
 
 const useStyles = makeStyles((theme) => ({
+  root: {
+    fontFamily: "Poppins",
+    [theme.breakpoints.up("md")]: {
+      textAlign: "center",
+    },
+  },
   title: {
     fontFamily: "Poppins",
     fontWeight: 700,
@@ -22,90 +21,50 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "1.25rem",
     color: theme.palette.secondary.main,
   },
-  heading: {
-    fontFamily: "Poppins",
-    color: theme.palette.text.dark,
-    marginBottom: theme.spacing(0),
-    fontSize: "2rem",
-    [theme.breakpoints.down("md")]: {
-      fontSize: "1.5rem",
-    },
-  },
-  text: {
-    fontFamily: "Poppins",
-    fontSize: "1rem",
-    color: theme.palette.grey[600],
-    paddingBottom: 40,
-    paddingTop: 10,
-    [theme.breakpoints.down("md")]: {
-      fontSize: "1rem",
-    },
-  },
-  gridItemLeft: {
-    fontFamily: "Poppins",
-    [theme.breakpoints.up("md")]: {
-      textAlign: "center",
-    },
-  },
-  btnCta: {
-    minWidth: 140,
-    boxShadow: theme.shadows[3],
-    backgroundColor: theme.palette.primary.main,
-    color: theme.palette.text.light,
-    "&:hover": {
-      transform: "scale(1.02)",
-      boxShadow: theme.shadows[7],
-      backgroundColor: theme.palette.action.hover,
-    },
-  },
   btnContainer: {
     display: "flex",
-    width: "100%",
     justifyContent: "center",
+    marginTop: 10,
+    width: "100%",
+    alignItems: "center",
+  },
+  subheadline: {
+    fontSize: "0.95rem",
+    color: theme.palette.text.light,
+    marginBottom: theme.spacing(3),
+    textAlign: "center",
+    [theme.breakpoints.down("xs")]: {
+      marginBottom: theme.spacing(1.5),
+    },
+  },
+  description: {
+    maxWidth: 500,
+    color: theme.palette.grey[500],
+    marginBottom: theme.spacing(2),
+    textAlign: "center",
   },
 }));
 
-const HeroBlock = ({
-  title,
-  heading,
-  text,
-  btnText,
-  btnLink,
-  showButton = true,
-}) => {
+const HeroBlock = ({ title, heading, text, btnText, showButton = true }) => {
   const classes = useStyles();
 
-  const [isVisible, setIsVisible] = useState(false);
-
-  const animationProps = useSpring({
-    opacity: isVisible ? 1 : 0,
-    transform: isVisible ? `translateY(0)` : `translateY(-20px)`,
-    config: { mass: 1, tension: 100, friction: 20 },
-  });
-
-  useEffect(() => {
-    setIsVisible(true);
-  }, []);
-
   return (
-    <Grid item xs={12} md={12} className={`${classes.gridItemLeft}`}>
+    <Grid item xs={12} md={12} className={`${classes.root}`}>
       <Box className={classes.title}>{title}</Box>
       <Typography
         variant="h1"
-        className={classes.heading}
+        className={classes.subheadline}
         dangerouslySetInnerHTML={{ __html: heading }}
       />
-      <Box className={classes.text}>{text}</Box>
+      <Box className={classes.description}>{text}</Box>
       {showButton && (
         <div className={classes.btnContainer}>
-          <CustomButton
-            component={Link}
-            to={btnLink}
-            variant="contained"
-            className={classes.btnCta}
-          >
-            {btnText}
-          </CustomButton>
+          <Link to="/services">
+            <StyledButton
+              startIcon={<CallToActionIcon />}
+              buttonText={btnText}
+            />
+          </Link>
         </div>
       )}
     </Grid>

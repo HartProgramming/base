@@ -38,8 +38,6 @@ const Questionaire = ({
   const [preferredFeatures, setPreferredFeatures] = useState([]);
   const [serviceScores, setServiceScores] = useState({});
 
-  console.log(services);
-
   const serviceFeatures = [];
   services.forEach((service) => {
     service.features.forEach((feature) => {
@@ -98,10 +96,10 @@ const Questionaire = ({
 
   const handleSkip = () => {
     const recommendedService = services.find(
-      (service) => service.title === "Professional"
+      (service) => service.service_title === "Professional Tier"
     );
     const unrecommendedServices = services.filter(
-      (service) => service.title !== "Professional"
+      (service) => service.service_title !== "Professional Tier"
     );
     setRecommendedServices(recommendedService);
     setUnrecommendedServices(unrecommendedServices);
@@ -154,7 +152,7 @@ const Questionaire = ({
   return (
     <Box
       style={{
-        maxWidth: isSmallScreen ? 500 : null,
+        maxWidth: isSmallScreen ? 375 : null,
         width: isSmallScreen ? "100%" : 800,
       }}
       className={`${classes.formContainer} ${classes.fadeIn}`}

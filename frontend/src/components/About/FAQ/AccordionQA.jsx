@@ -12,7 +12,7 @@ import {
 import { MdExpandMore } from "react-icons/Md";
 import { makeStyles } from "@material-ui/core/styles";
 import { useSelector } from "react-redux";
-import QAEdit from "./QAEdit";
+import QuestionAnswerEdit from "./QuestionAnswerEdit";
 import axios from "axios";
 
 import DeleteConfirmationModal from "../../Elements/Modals/DeleteConfirmationModal";
@@ -31,13 +31,13 @@ const useStyles = makeStyles((theme) => ({
   },
   details: {
     padding: theme.spacing(2),
-    backgroundColor: "white",
+    backgroundColor: theme.palette.background.light,
     color: "black",
     fontFamily: "Poppins",
     textAlign: "left",
   },
   summary: {
-    backgroundColor: "white",
+    backgroundColor: theme.palette.background.light,
     fontFamily: "Poppins",
     color: "black",
   },
@@ -46,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
-    backgroundColor: "white",
+    backgroundColor: theme.palette.background.light,
     color: "black",
     [theme.breakpoints.down("md")]: {
       width: "50%",
@@ -55,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
   editContainer: {
     fontFamily: "Poppins",
     alignItems: "center",
-    backgroundColor: "white",
+    backgroundColor: theme.palette.background.light,
     color: "black",
     [theme.breakpoints.down("md")]: {
       width: "50%",
@@ -65,18 +65,6 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     justifyContent: "space-between",
     width: "100%",
-  },
-  testboi: {
-    backgroundColor: "#white",
-    display: "flex",
-    padding: 0,
-    margin: 0,
-    "& .MuiDialogContent-dividers": {
-      borderTop: "0px solid white !important",
-    },
-    "& .MuiDialogContent-root": {
-      border: "0px solid black",
-    },
   },
   yesButton: {
     fontFamily: "Poppins",
@@ -137,14 +125,14 @@ const AccordionQA = ({ faq, onUpdate, editing, setEditing, handleCancel }) => {
     setOpen(false);
   };
 
-  const handleDelete = (id) => {
-    handleOpen();
-    setSelectedId(id);
-  };
-
   const handleUpdate = (handleUpdate) => {
     onUpdate(handleUpdate);
     setEditing(false);
+  };
+
+  const handleDelete = (id) => {
+    handleOpen();
+    setSelectedId(id);
   };
 
   const handleConfirmDelete = () => {
@@ -194,7 +182,7 @@ const AccordionQA = ({ faq, onUpdate, editing, setEditing, handleCancel }) => {
         </Accordion>
       ) : (
         <>
-          <QAEdit
+          <QuestionAnswerEdit
             onUpdate={handleUpdate}
             QA={faq}
             onEdit={setEditing}

@@ -2,26 +2,27 @@ import React, { useEffect, useRef, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   Grid,
-  Paper,
   Typography,
-  Button,
   List,
   ListItem,
   ListItemIcon,
   ListItemText,
-  TextField,
-  Input,
   useTheme,
   useMediaQuery,
 } from "@material-ui/core";
 import { CheckCircleOutline } from "@material-ui/icons";
 import BaseContent from "../../../Elements/Base/BaseContent.jsx";
 import StyledButton from "../../../Elements/Buttons/StyledButton";
-import axiosInstance from "../../../../lib/Axios/axiosInstance";
+import ApplicationForm from "./ApplicationForm.jsx";
+import JobListing from "../Listing/Listing.jsx";
+import ApprovalSharpIcon from "@mui/icons-material/ApprovalSharp";
+import axiosInstance from "../../../../lib/Axios/axiosInstance.js";
+import { useDispatch } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: theme.spacing(0),
+    backgroundColor: theme.palette.background.light,
   },
   title: {
     fontWeight: "bold",
@@ -66,10 +67,29 @@ const useStyles = makeStyles((theme) => ({
 
 const JobPosting = ({ job }) => {
   const classes = useStyles();
+  const [jobsData, setJobsData] = useState(null);
   const formRef = useRef(null);
-  const [data, setData] = useState(job);
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("xs"));
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch({ type: "FETCH_DATA_REQUEST" });
+    const fetchData = async () => {
+      axiosInstance
+        .get("/jobposting/")
+        .then((response) => {
+          console.log(response.data);
+          setJobsData(response.data);
+        })
+        .then(dispatch({ type: "FETCH_DATA_SUCCESS" }))
+        .catch((err) => {
+          setError(err);
+        })
+        .then(dispatch({ type: "FETCH_DATA_FAILURE" }));
+    };
+    fetchData();
+  }, []);
 
   const handleApplyNowClick = () => {
     formRef.current.scrollIntoView({
@@ -80,10 +100,18 @@ const JobPosting = ({ job }) => {
 
   return (
     <>
-      {data && (
+      {job && jobsData && (
         <div className={classes.root}>
           <Grid container spacing={3}>
-            <BaseContent header="" maxWidth={1200} pad={6} mt={3} mb={3} br={1}>
+            <BaseContent
+              header=""
+              maxWidth={1200}
+              pad={6}
+              mt={3}
+              mb={3}
+              br={1}
+              background="#F5F5F5"
+            >
               <Grid container>
                 <Grid
                   item
@@ -99,6 +127,7 @@ const JobPosting = ({ job }) => {
                     size="small"
                     buttonText="Apply Now"
                     onClick={handleApplyNowClick}
+                    startIcon={<ApprovalSharpIcon />}
                   />
                 </Grid>
                 <Grid
@@ -112,38 +141,38 @@ const JobPosting = ({ job }) => {
                   }}
                 >
                   <Typography variant="h2" className={classes.title}>
-                    {data.position}
+                    {job.position}
                   </Typography>
                 </Grid>
               </Grid>
 
               <Grid item xs={12} sm={12}>
                 <Typography variant="subtitle2" className={classes.location}>
-                  {data.location}
+                  {job.location}
                 </Typography>
                 <Typography
                   variant="subtitle2"
                   className={classes.employmentType}
                 >
-                  {data.type}
+                  {job.type}
                 </Typography>
               </Grid>
               <Grid item xs={12}>
                 <Typography variant="h4" className={classes.sectionTitle}>
                   Who We Are
                 </Typography>
-                <Typography variant="body2">{data.who_we_are}</Typography>
+                <Typography variant="body2">{job.who_we_are}</Typography>
               </Grid>
               <Grid item xs={12}>
                 <Typography variant="h4" className={classes.sectionTitle}>
                   What We're Looking For
                 </Typography>
-                <Typography variant="body2">{data.looking_for}</Typography>
+                <Typography variant="body2">{job.looking_for}</Typography>
                 <Typography variant="h4" className={classes.sectionTitle}>
                   Job Requirements
                 </Typography>
                 <List>
-                  {data.requirements.map((requirement) => (
+                  {job.requirements.map((requirement) => (
                     <ListItem className={classes.requirementItem}>
                       <ListItemIcon className={classes.requirementIcon}>
                         <CheckCircleOutline />
@@ -156,7 +185,7 @@ const JobPosting = ({ job }) => {
                   Job Responsibilities
                 </Typography>
                 <List>
-                  {data.responsibilities.map((responsibility) => (
+                  {job.responsibilities.map((responsibility) => (
                     <ListItem className={classes.requirementItem}>
                       <ListItemIcon className={classes.requirementIcon}>
                         <CheckCircleOutline />
@@ -171,72 +200,16 @@ const JobPosting = ({ job }) => {
                   Why Apply?
                 </Typography>
                 <Typography variant="body2" className={classes.whyApply}>
-                  {data.why_apply}
+                  {job.why_apply}
                 </Typography>
               </Grid>
-              <Grid
-                item
-                xs={12}
-                className={classes.form}
-                id="apply-now-form"
-                ref={formRef}
-              >
-                <BaseContent title="Apply Now" maxWidth={1200}>
-                  <Grid container spacing={3}>
-                    <Grid item xs={12} sm={6}>
-                      <TextField
-                        variant="outlined"
-                        label="Name"
-                        required
-                        fullWidth
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <TextField
-                        variant="outlined"
-                        label="Email"
-                        type="email"
-                        required
-                        fullWidth
-                      />
-                    </Grid>
-                    <Grid item xs={12}>
-                      <TextField
-                        variant="outlined"
-                        label="Phone"
-                        required
-                        fullWidth
-                      />
-                    </Grid>
-                    <Grid item xs={12}>
-                      <TextField
-                        variant="outlined"
-                        label="Cover Letter"
-                        required
-                        fullWidth
-                        multiline
-                        rows={4}
-                      />
-                    </Grid>
-                    {/* <Grid item xs={12}>
-                <Input variant="outlined" label="Resume" required fullWidth />
-              </Grid> */}
-                    <Grid
-                      item
-                      xs={12}
-                      style={{ display: "flex", justifyContent: "center" }}
-                    >
-                      <StyledButton
-                        color="primary"
-                        size="medium"
-                        type="submit"
-                        buttonText="Submit Application"
-                        minWidth="0"
-                      />
-                    </Grid>
-                  </Grid>
-                </BaseContent>
-              </Grid>
+              <ApplicationForm job={job} formRef={formRef} />
+              <JobListing
+                jobsData={jobsData}
+                header="Looking for something else?"
+                subheader="See all our open positions below."
+                currentId={job.id}
+              />
             </BaseContent>
           </Grid>
         </div>

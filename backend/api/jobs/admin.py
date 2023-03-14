@@ -1,10 +1,5 @@
 from django.contrib import admin
-from django import forms
-from .models import JobPosting, Requirement, Responsibilities
-from django.forms import CheckboxSelectMultiple
-from django.urls import reverse
-from django.utils.html import format_html
-from django.forms import ModelForm, inlineformset_factory
+from .models import *
 
 
 class RequirementAdmin(admin.ModelAdmin):
@@ -50,7 +45,11 @@ class JobPostingAdmin(admin.ModelAdmin):
         ),
     )
 
+class ApplicationAdmin(admin.ModelAdmin):
+  list_display = ['first_name', 'last_name', 'email', 'phone', 'created_at', 'city', 'zipcode']
 
+
+admin.site.register(Application, ApplicationAdmin)
 admin.site.register(JobPosting, JobPostingAdmin)
 admin.site.register(Responsibilities, ResponsibilitiesAdmin)
 admin.site.register(Requirement, RequirementAdmin)

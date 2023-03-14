@@ -4,11 +4,12 @@ import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import axios from "axios";
 import { Grid, TextField } from "@material-ui/core";
-import TagsInput from "../../Articles/Create/TagsInput";
 import ImageEdit from "../../Elements/Fields/ImageEdit";
 import ImageInput from "../../Elements/Fields/ImageInput";
 import StyledButton from "../../Elements/Buttons/StyledButton";
 import { getCookie } from "../../../utils";
+import ManyToManyField from "../../Elements/Fields/ManyToManyField";
+import { useDispatch } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -148,41 +149,45 @@ const useStyles = makeStyles((theme) => ({
 
 const PricingEdit = ({ plan, updatePlan, handleCancel }) => {
   const classes = useStyles();
-  const [data, setData] = useState(plan);
-  const [title, setTitle] = useState(data.title);
-  const [price, setPrice] = useState(data.price);
-  const [bestFor, setBestFor] = useState(data.bestFor);
-  const [guarantee, setGuarantee] = useState(data.guarantee);
-  const [image, setImage] = useState(data.image);
+  const [formData, setFormData] = useState(plan);
   const [newImage, setNewImage] = useState(null);
   const [newImageName, setNewImageName] = useState(null);
-  const [features, setFeatures] = useState(
-    data.features.map((tag) => tag.detail.trim())
-  );
-  console.log("sites: ", data.supported_sites);
-  const [sites, setSites] = useState(
-    data.supported_sites.map((tag) => tag.site.trim())
-  );
+  const dispatch = useDispatch();
 
   const handleImageChange = (event) => {
-    setImage(event.target.files[0]);
+    formData.image = event.target.files[0];
     setNewImage(URL.createObjectURL(event.target.files[0]));
     setNewImageName(event.target.files[0].name);
   };
 
+  const handleInputChange = (e) => {
+    console.log(e.target.name);
+    const { name, value, type, checked } = e.target;
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+    console.log(formData);
+  };
+
+  const handleManyToManyChange = (fieldName, fieldValue) => {
+    if (fieldName === "features" || fieldName === "supported_sites") {
+      const newFeatures = formData[fieldName] ? [...formData[fieldName]] : [];
+      newFeatures.push({ detail: fieldValue });
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        [fieldName]: newFeatures,
+      }));
+    } else {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        [fieldName]: fieldValue,
+      }));
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    let formData = new FormData();
-    formData.append("title", title);
-    formData.append("price", price);
-    formData.append("best_for", bestFor);
-    formData.append("guarantee", guarantee);
-    formData.append("features", features.join(","));
-    formData.append("supported_sites", sites.join(","));
-
-    if (image.name) {
-      formData.append("image", image, image.name);
-    }
 
     const config = {
       headers: {
@@ -192,7 +197,7 @@ const PricingEdit = ({ plan, updatePlan, handleCancel }) => {
     };
     try {
       await axios.patch(
-        `http://localhost:8000/api/pricingplan/${data.id}/`,
+        `http://localhost:8000/api/servicetier/${formData.id}/`,
         formData,
         config
       );
@@ -201,10 +206,12 @@ const PricingEdit = ({ plan, updatePlan, handleCancel }) => {
     }
     try {
       const res = await axios.get(
-        `http://localhost:8000/api/pricingplan/${data.id}/`
+        `http://localhost:8000/api/servicetier/${formData.id}/`
       );
-      setData(res.data);
+      console.log("??: ", res.data);
+      setFormData(res.data);
       updatePlan(res.data);
+      dispatch({ type: "ALERT_SUCCESS", message: "Data Updated" });
     } catch (error) {
       console.log(error);
     }
@@ -219,7 +226,7 @@ const PricingEdit = ({ plan, updatePlan, handleCancel }) => {
       <div className={`${classes.root} ${classes.fadeIn}`}>
         <Card className={classes.card}>
           <form onSubmit={handleSubmit}>
-            {data.image && (
+            {formData.image && (
               <>
                 <Grid
                   container
@@ -227,10 +234,10 @@ const PricingEdit = ({ plan, updatePlan, handleCancel }) => {
                   justifyContent="center"
                   style={{ marginTop: 16, padding: 8 }}
                 >
-                  {data.image && (
+                  {formData.image && (
                     <ImageEdit
                       header="Current Image"
-                      image={`${data.image}/`}
+                      image={`${formData.image}/`}
                     />
                   )}
                   {newImage ? (
@@ -248,43 +255,68 @@ const PricingEdit = ({ plan, updatePlan, handleCancel }) => {
             <div style={{ display: "flex", justifyContent: "center" }}>
               <CardContent style={{ width: "90%" }}>
                 <TextField
+                  margin="dense"
                   className={classes.field}
                   variant="outlined"
                   label="Title"
-                  value={title}
-                  onChange={(event) => setTitle(event.target.value)}
+                  name="service_title"
+                  id="service_title"
+                  value={formData.service_title}
+                  onChange={handleInputChange}
                 />
                 <TextField
+                  margin="dense"
                   className={classes.field}
                   variant="outlined"
                   label="Price"
-                  value={price}
-                  onChange={(event) => setPrice(event.target.value)}
-                />
-
-                <TagsInput
-                  tags={features}
-                  setTags={setFeatures}
-                  label="Add Features"
+                  value={formData.price}
+                  onChange={handleInputChange}
                 />
                 <TextField
+                  margin="dense"
                   className={classes.multiline}
                   variant="outlined"
-                  label="Best For"
-                  value={bestFor}
-                  onChange={(event) => setBestFor(event.target.value)}
+                  label="Paragraph 1"
+                  value={formData.paragraph_one}
+                  onChange={handleInputChange}
                   multiline
                   minRows={4}
                 />
 
                 <TextField
-                  className={classes.field}
+                  margin="dense"
+                  className={classes.multiline}
                   variant="outlined"
-                  label="Guarantee"
-                  value={guarantee}
-                  onChange={(event) => setGuarantee(event.target.value)}
+                  label="Paragraph 2"
+                  value={formData.paragraph_two}
+                  onChange={handleInputChange}
+                  multiline
+                  minRows={4}
                 />
-                <TagsInput tags={sites} setTags={setSites} label="Add Sites" />
+                <TextField
+                  margin="dense"
+                  className={classes.multiline}
+                  variant="outlined"
+                  label="Paragraph 3"
+                  value={formData.paragraph_three}
+                  onChange={handleInputChange}
+                  multiline
+                  minRows={4}
+                />
+                <ManyToManyField
+                  data={formData.features}
+                  handleManyToManyChange={handleManyToManyChange}
+                  fieldName="features"
+                  verboseName="Features"
+                  setFormData={setFormData}
+                />
+                <ManyToManyField
+                  data={formData.supported_sites}
+                  handleManyToManyChange={handleManyToManyChange}
+                  fieldName="supported_sites"
+                  verboseName="Supported Sites"
+                  setFormData={setFormData}
+                />
                 <div style={{ display: "flex", justifyContent: "center" }}>
                   <StyledButton
                     type="submit"

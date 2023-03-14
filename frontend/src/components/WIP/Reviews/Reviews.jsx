@@ -9,10 +9,62 @@ import {
   makeStyles,
 } from "@material-ui/core";
 import { Rating } from "@material-ui/lab";
+<<<<<<< HEAD
 import { Select } from "@mui/material";
 import { ReviewStyles1, ReviewStyles2 } from "./ReviewsStyles";
 import { useEffect } from "react";
 import { useFetcher } from "react-router-dom";
+=======
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    padding: theme.spacing(0, 3, 0, 3),
+    margin: theme.spacing(3),
+    maxWidth: 1200,
+    backgroundColor: theme.palette.background.light,
+    [theme.breakpoints.down("md")]: {
+      padding: theme.spacing(0),
+      margin: theme.spacing(3),
+    },
+  },
+  avatar: {
+    width: theme.spacing(7),
+    height: theme.spacing(7),
+    marginRight: theme.spacing(2),
+  },
+  reviewContainer: {
+    display: "flex",
+    alignItems: "center",
+    marginBottom: theme.spacing(2),
+  },
+  reviewDate: {
+    color: theme.palette.text.secondary,
+  },
+  reviewRating: {
+    marginBottom: theme.spacing(2),
+  },
+  reviewDivider: {
+    margin: `${theme.spacing(2)}px 0`,
+  },
+  reviewText: {
+    color: theme.palette.text.secondary,
+  },
+  reviewPaper: {
+    padding: theme.spacing(2),
+    borderRadius: 16,
+    backgroundColor: theme.palette.background.light,
+  },
+  reviewGrid: {
+    display: "flex",
+    flexWrap: "wrap",
+    alignItems: "stretch",
+    justifyContent: "center",
+    "& > *": {
+      flexBasis: "100%",
+    },
+  },
+}));
+>>>>>>> 6c5a6f19d25665b98ba02e21d3b29214c3aece69
 
 const reviewsData = [
   {

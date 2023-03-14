@@ -11,6 +11,7 @@ const useStyles = makeStyles((theme) => ({
     minHeight: "77.5vh",
     justifyContent: "center",
     padding: theme.spacing(3, 2),
+    backgroundColor: theme.palette.background.light,
   },
 }));
 
@@ -29,7 +30,7 @@ const JobIndividualView = () => {
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+  }, [id]);
 
   return (
     <div className={`${classes.root}`}>{job && <JobPosting job={job} />}</div>

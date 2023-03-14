@@ -1,15 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
-import Typography from "@material-ui/core/Typography";
-import TextField from "@material-ui/core/TextField";
 import { useSelector } from "react-redux";
 import axiosInstance from "../../../lib/Axios/axiosInstance";
 import ContactButtons from "../../Contact/Contact/ContactButtons";
 import Social from "../../Contact/Social/Social";
+<<<<<<< HEAD
 import StyledButton from "../../Elements/Buttons/StyledButton";
 import BaseForm from "../../Elements/Base/BaseForm";
 import AdvancedSnackbar from "../../Elements/Snackbars/Snackbar";
+=======
+import HeroBlock from "../../Elements/TextBlocks/HeroBlock/HeroBlock";
+import EditDeleteButtonMenu from "../../Elements/Buttons/EditDeleteButtonMenu";
+import HeroBlockEdit from "../../Elements/TextBlocks/HeroBlock/HeroBlockEdit";
+import HeroForm from "./HeroForm";
+>>>>>>> 6c5a6f19d25665b98ba02e21d3b29214c3aece69
 
 const useStyles = makeStyles((theme) => ({
   overlay: {
@@ -26,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
   },
   container: {
     height: "100%",
-    background: `url(https://source.unsplash.com/801x601/?service) no-repeat center center fixed`,
+    background: `url(https://source.unsplash.com/1400x900/?service) no-repeat center center fixed`,
     backgroundSize: "cover",
     maxWidth: "100%",
     minHeight: 700,
@@ -35,99 +40,11 @@ const useStyles = makeStyles((theme) => ({
       borderRadius: 0,
     },
   },
-  headline: {
-    color: theme.palette.text.light,
-    marginTop: theme.spacing(1.5),
-    marginBottom: theme.spacing(1.5),
-    fontWeight: "bold",
-    textAlign: "center",
-    [theme.breakpoints.down("xs")]: {
-      marginTop: theme.spacing(0.5),
-      marginBottom: theme.spacing(0.5),
-    },
-  },
-  subheadline: {
-    fontSize: "0.95rem",
-    color: theme.palette.text.light,
-    marginBottom: theme.spacing(3),
-    textAlign: "center",
-    [theme.breakpoints.down("xs")]: {
-      marginBottom: theme.spacing(1.5),
-    },
-  },
-  description: {
-    maxWidth: 500,
-    color: theme.palette.text.light,
-    marginBottom: theme.spacing(2),
-    textAlign: "center",
-  },
-  button: {
-    minWidth: 140,
-    margin: theme.spacing(1),
-    boxShadow: theme.shadows[3],
-    backgroundColor: theme.palette.primary.main,
-    color: theme.palette.primary.contrastText,
-    borderRadius: 50,
-    transition: "0.3s",
-    "&:hover": {
-      transform: "translateY(-2px)",
-      boxShadow: theme.shadows[7],
-      backgroundColor: theme.palette.primary.dark,
-    },
-  },
-  form: {
-    marginTop: theme.spacing(3),
-    marginBottom: theme.spacing(3),
-    backgroundColor: "#FFFFFF",
-    padding: theme.spacing(3),
-    borderRadius: 10,
-    boxShadow: "0px 0px 20px rgba(0, 0, 0, 0.1)",
-    maxWidth: 360,
-    margin: "0 auto",
-  },
-  formTitle: {
-    fontWeight: "bold",
-    marginBottom: theme.spacing(1.5),
-    textAlign: "center",
-    color: theme.palette.text.dark,
-  },
-  formSubtitle: {
-    marginBottom: theme.spacing(1.5),
-    textAlign: "center",
-    fontSize: "0.85rem",
-    color: theme.palette.text.dark,
-  },
-  formField: {
-    "& .MuiOutlinedInput-root": {
-      "& fieldset": {
-        borderColor: "black",
-      },
-      "&:hover fieldset": {
-        borderColor: "black",
-      },
-      "&.Mui-focused fieldset": {
-        borderColor: "black",
-      },
-    },
-    "& .MuiFormLabel-root": {
-      color: "black",
-      fontWeight: "500",
-      fontSize: "0.9rem",
-    },
-    "& input": {
-      color: "black",
-    },
-  },
-  formButton: {
-    marginTop: theme.spacing(1),
-    fontWeight: "bold",
-    borderRadius: 50,
-  },
 }));
 
-function Hero({ contactData, form = true }) {
-  console.log("test: ", contactData[0]);
+function Hero({ heroData, setHeroData, contactData, form = true }) {
   const classes = useStyles();
+<<<<<<< HEAD
   const [heroData, setHeroData] = useState({
     title: "",
     heading: "",
@@ -153,9 +70,14 @@ function Hero({ contactData, form = true }) {
   const [editCarousel, setEditCarousel] = useState(false);
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState(null);
+=======
+  const [editing, setEditing] = useState(false);
+>>>>>>> 6c5a6f19d25665b98ba02e21d3b29214c3aece69
   const auth = useSelector((state) => state.auth);
+
   const updateHeroBlock = (updatedHeroBlock) => {
     setHeroData(updatedHeroBlock);
+<<<<<<< HEAD
     setEditHero(false);
   };
 
@@ -166,6 +88,9 @@ function Hero({ contactData, form = true }) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+=======
+    setEditing(false);
+>>>>>>> 6c5a6f19d25665b98ba02e21d3b29214c3aece69
   };
 
   const handleClick = () => {
@@ -178,24 +103,41 @@ function Hero({ contactData, form = true }) {
     <Grid container flex className={classes.container}>
       <Grid item xs={12}>
         <div className={classes.overlay}>
-          <Typography variant="h1" className={classes.headline}>
-            {heroData.title}
-          </Typography>
-          <Typography variant="subtitle1" className={classes.subheadline}>
-            {heroData.heading}
-          </Typography>
-          <Typography variant="body1" className={classes.description}>
-            {heroData.text}
-          </Typography>
-          <StyledButton buttonText={heroData.buttonText} />
-          <Grid item xs={12} md={12} className={classes.contactContainer}>
-            <ContactButtons contactData={contactData[0]} />
+          {!editing && auth.is_superuser ? (
+            <>
+              <EditDeleteButtonMenu
+                editClick={() => setEditing(!editing)}
+                hideDelete
+                placement="top"
+                position="center"
+                finalColor="white"
+              />
+            </>
+          ) : null}
+          {!editing ? (
+            <HeroBlock
+              title={heroData.title}
+              heading={heroData.heading}
+              text={heroData.text}
+              btnText={heroData.buttonText}
+            />
+          ) : (
+            <HeroBlockEdit
+              heroBlock={heroData}
+              onUpdate={updateHeroBlock}
+              handleCancel={() => setEditing(!editing)}
+            />
+          )}
+
+          <Grid item xs={12} md={12}>
+            <ContactButtons contactData={contactData} />
             <Grid container flex justifyContent="center">
-              <Social contactData={contactData[0]} color="light" />
+              <Social contactData={contactData} color="light" />
             </Grid>
           </Grid>
         </div>
       </Grid>
+<<<<<<< HEAD
       {form ? (
         <BaseForm
           title="Ready to take the first step?"
@@ -260,6 +202,9 @@ function Hero({ contactData, form = true }) {
           position="top-center"
         />
       )}
+=======
+      {form ? <HeroForm /> : null}
+>>>>>>> 6c5a6f19d25665b98ba02e21d3b29214c3aece69
     </Grid>
   );
 }

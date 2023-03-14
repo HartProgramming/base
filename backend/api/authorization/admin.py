@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.utils.translation import gettext_lazy as _
-from .models import User, ThemeSettings
+from .models import *
 from django.contrib.admin import AdminSite
 
 admin_site = AdminSite(name="admin")
@@ -9,7 +9,7 @@ admin_site.site_header = "EDGELORDS"
 
 
 class CustomUserAdmin(UserAdmin):
-    list_display = ("username", "email", "first_name", "last_name", "is_staff")
+    list_display = ("username", "email", "first_name", "last_name", "salt", "is_staff")
     search_fields = ("username", "email")
     actions = ["delete_selected"]
 
@@ -26,3 +26,4 @@ class CustomThemeSettingsAdmin(admin.ModelAdmin):
 
 admin.site.register(ThemeSettings, CustomThemeSettingsAdmin)
 admin.site.register(User, CustomUserAdmin)
+admin.site.register(TokenBlacklist)

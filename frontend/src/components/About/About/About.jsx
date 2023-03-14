@@ -5,17 +5,53 @@ import Grid from "@material-ui/core/Grid";
 import Values from "../Values/Values";
 import axiosInstance from "../../../lib/Axios/axiosInstance";
 import { useDispatch, useSelector } from "react-redux";
+<<<<<<< HEAD
 import EditButton from "../../Elements/Buttons/EditButton";
+=======
+>>>>>>> 6c5a6f19d25665b98ba02e21d3b29214c3aece69
 import AboutHeadingEdit from "../Heading/AboutHeadingEdit";
 import Heading from "../Heading/Heading";
 import ContentSection from "../Content/ContentSection";
 import useInput from "../../../hooks/useInput";
+<<<<<<< HEAD
 import { AboutStyles1, AboutStyles2 } from "./AboutStyles";
 import { Select } from "@material-ui/core";
 import AdvancedSnackbar from "../../Elements/Snackbars/Snackbar";
 import useSnack from "../../../hooks/useEditTitleSnack";
+=======
+import EditDeleteButtonMenu from "../../Elements/Buttons/EditDeleteButtonMenu";
+import Container from "../../Elements/Layout/Container/Container";
 
-export default function About() {
+const useStyles = makeStyles((theme) => ({
+  root: {
+    display: "flex",
+    justifyContent: "center",
+    backgroundColor: theme.palette.background.default,
+  },
+  section: {
+    marginTop: theme.spacing(2),
+    color: "black",
+  },
+  paper: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    padding: 20,
+    color: "white",
+    backgroundColor: theme.palette.background.default,
+    borderRadius: 14,
+    maxWidth: 900,
+    minWidth: 300,
+  },
+  gridContainer: {
+    background: theme.palette.background.default,
+    display: "flex",
+    justifyContent: "left",
+  },
+}));
+>>>>>>> 6c5a6f19d25665b98ba02e21d3b29214c3aece69
+
+export default function About({ setError }) {
   const {
     value: missionData,
     handleChange: handleChangeMission,
@@ -25,9 +61,13 @@ export default function About() {
   const layout1 = AboutStyles1();
   const layout2 = AboutStyles2();
   const [data, setData] = useState([]);
+<<<<<<< HEAD
 
   // const [missionData, setMissionData] = useState([]);
 
+=======
+  const [metadata, setMetaData] = useState({});
+>>>>>>> 6c5a6f19d25665b98ba02e21d3b29214c3aece69
   const [historyData, setHistoryData] = useState([]);
   const [valuesData, setValuesData] = useState(null);
 
@@ -36,6 +76,7 @@ export default function About() {
   const [editHistory, setEditHistory] = useState(false);
   const [missionBody, setMissionBody] = useState(false);
   const [historyBody, setHistoryBody] = useState(false);
+<<<<<<< HEAD
   const [def, setDef] = useState("layout-1");
   const [design, setDesign] = useState(4);
   const [styles, setStyles] = useState(layout1);
@@ -53,8 +94,12 @@ export default function About() {
     handleSnackClose,
     onSnackCancel,
   ] = useSnack("top-center", setEditTitle);
+=======
+  const dispatch = useDispatch();
+>>>>>>> 6c5a6f19d25665b98ba02e21d3b29214c3aece69
 
   useEffect(() => {
+    dispatch({ type: "FETCH_DATA_REQUEST" });
     const fetchData = async () => {
       axiosInstance
         .get("/about/")
@@ -69,10 +114,13 @@ export default function About() {
           setHistoryBody(
             response.data.company_history.body.replace(/<br\s*[\/]?>/gi, "")
           );
+          setMetaData(response.data.metadata);
         })
+        .then(dispatch({ type: "FETCH_DATA_SUCCESS" }))
         .catch((err) => {
-          console.log(err);
-        });
+          setError(err.error);
+        })
+        .then(dispatch({ type: "FETCH_DATA_FAILURE" }));
     };
     fetchData();
   }, []);
@@ -119,6 +167,7 @@ export default function About() {
 
   return (
     <>
+<<<<<<< HEAD
       <div className={styles.root}>
         <Paper className={styles.paper} elevation={0}>
           <Grid
@@ -318,6 +367,34 @@ export default function About() {
                   type={"companyhistory"}
                   auth={auth}
                 />
+=======
+      {missionData && (
+        <div className={classes.root}>
+          <Paper className={classes.paper} elevation={0}>
+            <Grid container spacing={2} className={classes.gridContainer}>
+              <>
+                {!editTitle && auth.is_superuser ? (
+                  <Container justify="flex-end">
+                    <EditDeleteButtonMenu
+                      hideDelete
+                      editClick={() => setEditTitle(!editTitle)}
+                      position="end"
+                      placement="bottom"
+                    />
+                  </Container>
+                ) : null}
+                {!editTitle ? (
+                  <Heading data={data} />
+                ) : (
+                  <Grid item xs={12} sm={12}>
+                    <AboutHeadingEdit
+                      aboutBlock={data}
+                      onUpdate={updateBlock}
+                      handleCancel={() => setEditTitle(!editTitle)}
+                    />
+                  </Grid>
+                )}
+>>>>>>> 6c5a6f19d25665b98ba02e21d3b29214c3aece69
               </>
             )}
           </Grid>

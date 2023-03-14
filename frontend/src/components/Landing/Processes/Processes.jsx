@@ -10,13 +10,20 @@ import axiosInstance from "../../../lib/Axios/axiosInstance";
 import TitleBlockEditor from "../../Elements/TextBlocks/TitleBlock/TitleBlockEditor";
 import EditButton from "../../Elements/Buttons/EditButton";
 import BaseEditForm from "../../Elements/Base/EditForm/BaseEditForm";
+<<<<<<< HEAD
 import AdvancedSnackbar from "../../Elements/Snackbars/Snackbar";
+=======
+import EditDeleteButtonMenu from "../../Elements/Buttons/EditDeleteButtonMenu";
+import Container from "../../Elements/Layout/Container/Container";
+import Item from "../../Elements/Layout/Item/Item";
+
+>>>>>>> 6c5a6f19d25665b98ba02e21d3b29214c3aece69
 const useStyles = makeStyles((theme) => ({
   root: {
     justifyContent: "center",
     alignItems: "center",
     display: "flex",
-    minHeight: 550,
+    // minHeight: 550,
     minWidth: 325,
     padding: 0,
     margin: 0,
@@ -44,34 +51,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Processes() {
+export default function Processes({
+  block,
+  setBlock,
+  processData,
+  showTitleBlock = true,
+}) {
   const classes = useStyles();
-  const [block, setBlock] = useState([]);
-  const [processes, setProcesses] = useState([]);
   const [editTitle, setEditTitle] = useState(false);
   const [open, setOpen] = useState(false)
   const [message, setMessage] = useState(null)
   const auth = useSelector((state) => state.auth);
-
-  useEffect(() => {
-    axiosInstance
-      .get("/titleblock/process/")
-      .then((response) => {
-        setBlock(response.data);
-      })
-      .catch((err) => {
-        setError(err);
-      });
-
-    axiosInstance
-      .get("/process/")
-      .then((response) => {
-        setProcesses(response.data);
-      })
-      .catch((err) => {
-        setError(err);
-      });
-  }, []);
 
   const updateTitleBlock = (updateTitleBlock) => {
     setBlock(updateTitleBlock);
@@ -91,33 +81,38 @@ export default function Processes() {
 
   return (
     <Box className={classes.root}>
-      <Grid container spacing={0}>
-        <Grid
-          item
-          xs={12}
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            padding: 0,
-            margin: 0,
-          }}
-        >
+      <Container>
+        <Item xs={12}>
           <Paper elevation={0} className={classes.paper}>
-            {!editTitle ? (
-              <TitleBlock
-                subtitle={block.subtitle}
-                title={block.title}
-                alignment={block.alignment}
-                showDivider={block.show_divider}
-              />
-            ) : (
-              <TitleBlockEditor
-                titleBlock={block}
-                onUpdate={updateTitleBlock}
-                handleCancel={() => setEditTitle(!editTitle)}
-              />
+            {showTitleBlock && (
+              <>
+                {!editTitle ? (
+                  <TitleBlock
+                    subtitle={block.subtitle}
+                    title={block.title}
+                    alignment={block.alignment}
+                    showDivider={block.show_divider}
+                  />
+                ) : (
+                  <TitleBlockEditor
+                    titleBlock={block}
+                    onUpdate={updateTitleBlock}
+                    handleCancel={() => setEditTitle(!editTitle)}
+                  />
+                )}
+
+                {!editTitle && auth.is_superuser ? (
+                  <>
+                    <EditDeleteButtonMenu
+                      editClick={() => setEditTitle(!editTitle)}
+                      hideDelete
+                      position="center"
+                    />
+                  </>
+                ) : null}
+              </>
             )}
+<<<<<<< HEAD
             {!editTitle && auth.is_superuser ? (
               <EditButton
                 onClick={handleEdit}
@@ -134,16 +129,26 @@ export default function Processes() {
                   lg={4}
                   className={classes.center}
                 >
+=======
+            <Container style={{ marginTop: showTitleBlock ? 24 : 0 }}>
+              {processData.map((step, index) => (
+                <Item xs={12} sm={12} md={12} lg={4} xl={4} justify="center">
+>>>>>>> 6c5a6f19d25665b98ba02e21d3b29214c3aece69
                   <Process step={step} />
-                </Grid>
+                </Item>
               ))}
-            </Grid>
+            </Container>
           </Paper>
+<<<<<<< HEAD
         </Grid>
       </Grid>
       {open && 
         <AdvancedSnackbar onClose={handleClose} open={open} message={message} position='top-center' type='info' duration='4000' />
       }
+=======
+        </Item>
+      </Container>
+>>>>>>> 6c5a6f19d25665b98ba02e21d3b29214c3aece69
     </Box>
   );
 }

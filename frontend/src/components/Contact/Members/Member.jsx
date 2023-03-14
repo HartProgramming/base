@@ -1,6 +1,5 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import Grid from "@material-ui/core/Grid";
 import Avatar from "@material-ui/core/Avatar";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
@@ -10,6 +9,7 @@ import MemberEdit from "./MemberEdit";
 import MemberContent from "./MemberContent";
 import { baseClasses } from "../../../classes";
 import EditDeleteButtonMenu from "../../Elements/Buttons/EditDeleteButtonMenu";
+<<<<<<< HEAD
 import { MemberStyles1, MemberStyles2, MemberStyles3 } from "./MemberStyles";
 import { IconButton } from "@mui/material";
 import Typography from "@material-ui/core/Typography";
@@ -22,6 +22,51 @@ const Member = ({ member, layout }) => {
   const layout1 = MemberStyles1();
   const layout2 = MemberStyles2();
   const layout3 = MemberStyles3();
+=======
+import Flexbox from "../../Elements/Layout/Flexbox/Flexbox";
+
+const useStyles = makeStyles((theme) => ({
+  container: {
+    display: "flex",
+    flexDirection: "column",
+    maxWidth: 860,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: theme.palette.background.light,
+    margin: theme.spacing(2, 2, 2, 2),
+  },
+  card: {
+    backgroundColor: theme.palette.background.light,
+    maxWidth: 350,
+    borderRadius: theme.spacing(1),
+    boxShadow: theme.shadows[2],
+    transition: "0.3s",
+    "&:hover": {
+      transform: "translateY(-10px)",
+      boxShadow: theme.shadows[7],
+    },
+  },
+  avatar: {
+    width: theme.spacing(12),
+    height: theme.spacing(12),
+  },
+  title: {
+    color: "black",
+    fontSize: "1.25rem",
+    fontWeight: 600,
+    marginBottom: 5,
+  },
+  subheader: {
+    color: theme.palette.primary.dark,
+    fontSize: "0.85rem",
+    fontWeight: 600,
+    fontFamily: "Poppins",
+  },
+}));
+
+const Member = ({ member }) => {
+  const classes = useStyles();
+>>>>>>> 6c5a6f19d25665b98ba02e21d3b29214c3aece69
   const { fadeIn } = baseClasses();
   const [editing, setEditing] = useState(false);
   const [memberData, setMemberData] = useState(member);
@@ -51,6 +96,7 @@ const Member = ({ member, layout }) => {
 
   return (
     <>
+<<<<<<< HEAD
       {design === 1 && (
         <Grid
           container
@@ -62,17 +108,28 @@ const Member = ({ member, layout }) => {
         >
           {!editing ? (
             <Card className={`${align.card} ${fadeIn}`}>
+=======
+      <Flexbox key={memberData.name} className={classes.container}>
+        <div xs={12} md={12} key={memberData.name}>
+          {!editing ? (
+            <Card className={`${classes.card} ${fadeIn}`}>
+>>>>>>> 6c5a6f19d25665b98ba02e21d3b29214c3aece69
               <CardHeader
                 avatar={
                   <Avatar
                     variant="rounded"
                     src={memberData.image}
+<<<<<<< HEAD
                     className={align.avatar}
+=======
+                    className={classes.avatar}
+>>>>>>> 6c5a6f19d25665b98ba02e21d3b29214c3aece69
                   />
                 }
                 title={memberData.name}
                 subheader={memberData.role}
                 classes={{
+<<<<<<< HEAD
                   title: align.title,
                   subheader: align.subheader,
                 }}
@@ -103,6 +160,12 @@ const Member = ({ member, layout }) => {
                   <TwitterIcon />
                 </IconButton>
               </div>
+=======
+                  title: classes.title,
+                  subheader: classes.subheader,
+                }}
+              />
+>>>>>>> 6c5a6f19d25665b98ba02e21d3b29214c3aece69
               <MemberContent member={memberData} />
               {!editing && auth.is_superuser ? (
                 <div style={{ marginTop: 4, marginBottom: 4, marginRight: 8 }}>
@@ -122,6 +185,7 @@ const Member = ({ member, layout }) => {
               handleCancel={() => setEditing(!editing)}
             />
           )}
+<<<<<<< HEAD
         </Grid>
       )}
       {design === 2 && (
@@ -277,6 +341,10 @@ const Member = ({ member, layout }) => {
           )}
         </Grid>
       )}
+=======
+        </div>
+      </Flexbox>
+>>>>>>> 6c5a6f19d25665b98ba02e21d3b29214c3aece69
     </>
   );
 };

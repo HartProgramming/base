@@ -3,7 +3,7 @@ from django.db.models import Q
 from rest_framework.response import Response
 from .models import (
     HeroBlock,
-    PricingPlan,
+    ServiceTier,
     Feature,
     SupportedSites,
     Item,
@@ -11,18 +11,58 @@ from .models import (
     Testimonial,
     Process,
 )
-from .serializers import (
-    HeroBlockSerializer,
-    PricingPlanSerializer,
-    FeatureSerializer,
-    SupportedSitesSerializer,
-    ItemSerializer,
-    TitleBlockSerializer,
-    TestimonialSerializer,
-    ProcessSerializer,
-)
+from .serializers import *
 from authorization.authentication import JWTTokenAuthentication
-from django.db import transaction
+from about.models import ContactInformation
+from articles.models import Articles
+
+
+class LandingFull(object):
+    def __init__(
+        self,
+        hero_block,
+        title_block_process,
+        title_block_news,
+        service_tiers,
+        processes,
+        contact_information,
+        articles,
+    ):
+
+        self.hero_block = hero_block
+        self.title_block_process = title_block_process
+        self.title_block_news = title_block_news
+        self.service_tiers = service_tiers
+        self.processes = processes
+        self.contact_information = contact_information
+        self.articles = articles
+
+
+class LandingFullView(generics.GenericAPIView):
+    serializer_class = LandingFullSerializer
+
+    def get(self, request, *args, **kwargs):
+        hero_block = HeroBlock.objects.first()
+        title_block_process = TitleBlock.objects.get(name="process")
+        title_block_news = TitleBlock.objects.get(name="news")
+        service_tiers = ServiceTier.objects.all()
+        processes = Process.objects.all()
+        contact_information = ContactInformation.objects.first()
+        articles = Articles.objects.filter(is_highlighted=True)
+
+        landing_full = LandingFull(
+            hero_block,
+            title_block_process,
+            title_block_news,
+            service_tiers,
+            processes,
+            contact_information,
+            articles,
+        )
+
+        serializer = self.get_serializer(instance=landing_full)
+
+        return Response(serializer.data)
 
 
 class HeroBlockMainAPIView(
@@ -75,9 +115,13 @@ class ItemViewSet(viewsets.ModelViewSet):
     serializer_class = ItemSerializer
 
     def update(self, request, *args, **kwargs):
-        print(request.POST)
+        data = request.data.copy()
         item = self.get_object()
-        serializer = ItemSerializer(item, data=request.data, partial=True)
+
+        if not request.FILES.get("image"):
+            data["image"] = item.image
+
+        serializer = ItemSerializer(item, data=data, partial=True)
 
         if serializer.is_valid():
             if request.FILES.get("image"):
@@ -85,8 +129,8 @@ class ItemViewSet(viewsets.ModelViewSet):
                 item.image.storage.delete(item.image.path)
                 item.image = image
 
-            item.buttonText = request.data["text"]
-            item.buttonLink = request.data["link"]
+            item.buttonText = request.data["buttonText"]
+            item.buttonLink = request.data["buttonLink"]
             # item = serializer.save()
             item.save()
 
@@ -105,132 +149,108 @@ class SupportedSiteViewSet(generics.ListCreateAPIView):
     serializer_class = SupportedSitesSerializer
 
 
-class PricingPlanListCreateView(generics.ListCreateAPIView):
-    queryset = PricingPlan.objects.all()
-    serializer_class = PricingPlanSerializer
+class ServiceTierView(
+    generics.ListCreateAPIView, generics.RetrieveUpdateDestroyAPIView
+):
+    queryset = ServiceTier.objects.all()
+    serializer_class = ServiceTierSerializer
+
+    def create(self, request, *args, **kwargs):
+        formatted_data = self.serializer_class().format_data(request.data)
+
+        title = formatted_data.get("service_title")
+        price = formatted_data.get("price")
+
+        feature_list = formatted_data.get("features", [])
+        supported_sites_list = formatted_data.get("supported_sites", [])
+
+        feature_objs = []
+        for feature in feature_list:
+            feature_obj, created = Feature.objects.get_or_create(detail=feature)
+            feature_objs.append(feature_obj)
+
+        supported_sites_objs = []
+        for supported_site in supported_sites_list:
+            supported_site_obj, created = SupportedSites.objects.get_or_create(
+                detail=supported_site
+            )
+            supported_sites_objs.append(supported_site_obj)
+
+        pricing_plan = ServiceTier.objects.create(
+            service_title=title,
+            price=price,
+            image=formatted_data.get("image"),
+            paragraph_one=formatted_data.get("paragraph_one"),
+            paragraph_two=formatted_data.get("paragraph_two"),
+            paragraph_three=formatted_data.get("paragraph_three"),
+        )
+        pricing_plan.features.set(feature_objs)
+        pricing_plan.supported_sites.set(supported_sites_objs)
+
+        serializer = self.get_serializer(pricing_plan)
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
-# class PricingPlanRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
-#     queryset = PricingPlan.objects.all()
-#     serializer_class = PricingPlanSerializer
-
-#     def update(self, request, *args, **kwargs):
-#         plan = self.get_object()
-#         serializer = PricingPlanSerializer(plan, data=request.data, partial=True)
-
-#         if serializer.is_valid():
-#             if request.FILES.get("image"):
-#                 image = request.FILES.get("image")
-#                 plan.image.storage.delete(plan.image.path)
-#                 plan.image = image
-
-#             plan = serializer.save()
-
-#             features = request.data.get("features").split(",")
-#             features = [{"detail": feature.strip()} for feature in features]
-#             feature_ids = []
-#             for feature_data in features:
-#                 feature, created = Feature.objects.get_or_create(
-#                     detail=feature_data.get("detail")
-#                 )
-#                 feature_ids.append(feature.id)
-#                 if not created:
-#                     feature.detail = feature_data.get("detail")
-#                     feature.save()
-
-#             supportedsites = request.data.get("supportedsites").split(",")
-#             supportedsites = [{"site": site.strip()} for site in supportedsites]
-#             supportedsite_ids = []
-#             for supportedsite_data in supportedsites:
-#                 supportedsite, created = SupportedSites.objects.get_or_create(
-#                     site=supportedsite_data.get("site")
-#                 )
-#                 supportedsite_ids.append(supportedsite.id)
-#                 if not created:
-#                     supportedsite.site = supportedsite_data.get("site")
-#                     supportedsite.save()
-
-#             plan.features.set(feature_ids)
-#             plan.supportedsites.set(supportedsite_ids)
-#             plan.bestFor = request.data["best_for"]
-#             plan.save()
-
-#             serializer = PricingPlanSerializer(plan)
-
-#             return Response(serializer.data, status=status.HTTP_200_OK)
-
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class PricingPlanRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
-    queryset = PricingPlan.objects.all()
-    serializer_class = PricingPlanSerializer
+class ServiceTierDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = ServiceTier.objects.all()
+    serializer_class = ServiceTierSerializer
 
     def update(self, request, *args, **kwargs):
-        pricing_plan = self.get_object()
-        serializer = self.get_serializer(pricing_plan, data=request.data, partial=True)
-        serializer.is_valid(raise_exception=True)
+        instance = self.get_object()
+        formatted_data = self.serializer_class().format_data(request.data)
 
-        with transaction.atomic():
-            if request.FILES.get("image"):
-                pricing_plan.image.delete()
-                pricing_plan.image = request.FILES.get("image")
+        title = formatted_data.get("service_title", instance.service_title)
+        price = formatted_data.get("price", instance.price)
 
-            pricing_plan = serializer.save()
+        feature_list = formatted_data.get("features", [])
+        supported_sites_list = formatted_data.get("supported_sites", [])
 
-            feature_ids = self._get_or_create_features(request.data.get("features"))
-            pricing_plan.features.set(feature_ids)
-            supported_site_ids = self._get_or_create_supported_sites(
-                request.data.get("supported_sites")
+        feature_objs = []
+        for feature in feature_list:
+            feature_obj, created = Feature.objects.get_or_create(detail=feature)
+            feature_objs.append(feature_obj)
+
+        supported_sites_objs = []
+        for supported_site in supported_sites_list:
+            supported_site_obj, created = SupportedSites.objects.get_or_create(
+                detail=supported_site
             )
+            supported_sites_objs.append(supported_site_obj)
 
-            pricing_plan.supported_sites.set(supported_site_ids)
+        if request.FILES.get("image"):
+            image = request.FILES.get("image")
+            instance.image.storage.delete(instance.image.path)
+            instance.image = image
+        else:
+            image = instance.image
 
-            pricing_plan.best_for = request.data.get("best_for")
-            pricing_plan.save()
+        instance.service_title = title
+        instance.price = price
+        instance.image = image
+        instance.paragraph_one = formatted_data.get(
+            "paragraph_one", instance.paragraph_one
+        )
+        instance.paragraph_two = formatted_data.get(
+            "paragraph_two", instance.paragraph_two
+        )
+        instance.paragraph_three = formatted_data.get(
+            "paragraph_three", instance.paragraph_three
+        )
+        instance.save()
+        instance.features.set(feature_objs)
+        instance.supported_sites.set(supported_sites_objs)
+        serializer = self.get_serializer(instance)
 
-        return Response(self.get_serializer(pricing_plan).data)
-
-    def _get_or_create_features(self, feature_list):
-        feature_ids = []
-
-        if feature_list:
-            for feature_name in feature_list.split(","):
-                feature_name = feature_name.strip()
-
-                if not feature_name:
-                    continue
-
-                feature, created = Feature.objects.get_or_create(detail=feature_name)
-                feature_ids.append(feature.id)
-
-                if not created:
-                    feature.detail = feature_name
-                    feature.save()
-
-        return feature_ids
-
-    def _get_or_create_supported_sites(self, site_list):
-        site_ids = []
-
-        if site_list:
-            for site_name in site_list.split(","):
-                site_name = site_name.strip()
-
-                if not site_name:
-                    continue
-
-                site, created = SupportedSites.objects.get_or_create(site=site_name)
-                site_ids.append(site.id)
-
-                if not created:
-                    site.site = site_name
-                    site.save()
-
-        return site_ids
+        return Response(serializer.data)
 
 
-class ProcessViewSet(generics.ListCreateAPIView, generics.RetrieveUpdateDestroyAPIView):
+class ProcessViewSet(generics.ListCreateAPIView):
+    queryset = Process.objects.all()
+    serializer_class = ProcessSerializer
+
+
+class ProcessDetailViewSet(generics.RetrieveUpdateDestroyAPIView):
     queryset = Process.objects.all()
     serializer_class = ProcessSerializer
 

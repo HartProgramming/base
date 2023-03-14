@@ -1,40 +1,52 @@
 import React, { useEffect, useState } from "react";
-import { Grid } from "@material-ui/core";
+import { Grid, Paper } from "@material-ui/core";
 import { quizStyles } from "../styles";
 import Questionaire from "../Questionaire/Questionaire";
 import ResultsDisplay from "../ResultsDisplay/ResultsDisplay";
 import axiosInstance from "../../../../lib/Axios/axiosInstance";
+import ComparisonTable from "../TablesDisplay/ComparisonTable";
 
-const Quiz = () => {
+const Quiz = ({
+  services,
+  setServices,
+  tableData,
+  benefitsData,
+  benefitsBlock,
+  setBenefitsBlock,
+}) => {
   const classes = quizStyles();
-  const [services, setServices] = useState([]);
   const [recommendedServices, setRecommendedServices] = useState(null);
   const [unrecommendedServices, setUnrecommendedServices] = useState([]);
-
-  useEffect(() => {
-    axiosInstance
-      .get("/pricingplan/")
-      .then((response) => {
-        console.log("Response");
-        console.log(response.data);
-        setServices(response.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
 
   return (
     <div className={`${classes.root}`}>
       <Grid container flex justifyContent="center">
-        {!recommendedServices && (
-          <>
-            <Questionaire
-              services={services}
-              setRecommendedServices={setRecommendedServices}
-              setUnrecommendedServices={setUnrecommendedServices}
-            />
-          </>
+        {!recommendedServices && services && tableData && (
+          <Paper
+            elevation={0}
+            style={{
+              width: "100%",
+              background: "#F5F5F5",
+              display: "flex",
+              justifyContent: "center",
+              flexDirection: "column",
+            }}
+          >
+            <div
+              style={{
+                width: "100%",
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
+              <Questionaire
+                services={services}
+                setRecommendedServices={setRecommendedServices}
+                setUnrecommendedServices={setUnrecommendedServices}
+              />
+            </div>
+            <ComparisonTable tableData={tableData} />
+          </Paper>
         )}
         {recommendedServices && (
           <Grid
@@ -45,6 +57,7 @@ const Quiz = () => {
               width: "100%",
               justifyContent: "center",
               flexWrap: "wrap",
+              background: "#F5F5F5",
             }}
           >
             <ResultsDisplay
@@ -54,6 +67,9 @@ const Quiz = () => {
               setRecommendedServices={setRecommendedServices}
               recommendedServices={recommendedServices}
               unrecommendedServices={unrecommendedServices}
+              benefitsData={benefitsData}
+              benefitsBlock={benefitsBlock}
+              setBenefitsBlock={setBenefitsBlock}
             />
           </Grid>
         )}

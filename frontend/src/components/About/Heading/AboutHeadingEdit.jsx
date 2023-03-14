@@ -7,6 +7,7 @@ import FormField from "../../Elements/Fields/FormField";
 import ImageEdit from "../../Elements/Fields/ImageEdit";
 import ImageInput from "../../Elements/Fields/ImageInput";
 import UpdateCancelButtonMenu from "../../Elements/Buttons/UpdateCancelButtonMenu";
+import axiosInstance from "../../../lib/Axios/axiosInstance";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -66,8 +67,8 @@ const AboutHeadingEdit = ({ aboutBlock, onUpdate, handleCancel }) => {
       },
     };
     try {
-      await axios
-        .patch(`http://localhost:8000/api/aboutblock/`, formData, config)
+      await axiosInstance
+        .patch(`/aboutblock/1/`, formData, config)
         .then((res) => {
           onUpdate(res.data);
         });
@@ -93,14 +94,13 @@ const AboutHeadingEdit = ({ aboutBlock, onUpdate, handleCancel }) => {
           />
           <Typography
             variant="h5"
-            color="black"
-            style={{ textAlign: "center" }}
+            style={{ textAlign: "center", color: "black" }}
           >
-            About Block Change
+            About Block Edit
           </Typography>
           <FormField
             key="title"
-            label="Title"
+            label="Company Title"
             value={title}
             onChange={(event) => setTitle(event.target.value)}
           />

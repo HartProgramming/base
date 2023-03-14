@@ -2,7 +2,7 @@ import { makeStyles } from "@material-ui/core";
 
 export const quizStyles = makeStyles((theme) => ({
   root: {
-    marginTop: theme.spacing(8),
+    marginTop: theme.spacing(3),
     padding: theme.spacing(2),
     width: "100%",
     display: "flex",
@@ -37,10 +37,12 @@ export const quizStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(1),
   },
   formContainer: {
+    width: "100%",
     backgroundColor: theme.palette.background.light,
     borderRadius: "8px",
     boxShadow: theme.shadows[2],
     padding: theme.spacing(2),
+    marginBottom: theme.spacing(4),
     [theme.breakpoints.down("xs")]: {
       padding: theme.spacing(2, 1, 2, 1),
     },
@@ -68,6 +70,7 @@ export const quizStyles = makeStyles((theme) => ({
     marginLeft: theme.spacing(1),
   },
   stepper: {
+    backgroundColor: theme.palette.background.light,
     [theme.breakpoints.down("xs")]: {
       "& .MuiStepLabel-label": {
         textAlign: "center",
@@ -82,6 +85,7 @@ export const quizStyles = makeStyles((theme) => ({
     },
   },
   fadeIn: {
+    backgroundColor: theme.palette.background.light,
     opacity: 0,
     animation: `$fadeIn 0.5s ease-in-out forwards`,
   },

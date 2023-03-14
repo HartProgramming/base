@@ -1,21 +1,43 @@
-import React from "react";
+import React, { useState } from "react";
 import FAQAccordion from "../FAQ/FAQAccordion";
 import About from "../About/About";
-import ContentLayout from "../../Elements/Layout/ContentLayout";
+import PageContainer from "../../Elements/Layout/PageContainer";
+import FABMenu from "../../Elements/Buttons/FABAdminMenu";
+import ErrorPage from "../../Elements/Layout/Errors/ErrorPage";
+import { useSelector } from "react-redux";
 
 function AboutPage({ handleUpdate }) {
+  const [editing, setEditing] = useState(false);
+  const [error, setError] = useState(false);
+
+
+  if (error) {
+    return (
+      <ErrorPage
+        message={error.message}
+        description={error.description}
+        instructions={error.instructions}
+        thanks={error.thanks}
+      />
+    );
+  }
+
   return (
-    <ContentLayout
-      title="About Company"
-      description="Where the info be yo."
-      keywords="news, posts, articles, touch"
-      image="https://example.com/image.png"
-      url="https://example.com/example-page"
-      backgroundColor="white"
+    <PageContainer
+      editing={editing}
+      setEditing={setEditing}
+      backgroundColor="#F5F5F5"
+      page_name="About"
     >
-      <About />
-      <FAQAccordion />
-    </ContentLayout>
+      
+      <FABMenu
+        editing={editing}
+        setEditing={setEditing}
+        handleUpdate={handleUpdate}
+      />
+      <About setError={setError} />
+      <FAQAccordion setError={setError} />
+    </PageContainer>
   );
 }
 

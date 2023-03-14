@@ -1,9 +1,7 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import Grid from "@material-ui/core/Grid";
 import {
   FormControl,
-  FormControlLabel,
   ListItemIcon,
   ListItemText,
   MenuItem,
@@ -25,14 +23,21 @@ import DesignIcon from "@material-ui/icons/Brush";
 import DevelopIcon from "@material-ui/icons/Code";
 import HostingIcon from "@material-ui/icons/Public";
 import LaunchIcon from "@material-ui/icons/Launch";
-import { IoLogoAngular, IoInfiniteSharp, IoMedalSharp } from "react-icons/io5";
+import {
+  IoLogoAngular,
+  IoInfiniteSharp,
+  IoMedalSharp,
+  IoBusinessSharp,
+} from "react-icons/io5";
+import { GiUpgrade } from "react-icons/gi";
+import { CgWebsite } from "react-icons/cg";
+import Container from "../../Layout/Container/Container";
 
 const useStyles = makeStyles((theme) => ({
   select: {
     width: "100%",
-    maxHeight: "64px",
-    overflow: "auto",
-    background: theme.palette.text.light,
+    maxHeight: "50px",
+    background: "#F5F5F5",
     color: theme.palette.text.dark,
     "& .MuiSelect-icon": {
       color: theme.palette.text.dark,
@@ -42,13 +47,9 @@ const useStyles = makeStyles((theme) => ({
     },
     "& .MuiSelect-select": {},
     "& .MuiSelect-select:focus": {},
-    "& .MuiOutlinedInput-root": {
-      "& fieldset": {
-        borderColor: "white !important",
-      },
-    },
+    "& .MuiOutlinedInput-root": {},
     "& .MuiFormLabel-root": {
-      color: theme.palette.text.dark,
+      color: "red",
       fontWeight: "700",
       fontSize: "0.9rem",
     },
@@ -56,9 +57,15 @@ const useStyles = makeStyles((theme) => ({
       color: theme.palette.text.dark,
     },
     "& .MuiMenu-paper": {
-      maxHeight: 40,
+      maxHeight: 64,
       overflowY: "auto",
     },
+  },
+  label: {
+    color: "black",
+  },
+  menuPaper: {
+    background: theme.palette.background.default,
   },
 }));
 
@@ -77,6 +84,8 @@ const iconList = [
   },
   { name: "FaCogs", component: <FaCogs /> },
   { name: "FaGlobe", component: <FaGlobe /> },
+  { name: "GiUpgrade", component: <GiUpgrade /> },
+  { name: "CgWebsite", component: <CgWebsite /> },
   { name: "DesignIcon", component: <DesignIcon /> },
   { name: "DevelopIcon", component: <DevelopIcon /> },
   { name: "LockIcon", component: <LockIcon /> },
@@ -98,67 +107,84 @@ const iconList = [
     name: "IoMedalSharp",
     component: <IoMedalSharp />,
   },
+  {
+    name: "IoBusinessSharp",
+    component: <IoBusinessSharp />,
+  },
 ];
 
-function IconSelectMixin({ handleChange, formData }) {
+function IconSelectMixin({
+  fieldName,
+  handleChange,
+  formData,
+  background = "#F5F5F5",
+}) {
   const classes = useStyles();
-
+  // console.log(fieldName);
+  // console.log(formData[fieldName]);
   return (
-    <FormControl style={{ width: "100%" }}>
-      <Grid container spacing={0} style={{ paddingTop: 8, paddingBottom: 8 }}>
-        <Grid item xs={12} sm={12}>
-          <FormControlLabel
-            style={{ fontSize: "0.8rem", width: "100%", margin: 0 }}
-            control={
-              <Select
-                className={classes.select}
-                variant="outlined"
-                value={formData.icon}
-                onChange={handleChange}
-                displayEmpty
-                name="icon"
-                margin="dense"
-                style={{ minWidth: "100%", padding: 0 }}
-                MenuProps={{
-                  anchorOrigin: {
-                    vertical: "bottom",
-                    horizontal: "left",
-                  },
-                  transformOrigin: {
-                    vertical: "top",
-                    horizontal: "left",
-                  },
-                  getContentAnchorEl: null,
-                  classes: {
-                    paper: classes.menuPaper,
-                  },
-                  PaperProps: {
-                    style: {
-                      maxHeight: 300,
-                    },
-                  },
+    <FormControl style={{ width: "100%", paddingBottom: 8 }} variant="outlined">
+      <Select
+        className={classes.select}
+        variant="outlined"
+        value={fieldName ? formData[fieldName] : formData.icon}
+        onChange={handleChange}
+        displayEmpty
+        name={fieldName}
+        style={{
+          minWidth: "100%",
+          background: background,
+          borderRadius: 4,
+
+          "&:focus": {
+            border: "2px solid #1976d2",
+          },
+        }}
+        MenuProps={{
+          anchorOrigin: {
+            vertical: "bottom",
+            horizontal: "left",
+          },
+          transformOrigin: {
+            vertical: "top",
+            horizontal: "left",
+          },
+          getContentAnchorEl: null,
+          classes: {
+            paper: classes.menuPaper,
+          },
+          PaperProps: {
+            style: {
+              maxHeight: 300,
+            },
+          },
+        }}
+      >
+        <MenuItem value="Select an icon">
+          <em>Select an icon</em>
+        </MenuItem>
+        {iconList.map((icon) => (
+          <MenuItem key={icon.name} value={icon.name}>
+            <Container justify="flex-start" align="center">
+              <ListItemIcon
+                style={{
+                  fontSize: "1.1rem",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignContent: "center",
+                  alignItems: "center",
                 }}
               >
-                <MenuItem value="">
-                  <em>Select an icon</em>
-                </MenuItem>
-                {iconList.map((icon) => (
-                  <MenuItem key={icon.name} value={icon.name}>
-                    <Grid container>
-                      <ListItemIcon
-                        style={{ fontSize: "1.25rem", alignItems: "center" }}
-                      >
-                        {icon.component}
-                      </ListItemIcon>
-                      <ListItemText primary={icon.name} />
-                    </Grid>
-                  </MenuItem>
-                ))}
-              </Select>
-            }
-          />
-        </Grid>
-      </Grid>
+                {icon.component}
+              </ListItemIcon>
+              <ListItemText
+                primary={icon.name}
+                style={{ textAlign: "start" }}
+              />
+            </Container>
+          </MenuItem>
+        ))}
+      </Select>
     </FormControl>
   );
 }

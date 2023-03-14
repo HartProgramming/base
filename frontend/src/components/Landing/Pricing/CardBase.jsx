@@ -2,11 +2,14 @@ import React, { useState } from "react";
 import { CardContent, Card } from "@material-ui/core";
 import PricingEdit from "./PricingEdit";
 import { useSelector } from "react-redux";
-import EditButton from "../../Elements/Buttons/EditButton";
 import CardHead from "./CardHead";
 import CardList from "./CardList";
 import CardButtons from "./CardButtons";
+<<<<<<< HEAD
 import AdvancedSnackbar from "../../Elements/Snackbars/Snackbar";
+=======
+import EditDeleteButtonMenu from "../../Elements/Buttons/EditDeleteButtonMenu";
+>>>>>>> 6c5a6f19d25665b98ba02e21d3b29214c3aece69
 
 export default function CardBase({ plan, classes }) {
   const [planData, setPlanData] = useState(plan);
@@ -41,10 +44,19 @@ export default function CardBase({ plan, classes }) {
       {!editing ? (
         <Card className={classes.pricingCard} key={plan.title}>
           <CardHead plan={planData} classes={classes} />
-          <CardContent>
+          <CardContent style={{ padding: "0px 8px 0px 8px" }}>
             <CardList data={planData} classes={classes} />
-            <CardButtons plan={planData} classes={classes} />
+            <CardButtons plan={planData} />
           </CardContent>
+          {!editing && auth.is_superuser ? (
+            <>
+              <EditDeleteButtonMenu
+                editClick={() => setEditing(!editing)}
+                hideDelete
+                position="end"
+              />
+            </>
+          ) : null}
         </Card>
       ) : (
         <PricingEdit
@@ -53,6 +65,7 @@ export default function CardBase({ plan, classes }) {
           handleCancel={() => setEditing(!editing)}
         />
       )}
+<<<<<<< HEAD
 
       {!editing && auth.is_superuser ? (
         <>
@@ -74,6 +87,8 @@ export default function CardBase({ plan, classes }) {
           onClose={handleClose}
         />
       )}
+=======
+>>>>>>> 6c5a6f19d25665b98ba02e21d3b29214c3aece69
     </div>
   );
 }

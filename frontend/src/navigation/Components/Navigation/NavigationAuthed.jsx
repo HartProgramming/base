@@ -4,7 +4,9 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import { Link } from "react-router-dom";
-import { FaSignOutAlt, FaUserAlt } from "react-icons/fa";
+import ExitToAppSharpIcon from "@mui/icons-material/ExitToAppSharp";
+import AccountBoxSharpIcon from "@mui/icons-material/AccountBoxSharp";
+import { useDispatch } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
   links: {
@@ -28,6 +30,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function NavigationAuthed({ toggleDrawer, handleLogout }) {
   const classes = useStyles();
+  const dispatch = useDispatch();
 
   return (
     <>
@@ -39,7 +42,7 @@ export default function NavigationAuthed({ toggleDrawer, handleLogout }) {
         onClick={toggleDrawer(false)}
       >
         <ListItemIcon style={{ color: "white" }}>
-          <FaUserAlt size={22} />
+          <AccountBoxSharpIcon style={{ color: "#ff8c00" }} />
         </ListItemIcon>
         <ListItemText primary="Profile WIP" className={classes.linkText} />
       </ListItem>
@@ -54,7 +57,7 @@ export default function NavigationAuthed({ toggleDrawer, handleLogout }) {
         }}
       >
         <ListItemIcon style={{ color: "white" }}>
-          <FaSignOutAlt size={22} />
+          <ExitToAppSharpIcon />
         </ListItemIcon>
         <ListItemText primary="Logout" className={classes.linkText} />
       </ListItem>

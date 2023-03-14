@@ -1,14 +1,14 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import TextField from "@material-ui/core/TextField";
+import { InputAdornment, TextField } from "@material-ui/core";
+import SearchIcon from "@material-ui/icons/Search";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   field: {
     width: "100%",
     "& .MuiOutlinedInput-root": {
       fontFamily: "Roboto",
       padding: 0,
-      fontSize: "0.9rem",
       fontWeight: "400",
       width: "100%",
       letterSpacing: 0.25,
@@ -27,7 +27,6 @@ const useStyles = makeStyles({
       fontFamily: "Roboto",
       color: "black",
       fontWeight: "500",
-      fontSize: "0.95rem",
     },
     "& input": {
       color: "black",
@@ -70,7 +69,14 @@ const useStyles = makeStyles({
       color: "black",
     },
   },
-});
+  searchIcon: {
+    color: theme.palette.grey[500],
+    marginLeft: theme.spacing(0.5),
+  },
+  searchInput: {
+    fontSize: "1rem",
+  },
+}));
 
 const FormField = ({
   id,
@@ -83,6 +89,8 @@ const FormField = ({
   select = false,
   SelectProps,
   children,
+  required = null,
+  type = null,
 }) => {
   const classes = useStyles();
 
@@ -102,6 +110,20 @@ const FormField = ({
       helperText={helperText}
       select={select}
       SelectProps={SelectProps}
+      type={type}
+      required={required}
+      InputProps={{
+        ...(label === "Search" && {
+          classes: {
+            input: classes.searchInput,
+          },
+          startAdornment: (
+            <InputAdornment position="start">
+              <SearchIcon className={classes.searchIcon} />
+            </InputAdornment>
+          ),
+        }),
+      }}
     >
       {children}
     </TextField>

@@ -16,7 +16,7 @@ class ArticleSerializer(serializers.ModelSerializer):
     author = serializers.ReadOnlyField(source="author.username")
     tags = TagsSerializer(many=True)
     image = serializers.ImageField(required=False, allow_null=True)
-    FIELD_KEYS = ["title"]
+    FIELD_KEYS = ["created_at", "updated_at", "title", "author", "image"]
 
     class Meta:
         model = Articles
@@ -78,7 +78,6 @@ class ArticleSerializer(serializers.ModelSerializer):
 
             instance.tags.set(tag_objs)
 
-        Articles.objects.filter(id=17).update()
         instance.save()
 
         return instance

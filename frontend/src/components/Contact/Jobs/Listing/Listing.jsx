@@ -19,11 +19,13 @@ const useStyles = makeStyles((theme) => ({
     margin: 0,
     padding: theme.spacing(0),
     borderRadius: 0,
+    backgroundColor: theme.palette.background.light,
   },
   lastChild: {
     margin: 0,
     padding: theme.spacing(0),
     borderRadius: 0,
+    backgroundColor: theme.palette.background.light,
   },
 
   title: {
@@ -49,71 +51,52 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const jobPostings = [
-  {
-    title: "Software Engineer",
-    description:
-      "We are seeking a highly motivated software engineer to join our team.",
-    location: "New York, NY",
-    jobType: "Full-time",
-  },
-  {
-    title: "Product Manager",
-    description:
-      "We are seeking an experienced product manager to lead the development of our new product line.",
-    location: "San Francisco, CA",
-    jobType: "Contract",
-  },
-  {
-    title: "Data Scientist",
-    description:
-      "We are seeking a talented data scientist to help us unlock insights from our vast data sets.",
-    location: "Seattle, WA",
-    jobType: "Full-time",
-  },
-];
-
-function JobListing() {
-  const [jobPostings, setJobPostings] = useState();
+function JobListing({
+  jobsData,
+  header = "Jobs",
+  subheader = "Interested in joining our team? See our open positions below.",
+  currentId = null,
+}) {
   const classes = useStyles();
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
-  useEffect(() => {
-    const fetchData = async () => {
-      axiosInstance
-        .get("/jobposting/")
-        .then((response) => {
-          console.log(response.data);
-          setJobPostings(response.data);
-        })
-        .catch((err) => {
-          setError(err);
-        });
-    };
-    fetchData();
-  }, []);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     axiosInstance
+  //       .get("/jobposting/")
+  //       .then((response) => {
+  //         console.log(response.data);
+  //         setJobPostings(response.data);
+  //       })
+  //       .catch((err) => {
+  //         setError(err);
+  //       });
+  //   };
+  //   fetchData();
+  // }, []);
 
   return (
     <>
-      {jobPostings && (
+      {jobsData && (
         <Grid
           container
           spacing={0}
-          style={{ marginTop: 40, padding: 16, background: "#FFFFFF" }}
+          style={{ marginTop: 40, padding: 16, background: "#F5F5F5" }}
         >
           <BaseContent
             maxWidth={900}
-            header="Jobs"
-            subheader="Interested in joining our team? See our open positions below."
+            header={header}
+            subheader={subheader}
             boxShadow={2}
             pad={3}
             mt={1}
             mb={1}
             br={1}
-            background="#FFFFFF"
+            background="#F5F5F5"
+            showIcon={true}
           >
-            {jobPostings.map((jobPosting, index) => (
+            {jobsData.map((jobPosting, index) => (
               <>
                 <BaseContent
                   maxWidth={900}
@@ -121,12 +104,12 @@ function JobListing() {
                   pad={2}
                   mt={0}
                   mb={0}
-                  background="#FFFFFF"
+                  background="#F5F5F5"
                 >
                   <Grid key={index} item xs={12}>
                     <Paper
                       className={
-                        index === jobPostings.length - 1
+                        index === jobsData.length - 1
                           ? classes.lastChild
                           : classes.root
                       }
@@ -161,18 +144,27 @@ function JobListing() {
                           >
                             {jobPosting.location} - {jobPosting.type}
                           </Typography>
-                          <Link to={`/jobposting/${jobPosting.id}`}>
+                          {currentId !== jobPosting.id ? (
+                            <Link to={`/jobposting/${jobPosting.id}`}>
+                              <StyledButton
+                                color={
+                                  index % 2 === 0
+                                    ? theme.palette.secondary.dark
+                                    : theme.palette.primary.main
+                                }
+                                buttonText="Apply"
+                                minWidth={0}
+                                size="small"
+                              />
+                            </Link>
+                          ) : (
                             <StyledButton
-                              color={
-                                index % 2 === 0
-                                  ? theme.palette.secondary.dark
-                                  : theme.palette.primary.main
-                              }
                               buttonText="Apply"
                               minWidth={0}
                               size="small"
+                              disabled
                             />
-                          </Link>
+                          )}
                         </Grid>
                       </Grid>
                     </Paper>

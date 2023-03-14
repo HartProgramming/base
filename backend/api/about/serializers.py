@@ -1,16 +1,8 @@
 from rest_framework import serializers
 from PIL import Image
-from .models import (
-    AboutBlock,
-    MissionStatement,
-    CompanyHistory,
-    Value,
-    TeamMember,
-    Skill,
-    ContactInformation,
-    FAQ,
-    Category,
-)
+from .models import *
+from jobs.serializers import JobPostingSerializer
+from api.views import get_model_metadata
 
 
 class AboutBlockSerializer(serializers.ModelSerializer):
@@ -31,7 +23,7 @@ class AboutBlockSerializer(serializers.ModelSerializer):
 
 
 class MissionStatementSerializer(serializers.ModelSerializer):
-    FIELD_KEYS = ["title", "body"]
+    FIELD_KEYS = ["title"]
 
     class Meta:
         model = MissionStatement
@@ -39,7 +31,7 @@ class MissionStatementSerializer(serializers.ModelSerializer):
 
 
 class CompanyHistorySerializer(serializers.ModelSerializer):
-    FIELD_KEYS = ["title", "body"]
+    FIELD_KEYS = ["title"]
 
     class Meta:
         model = CompanyHistory
@@ -56,20 +48,9 @@ class ValueSerializer(serializers.ModelSerializer):
 
 class ContactInformationSerializer(serializers.ModelSerializer):
     FIELD_KEYS = [
-        "email",
         "phone",
         "address",
-        "monday",
-        "tuesday",
-        "wednesday",
-        "thursday",
-        "friday",
-        "saturday",
-        "sunday",
-        "facebook",
-        "linkedin",
-        "instagram",
-        "twitter",
+        "email",
     ]
 
     class Meta:
@@ -84,6 +65,8 @@ class SkillSerializer(serializers.ModelSerializer):
 
 
 class CategorySerializer(serializers.ModelSerializer):
+    FIELD_KEYS = ["name"]
+
     class Meta:
         model = Category
         fields = "__all__"
@@ -91,7 +74,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class FAQSerializer(serializers.ModelSerializer):
     category = serializers.StringRelatedField(source="category.name")
-    FIELD_KEYS = ["category", "question", "answer"]
+    FIELD_KEYS = ["question", "answer", "category"]
 
     class Meta:
         model = FAQ
@@ -125,14 +108,7 @@ class FAQSerializer(serializers.ModelSerializer):
 
 class TeamMemberSerializer(serializers.ModelSerializer):
     image = serializers.ImageField(required=False, allow_null=True)
-    FIELD_KEYS = [
-        "name",
-        "role",
-        "bio",
-        "linkedIn",
-        "github",
-        "twitter",
-    ]
+    FIELD_KEYS = ["name", "role", "image"]
 
     class Meta:
         model = TeamMember
@@ -145,6 +121,9 @@ class TeamMemberSerializer(serializers.ModelSerializer):
             "linkedIn",
             "github",
             "twitter",
+            "facebook",
+            "instagram",
+            "youtube",
         )
 
     def validate_image(self, image):
@@ -172,6 +151,22 @@ class AboutFullSerializer(serializers.Serializer):
     core_values = ValueSerializer(many=True)
     team_members = TeamMemberSerializer(many=True)
     contact_information = ContactInformationSerializer()
+    jobs = JobPostingSerializer(many=True)
+    metadata = serializers.SerializerMethodField()
+
+    def get_metadata(self, obj):
+        metadata = []
+        for model in [
+            "AboutBlock",
+            "MissionStatement",
+            "CompanyHistory",
+            "Value",
+            "TeamMember",
+            "ContactInformation",
+            "JobPosting",
+        ]:
+            metadata.append(get_model_metadata(model))
+        return metadata
 
 
 AboutBlock.serializer_class = AboutBlockSerializer
@@ -181,3 +176,4 @@ ContactInformation.serializer_class = ContactInformationSerializer
 TeamMember.serializer_class = TeamMemberSerializer
 FAQ.serializer_class = FAQSerializer
 Value.serializer_class = ValueSerializer
+Category.serializer_class = CategorySerializer

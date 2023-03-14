@@ -12,7 +12,11 @@ import TitleBlockEditor from "../../Elements/TextBlocks/TitleBlock/TitleBlockEdi
 import EditButton from "../../Elements/Buttons/EditButton";
 import ArticlesDisplayBase from "../../Articles/Display/DisplayBase/ArticlesDisplayBase";
 import BaseCarousel from "../../Elements/Base/BaseCarousel";
+<<<<<<< HEAD
 import AdvancedSnackbar from "../../Elements/Snackbars/Snackbar";
+=======
+import EditDeleteButtonMenu from "../../Elements/Buttons/EditDeleteButtonMenu";
+>>>>>>> 6c5a6f19d25665b98ba02e21d3b29214c3aece69
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -52,10 +56,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function LatestNews() {
-  const [articlesData, setArticlesData] = useState([]);
-  const [titleBlock, setTitleBlock] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+export default function LatestNews({ articlesData, block, setBlock }) {
   const [error, setError] = useState(null);
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState(null)
@@ -66,10 +67,11 @@ export default function LatestNews() {
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   const updateTitleBlock = (updateTitleBlock) => {
-    setTitleBlock(updateTitleBlock);
+    setBlock(updateTitleBlock);
     setEditing(false);
   };
 
+<<<<<<< HEAD
   useEffect(() => {
     axiosInstance
       .get("/titleblock/news/")
@@ -118,6 +120,8 @@ export default function LatestNews() {
     );
   }
 
+=======
+>>>>>>> 6c5a6f19d25665b98ba02e21d3b29214c3aece69
   if (error) {
     return (
       <Typography variant="body1" color="error">
@@ -130,6 +134,7 @@ export default function LatestNews() {
     <Grid container spacing={0} className={classes.root}>
       <Paper className={classes.paper} elevation={0}>
         <Grid item xs={12}>
+<<<<<<< HEAD
           {!editing && auth.is_superuser ? (
             <div style={{ marginTop: 20 }}>
               <EditButton
@@ -138,20 +143,31 @@ export default function LatestNews() {
               />
             </div>
           ) : null}
+=======
+>>>>>>> 6c5a6f19d25665b98ba02e21d3b29214c3aece69
           {!editing ? (
             <TitleBlock
-              subtitle={titleBlock.subtitle}
-              title={titleBlock.title}
-              alignment={titleBlock.alignment}
-              showDivider={titleBlock.show_divider}
+              subtitle={block.subtitle}
+              title={block.title}
+              alignment={block.alignment}
+              showDivider={block.show_divider}
             />
           ) : (
             <TitleBlockEditor
-              titleBlock={titleBlock}
+              titleBlock={block}
               onUpdate={updateTitleBlock}
               handleCancel={() => setEditing(!editing)}
             />
           )}
+          {!editing && auth.is_superuser ? (
+            <>
+              <EditDeleteButtonMenu
+                editClick={() => setEditing(!editing)}
+                hideDelete
+                position="center"
+              />
+            </>
+          ) : null}
         </Grid>
         <Grid container spacing={0}>
           <ArticlesDisplayBase

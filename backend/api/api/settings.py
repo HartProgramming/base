@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "corsheaders",
+    "auditlog",
     "authorization",
     "articles",
     "landing",
@@ -53,6 +54,7 @@ INSTALLED_APPS = [
     "services",
     "support",
     "jobs",
+    "general",
 ]
 
 MIDDLEWARE = [
@@ -64,6 +66,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "corsheaders.middleware.CorsMiddleware",
+    "general.middleware.Default404ResponseMiddleware",
 ]
 
 ROOT_URLCONF = "api.urls"
@@ -140,6 +143,12 @@ JAZZMIN_SETTINGS = {
     "show_ui_builder": False,
     "changeform_format": "horizontal_tabs",
 }
+
+EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
+SENDGRID_API_KEY = (
+    "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"
+)
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/

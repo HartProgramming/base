@@ -2,12 +2,6 @@ import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
-import AllInclusiveIcon from "@material-ui/icons/AllInclusive";
-import LockIcon from "@material-ui/icons/Lock";
-import DesignIcon from "@material-ui/icons/Brush";
-import DevelopIcon from "@material-ui/icons/Code";
-import HostingIcon from "@material-ui/icons/Public";
-import LaunchIcon from "@material-ui/icons/Launch";
 import { useSelector } from "react-redux";
 import { Button } from "@material-ui/core";
 import ProcessEdit from "./ProcessEdit";
@@ -16,8 +10,56 @@ import EditButton from "../../Elements/Buttons/EditButton";
 import Icon from "../../Elements/Icon/Icon";
 import {Select} from "@material-ui/core";
 import EditDeleteButtonMenu from "../../Elements/Buttons/EditDeleteButtonMenu";
+<<<<<<< HEAD
 import { ProcessStylesCenter, ProcessStylesLeft } from "./ProcessStyles";
 import { useEffect } from "react";
+=======
+
+const useStyles = makeStyles((theme) => ({
+  iconContainer: {
+    textAlign: "center",
+  },
+  icon: {
+    fontSize: "2rem",
+    color: theme.palette.secondary.main,
+  },
+  heading: {
+    fontFamily: "Poppins",
+    textAlign: "center",
+    fontWeight: 700,
+    fontSize: "1.5rem",
+    border: 0,
+  },
+  description: {
+    fontSize: "0.95rem",
+    fontWeight: 400,
+    fontFamily: "Roboto",
+    textAlign: "center",
+    color: theme.palette.text.dark,
+    minHeight: 80,
+  },
+  stepContainer: {
+    display: "flex",
+    justifyContent: "center",
+    maxWidth: 550,
+  },
+  fadeIn: {
+    opacity: 0,
+    animation: `$fadeIn 0.5s ease-in-out forwards`,
+  },
+  "@keyframes fadeIn": {
+    from: {
+      opacity: 0,
+      transform: "translateY(-30px)",
+    },
+    to: {
+      opacity: 1,
+      transform: "translateY(0)",
+    },
+  },
+}));
+
+>>>>>>> 6c5a6f19d25665b98ba02e21d3b29214c3aece69
 export default function Process({ step }) {
   const center = ProcessStylesCenter()
   const left = ProcessStylesLeft()

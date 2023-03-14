@@ -4,9 +4,10 @@ import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
 import CreateUpdateArticle from "../Create/ArticleCreateUpdate";
 import ArticlesList from "../Display/List/ArticlesList";
-import ContentLayout from "../../Elements/Layout/ContentLayout";
+import PageContainer from "../../Elements/Layout/PageContainer";
 import ArticlesDisplayBase from "../Display/DisplayBase/ArticlesDisplayBase";
 import axiosInstance from "../../../lib/Axios/axiosInstance";
+import ErrorPage from "../../Elements/Layout/Errors/ErrorPage";
 
 const useStyles = makeStyles((theme) => ({
   fab: {
@@ -24,6 +25,7 @@ const useStyles = makeStyles((theme) => ({
 
 const ArticlesPage = () => {
   const classes = useStyles();
+  const [error, setError] = useState();
   const [articles, setArticles] = useState([]);
   const [open, setOpen] = useState(false);
 
@@ -37,19 +39,17 @@ const ArticlesPage = () => {
       })
       .catch((err) => {
         setError(err);
+        console.log("err: ", err);
       });
   }, []);
 
+  if (error) {
+    return <ErrorPage errorMessage={error.message} />;
+  }
+
   return (
     <>
-      <ContentLayout
-        title="Articles"
-        description="Where the articles be yo."
-        keywords="news, posts, articles"
-        image="https://example.com/image.png"
-        url="https://example.com/example-page"
-        backgroundColor="white"
-      >
+      <PageContainer backgroundColor="#F5F5F5" page_name="News">
         <ArticlesDisplayBase articles={articles} />
         <ArticlesList />
         <Fab
@@ -60,7 +60,7 @@ const ArticlesPage = () => {
           <AddIcon />
         </Fab>
         <CreateUpdateArticle open={open} setOpen={setOpen} />
-      </ContentLayout>
+      </PageContainer>
     </>
   );
 };
