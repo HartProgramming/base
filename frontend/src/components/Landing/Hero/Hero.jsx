@@ -9,6 +9,7 @@ import ContactButtons from "../../Contact/Contact/ContactButtons";
 import Social from "../../Contact/Social/Social";
 import StyledButton from "../../Elements/Buttons/StyledButton";
 import BaseForm from "../../Elements/Base/BaseForm";
+import AdvancedSnackbar from "../../Elements/Snackbars/Snackbar";
 
 const useStyles = makeStyles((theme) => ({
   overlay: {
@@ -150,14 +151,27 @@ function Hero({ contactData, form = true }) {
 
   const [editHero, setEditHero] = useState(false);
   const [editCarousel, setEditCarousel] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [message, setMessage] = useState(null);
   const auth = useSelector((state) => state.auth);
   const updateHeroBlock = (updatedHeroBlock) => {
     setHeroData(updatedHeroBlock);
     setEditHero(false);
   };
 
+  const handleClose = () => {
+    setOpen(false);
+    setMessage(null);
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
+  };
+
+  const handleClick = () => {
+    setOpen(true);
+    console.log("hi");
+    setMessage("Message Sent");
   };
 
   return (
@@ -232,10 +246,20 @@ function Hero({ contactData, form = true }) {
             xs={12}
             style={{ display: "flex", justifyContent: "center" }}
           >
-            <StyledButton buttonText="Get in touch" />
+            <StyledButton onClick={handleClick} buttonText="Get in touch" />
           </Grid>
         </BaseForm>
       ) : null}
+      {open && (
+        <AdvancedSnackbar
+          message={message}
+          open={open}
+          onClose={handleClose}
+          type="success"
+          duration="3500"
+          position="top-center"
+        />
+      )}
     </Grid>
   );
 }

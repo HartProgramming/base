@@ -4,6 +4,7 @@ import EditButton from "../../Elements/Buttons/EditButton";
 import ContentEdit from "./ContentEdit";
 import DOMPurify from "dompurify";
 import EditDeleteButtonMenu from "../../Elements/Buttons/EditDeleteButtonMenu";
+import useEditTitleSnack from "../../../hooks/useEditTitleSnack";
 
 const useStyles = makeStyles((theme) => ({
   section: {
@@ -45,6 +46,7 @@ const ContentSection = ({
   type,
   auth,
 }) => {
+
   const classes = useStyles();
 
   return (

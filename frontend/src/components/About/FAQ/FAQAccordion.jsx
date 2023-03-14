@@ -5,6 +5,8 @@ import { Grid } from "@material-ui/core";
 import { Tabs, Tab } from "@material-ui/core";
 import AccordionQA from "./AccordionQA";
 import axiosInstance from "../../../lib/Axios/axiosInstance";
+import AdvancedSnackbar from "../../Elements/Snackbars/Snackbar";
+import useSnack from "../../../hooks/useEditTitleSnack";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -65,6 +67,20 @@ const FAQAccordion = () => {
   const [faqs, setFaqs] = useState([]);
   const [categories, setCategories] = useState([]);
   const [editing, setEditing] = useState(Array(faqs.length).fill(false));
+  const [
+    openSnack,
+    messageSnack,
+    typeSnack,
+    laySnack,
+    editModeSnack,
+    cancelModeSnack,
+    setCancelModeSnack,
+    successModeSnack,
+    setSuccessModeSnack,
+    handleSnackOpen,
+    handleSnackClose,
+    onSnackCancel,
+  ] = useSnack("top-center");
 
   const onUpdate = () => {
     axiosInstance
@@ -74,14 +90,17 @@ const FAQAccordion = () => {
         response.data.forEach((faq) => {
           if (!updatedFaqData[faq.category]) {
             updatedFaqData[faq.category] = [faq];
+            console.log('yes')
           } else {
             updatedFaqData[faq.category].push(faq);
+            console.log('no')
           }
         });
         setFaqs(updatedFaqData);
         setCategories(Object.keys(updatedFaqData));
         setCurrentCategory(Object.keys(updatedFaqData)[0]);
         setEditing({});
+        setSuccessModeSnack(true);
       })
       .catch((err) => {
         console.log(err);
@@ -118,6 +137,8 @@ const FAQAccordion = () => {
   };
 
   const handleCancel = (index) => {
+    console.log('cancel')
+    setCancelModeSnack(true);
     const newEditing = [...editing];
     newEditing[index] = false;
     setEditing(newEditing);
@@ -171,6 +192,26 @@ const FAQAccordion = () => {
             </>
           </Paper>
         </Grid>
+        {successModeSnack && (
+          <AdvancedSnackbar
+            onClose={handleSnackClose}
+            duration="3000"
+            position={"top-center"}
+            open={true}
+            message={messageSnack}
+            type={"success"}
+          />
+        )}
+        {cancelModeSnack && (
+          <AdvancedSnackbar
+            onClose={handleSnackClose}
+            duration="3000"
+            position={'top-center'}
+            open={true}
+            message={'Updates Canceled'}
+            type={'warning'}
+          />
+        )}
       </div>
     </>
   );

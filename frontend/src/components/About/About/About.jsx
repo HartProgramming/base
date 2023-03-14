@@ -4,7 +4,7 @@ import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
 import Values from "../Values/Values";
 import axiosInstance from "../../../lib/Axios/axiosInstance";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import EditButton from "../../Elements/Buttons/EditButton";
 import AboutHeadingEdit from "../Heading/AboutHeadingEdit";
 import Heading from "../Heading/Heading";
@@ -12,6 +12,9 @@ import ContentSection from "../Content/ContentSection";
 import useInput from "../../../hooks/useInput";
 import { AboutStyles1, AboutStyles2 } from "./AboutStyles";
 import { Select } from "@material-ui/core";
+import AdvancedSnackbar from "../../Elements/Snackbars/Snackbar";
+import useSnack from "../../../hooks/useEditTitleSnack";
+
 export default function About() {
   const {
     value: missionData,
@@ -36,6 +39,20 @@ export default function About() {
   const [def, setDef] = useState("layout-1");
   const [design, setDesign] = useState(4);
   const [styles, setStyles] = useState(layout1);
+  const [
+    openSnack,
+    messageSnack,
+    typeSnack,
+    laySnack,
+    editModeSnack,
+    cancelModeSnack,
+    setCancelModeSnack,
+    successModeSnack,
+    setSuccessModeSnack,
+    handleSnackOpen,
+    handleSnackClose,
+    onSnackCancel,
+  ] = useSnack("top-center", setEditTitle);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -61,22 +78,25 @@ export default function About() {
   }, []);
 
   const updateBlock = (updateBlock) => {
+    setSuccessModeSnack(true);
     setData(updateBlock);
     setEditTitle(false);
   };
   const updateMission = (updateMission) => {
+    setSuccessModeSnack(true);
     setMissionData(updateMission);
     setMissionBody(updateMission.body.replace(/<br\s*[\/]?>/gi, ""));
     setEditMission(false);
   };
   const updateHistory = (updateHistory) => {
+    setSuccessModeSnack(true);
     setHistoryData(updateHistory);
     setHistoryBody(updateHistory.body.replace(/<br\s*[\/]?>/gi, ""));
     setEditHistory(false);
   };
 
   const handleChange = (e) => {
-    console.log(e.target.value)
+    console.log(e.target.value);
     setDef(e.target.value);
   };
 
@@ -92,7 +112,7 @@ export default function About() {
       setStyles(layout2);
     } else if (def === "layout-4") {
       setDesign(4);
-      
+
       setStyles(layout1);
     }
   }, [def]);
@@ -116,7 +136,7 @@ export default function About() {
                   }}
                 >
                   <EditButton
-                    onClick={() => setEditTitle(!editTitle)}
+                    onClick={handleSnackOpen}
                     editState={editTitle}
                     position="end"
                   />
@@ -129,9 +149,39 @@ export default function About() {
                   <AboutHeadingEdit
                     aboutBlock={data}
                     onUpdate={updateBlock}
-                    handleCancel={() => setEditTitle(!editTitle)}
+                    handleCancel={onCancel}
                   />
                 </Grid>
+              )}
+              {editModeSnack && (
+                <AdvancedSnackbar
+                  onClose={handleSnackClose}
+                  duration="3000"
+                  position={laySnack}
+                  open={openSnack}
+                  message={messageSnack}
+                  type={typeSnack}
+                />
+              )}
+              {successModeSnack && (
+                <AdvancedSnackbar
+                  onClose={handleSnackClose}
+                  duration="3000"
+                  position={"top-center"}
+                  open={true}
+                  message={messageSnack}
+                  type={"success"}
+                />
+              )}
+              {cancelModeSnack && (
+                <AdvancedSnackbar
+                  onClose={handleSnackClose}
+                  duration="3000"
+                  position={laySnack}
+                  open={openSnack}
+                  message={messageSnack}
+                  type={typeSnack}
+                />
               )}
             </>
             <Select value={def} onChange={handleChange}>

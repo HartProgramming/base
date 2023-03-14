@@ -12,6 +12,7 @@ import TitleBlockEditor from "../../Elements/TextBlocks/TitleBlock/TitleBlockEdi
 import EditButton from "../../Elements/Buttons/EditButton";
 import ArticlesDisplayBase from "../../Articles/Display/DisplayBase/ArticlesDisplayBase";
 import BaseCarousel from "../../Elements/Base/BaseCarousel";
+import AdvancedSnackbar from "../../Elements/Snackbars/Snackbar";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -56,6 +57,8 @@ export default function LatestNews() {
   const [titleBlock, setTitleBlock] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [open, setOpen] = useState(false);
+  const [message, setMessage] = useState(null)
   const classes = useStyles();
   const [editing, setEditing] = useState(false);
   const auth = useSelector((state) => state.auth);
@@ -88,6 +91,17 @@ export default function LatestNews() {
       });
   }, []);
 
+  const handleEdit = () => {
+    setOpen(true)
+    setMessage('Editing Mode')
+    setEditing(!editing)
+  }
+
+  const handleClose =() => {
+    setOpen(false)
+    setMessage(null)
+  }
+
   if (isLoading) {
     return (
       <Grid container spacing={3}>
@@ -116,10 +130,10 @@ export default function LatestNews() {
     <Grid container spacing={0} className={classes.root}>
       <Paper className={classes.paper} elevation={0}>
         <Grid item xs={12}>
-          {auth.is_superuser ? (
+          {!editing && auth.is_superuser ? (
             <div style={{ marginTop: 20 }}>
               <EditButton
-                onClick={() => setEditing(!editing)}
+                onClick={handleEdit}
                 editState={editing}
               />
             </div>
@@ -146,6 +160,9 @@ export default function LatestNews() {
             carousel={isSmallScreen ? true : false}
           />
         </Grid>
+        {open && 
+          <AdvancedSnackbar open={open} message={message} onClose={handleClose} duration='4000' type='info' position="top-center" />
+        }
       </Paper>
     </Grid>
   );

@@ -6,16 +6,29 @@ import EditButton from "../../Elements/Buttons/EditButton";
 import CardHead from "./CardHead";
 import CardList from "./CardList";
 import CardButtons from "./CardButtons";
+import AdvancedSnackbar from "../../Elements/Snackbars/Snackbar";
 
 export default function CardBase({ plan, classes }) {
   const [planData, setPlanData] = useState(plan);
   const [editing, setEditing] = useState(false);
   const auth = useSelector((state) => state.auth);
-
+  const [open, setOpen] = useState(false)
+  const [success, setSuccess] = useState(null)
   const updatePlan = (updatePlan) => {
     setPlanData(updatePlan);
     setEditing(false);
   };
+
+  const handleClose =() => {
+    setOpen(false)
+    setSuccess(null)
+  }
+
+  const handleEdit = () => {
+    setEditing(!editing)
+    setOpen(true)
+    setSuccess('Editing Mode')
+  }
 
   return (
     <div
@@ -44,13 +57,23 @@ export default function CardBase({ plan, classes }) {
       {!editing && auth.is_superuser ? (
         <>
           <EditButton
-            onClick={() => setEditing(!editing)}
+            onClick={handleEdit}
             editState={editing}
             mt={0}
             mb={0}
           />
         </>
       ) : null}
+      {open && (
+        <AdvancedSnackbar
+          open={open}
+          duration="4000"
+          message={success}
+          type="info"
+          position="top-center"
+          onClose={handleClose}
+        />
+      )}
     </div>
   );
 }

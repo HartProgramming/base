@@ -9,7 +9,7 @@ import { useSelector } from "react-redux";
 import SocialEdit from "./SocialEdit";
 import { baseClasses } from "../../../classes";
 import EditDeleteButtonMenu from "../../Elements/Buttons/EditDeleteButtonMenu";
-
+import AdvancedSnackbar from "../../Elements/Snackbars/Snackbar";
 const useStyles = makeStyles((theme) => ({
   root: {
     justifyContent: "center",
@@ -34,6 +34,10 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 600,
     paddingTop: 30,
   },
+  snack: {
+    width: 100,
+    border: '1px solid blue'
+  }
 }));
 
 export default function Social({ contactData, title, color = "light" }) {
@@ -43,6 +47,8 @@ export default function Social({ contactData, title, color = "light" }) {
   const auth = useSelector((state) => state.auth);
   const [contacts, setContacts] = useState(contactData);
   const [editing, setEditing] = useState(false);
+  const [open, setOpen] = useState(false)
+  const [message, setMessage] = useState(null)
   let finalColor;
 
   if (color === "light") {
@@ -78,6 +84,18 @@ export default function Social({ contactData, title, color = "light" }) {
       icon: <LinkedInIcon fontSize="large" className={classes.socialIcon} />,
     },
   ];
+
+  const handleEdit = () => {
+    setEditing(!editing)
+    setOpen(true)
+    setMessage('Editing Mode')
+    console.log('hi')
+  }
+
+  const handleClose = () => {
+    setOpen(false)
+    setMessage(null)
+  }
 
   return (
     <>
@@ -121,7 +139,7 @@ export default function Social({ contactData, title, color = "light" }) {
           {!editing && auth.is_superuser ? (
             <EditDeleteButtonMenu
               hideDelete
-              editClick={() => setEditing(!editing)}
+              editClick={handleEdit}
               position="center"
               placement="bottom"
               finalColor={finalColor}
@@ -129,12 +147,18 @@ export default function Social({ contactData, title, color = "light" }) {
           ) : null}
         </div>
       ) : (
-        <SocialEdit
-          initialData={contacts}
-          onUpdate={updateSocialData}
-          handleCancel={() => setEditing(!editing)}
-        />
+        <>
+          <SocialEdit
+            initialData={contacts}
+            onUpdate={updateSocialData}
+            handleCancel={() => setEditing(!editing)}
+          />
+          
+        </>
       )}
+      {open && 
+      <AdvancedSnackbar open={open} message={message} onClose={handleClose} type='info' duration='4000' position='top-center'/>
+      }
     </>
   );
 }

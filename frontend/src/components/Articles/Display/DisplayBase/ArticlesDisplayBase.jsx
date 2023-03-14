@@ -114,7 +114,7 @@ const ArticlesDisplayBase = ({
       .catch((err) => {
         setError(err);
       });
-  };
+  }; 
 
   const renderArticles = (article) => {
     const html = DOMPurify.sanitize(article.content);

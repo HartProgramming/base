@@ -10,7 +10,7 @@ import axiosInstance from "../../../lib/Axios/axiosInstance";
 import TitleBlockEditor from "../../Elements/TextBlocks/TitleBlock/TitleBlockEditor";
 import EditButton from "../../Elements/Buttons/EditButton";
 import BaseEditForm from "../../Elements/Base/EditForm/BaseEditForm";
-
+import AdvancedSnackbar from "../../Elements/Snackbars/Snackbar";
 const useStyles = makeStyles((theme) => ({
   root: {
     justifyContent: "center",
@@ -49,6 +49,8 @@ export default function Processes() {
   const [block, setBlock] = useState([]);
   const [processes, setProcesses] = useState([]);
   const [editTitle, setEditTitle] = useState(false);
+  const [open, setOpen] = useState(false)
+  const [message, setMessage] = useState(null)
   const auth = useSelector((state) => state.auth);
 
   useEffect(() => {
@@ -75,6 +77,17 @@ export default function Processes() {
     setBlock(updateTitleBlock);
     setEditTitle(false);
   };
+
+  const handleClose = () => {
+    setOpen(false)
+    setMessage(null)
+  }
+
+  const handleEdit = () => {
+    setEditTitle(!editTitle)
+    setOpen(true)
+    setMessage('Editing Mode')
+  }
 
   return (
     <Box className={classes.root}>
@@ -107,7 +120,7 @@ export default function Processes() {
             )}
             {!editTitle && auth.is_superuser ? (
               <EditButton
-                onClick={() => setEditTitle(!editTitle)}
+                onClick={handleEdit}
                 editState={editTitle}
               />
             ) : null}
@@ -128,6 +141,9 @@ export default function Processes() {
           </Paper>
         </Grid>
       </Grid>
+      {open && 
+        <AdvancedSnackbar onClose={handleClose} open={open} message={message} position='top-center' type='info' duration='4000' />
+      }
     </Box>
   );
 }
