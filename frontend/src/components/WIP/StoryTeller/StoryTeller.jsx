@@ -3,12 +3,6 @@ import { Typography, Grid, Paper } from "@material-ui/core";
 import { StoryTellerStyles1} from "./StoryTellerStyles";
 import { useEffect } from "react";
 
-<<<<<<< HEAD
-const StoryTeller = ({ image = "scale" }, {textAlign = 'left'}) => {
-  const classes = StoryTellerStyles1();
-  const [imgScale, setImgScale] = useState(null);
-  const [align, setAlign] = useState(null);
-=======
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -32,7 +26,8 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(2),
   },
 }));
->>>>>>> 6c5a6f19d25665b98ba02e21d3b29214c3aece69
+
+const StoryTeller = () => {
 
   useEffect(() => {
     if (image === "no-scale") {
@@ -144,6 +139,6 @@ const useStyles = makeStyles((theme) => ({
         </div>
     </>
   );
-};
+  }
 
 export default StoryTeller;

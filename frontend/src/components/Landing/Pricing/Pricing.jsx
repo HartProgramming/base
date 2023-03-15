@@ -44,23 +44,6 @@ export default function Pricing({ serviceData }) {
           </BaseCarousel>
         </Grid>
       ) : (
-<<<<<<< HEAD
-        <Grid container className={classes.pricingContainer}>
-          {plans.map((plan, index) => (
-            <Grid
-              item
-              xs={12}
-              sm={12}
-              md={12}
-              lg={6}
-              xl={4}
-              className={classes.cardContainer}
-            >
-              <CardBase index={index} plan={plan} classes={cardLayout} />
-            </Grid>
-          ))}
-        </Grid>
-=======
         <>
           <Grid container className={classes.pricingContainer}>
             {serviceData.map((plan, index) => (
@@ -78,7 +61,6 @@ export default function Pricing({ serviceData }) {
             ))}
           </Grid>
         </>
->>>>>>> 6c5a6f19d25665b98ba02e21d3b29214c3aece69
       )}
     </div>
   );

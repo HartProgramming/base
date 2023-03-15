@@ -5,16 +5,10 @@ import { useSelector } from "react-redux";
 import axiosInstance from "../../../lib/Axios/axiosInstance";
 import ContactButtons from "../../Contact/Contact/ContactButtons";
 import Social from "../../Contact/Social/Social";
-<<<<<<< HEAD
-import StyledButton from "../../Elements/Buttons/StyledButton";
-import BaseForm from "../../Elements/Base/BaseForm";
-import AdvancedSnackbar from "../../Elements/Snackbars/Snackbar";
-=======
 import HeroBlock from "../../Elements/TextBlocks/HeroBlock/HeroBlock";
 import EditDeleteButtonMenu from "../../Elements/Buttons/EditDeleteButtonMenu";
 import HeroBlockEdit from "../../Elements/TextBlocks/HeroBlock/HeroBlockEdit";
 import HeroForm from "./HeroForm";
->>>>>>> 6c5a6f19d25665b98ba02e21d3b29214c3aece69
 
 const useStyles = makeStyles((theme) => ({
   overlay: {
@@ -44,53 +38,12 @@ const useStyles = makeStyles((theme) => ({
 
 function Hero({ heroData, setHeroData, contactData, form = true }) {
   const classes = useStyles();
-<<<<<<< HEAD
-  const [heroData, setHeroData] = useState({
-    title: "",
-    heading: "",
-    text: "",
-    buttonText: "",
-  });
-
-  useEffect(() => {
-    const fetchData = async () => {
-      axiosInstance
-        .get("/heroblock/main/")
-        .then((response) => {
-          setHeroData(response.data);
-        })
-        .catch((err) => {
-          setError(err);
-        });
-    };
-    fetchData();
-  }, []);
-
-  const [editHero, setEditHero] = useState(false);
-  const [editCarousel, setEditCarousel] = useState(false);
-  const [open, setOpen] = useState(false);
-  const [message, setMessage] = useState(null);
-=======
   const [editing, setEditing] = useState(false);
->>>>>>> 6c5a6f19d25665b98ba02e21d3b29214c3aece69
   const auth = useSelector((state) => state.auth);
 
   const updateHeroBlock = (updatedHeroBlock) => {
     setHeroData(updatedHeroBlock);
-<<<<<<< HEAD
-    setEditHero(false);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-    setMessage(null);
-  };
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-=======
     setEditing(false);
->>>>>>> 6c5a6f19d25665b98ba02e21d3b29214c3aece69
   };
 
   const handleClick = () => {
@@ -137,74 +90,7 @@ function Hero({ heroData, setHeroData, contactData, form = true }) {
           </Grid>
         </div>
       </Grid>
-<<<<<<< HEAD
-      {form ? (
-        <BaseForm
-          title="Ready to take the first step?"
-          body="Fill out the form below and one of our experts will get in touch
-        with you to schedule a consultation."
-          handleSubmit={handleSubmit}
-        >
-          <Grid item xs={12}>
-            <TextField
-              margin="dense"
-              label="Full Name"
-              variant="outlined"
-              fullWidth
-              className={classes.formField}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              margin="dense"
-              label="Email"
-              variant="outlined"
-              fullWidth
-              className={classes.formField}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              margin="dense"
-              label="Phone"
-              variant="outlined"
-              fullWidth
-              className={classes.formField}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              margin="dense"
-              label="Message"
-              variant="outlined"
-              multiline
-              rows={4}
-              fullWidth
-              className={classes.formField}
-            />
-          </Grid>
-          <Grid
-            item
-            xs={12}
-            style={{ display: "flex", justifyContent: "center" }}
-          >
-            <StyledButton onClick={handleClick} buttonText="Get in touch" />
-          </Grid>
-        </BaseForm>
-      ) : null}
-      {open && (
-        <AdvancedSnackbar
-          message={message}
-          open={open}
-          onClose={handleClose}
-          type="success"
-          duration="3500"
-          position="top-center"
-        />
-      )}
-=======
       {form ? <HeroForm /> : null}
->>>>>>> 6c5a6f19d25665b98ba02e21d3b29214c3aece69
     </Grid>
   );
 }

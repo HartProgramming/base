@@ -10,10 +10,6 @@ import EditButton from "../../Elements/Buttons/EditButton";
 import Icon from "../../Elements/Icon/Icon";
 import {Select} from "@material-ui/core";
 import EditDeleteButtonMenu from "../../Elements/Buttons/EditDeleteButtonMenu";
-<<<<<<< HEAD
-import { ProcessStylesCenter, ProcessStylesLeft } from "./ProcessStyles";
-import { useEffect } from "react";
-=======
 
 const useStyles = makeStyles((theme) => ({
   iconContainer: {
@@ -59,7 +55,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
->>>>>>> 6c5a6f19d25665b98ba02e21d3b29214c3aece69
 export default function Process({ step }) {
   const center = ProcessStylesCenter()
   const left = ProcessStylesLeft()

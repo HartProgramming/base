@@ -10,14 +10,10 @@ import axiosInstance from "../../../lib/Axios/axiosInstance";
 import TitleBlockEditor from "../../Elements/TextBlocks/TitleBlock/TitleBlockEditor";
 import EditButton from "../../Elements/Buttons/EditButton";
 import BaseEditForm from "../../Elements/Base/EditForm/BaseEditForm";
-<<<<<<< HEAD
-import AdvancedSnackbar from "../../Elements/Snackbars/Snackbar";
-=======
 import EditDeleteButtonMenu from "../../Elements/Buttons/EditDeleteButtonMenu";
 import Container from "../../Elements/Layout/Container/Container";
 import Item from "../../Elements/Layout/Item/Item";
 
->>>>>>> 6c5a6f19d25665b98ba02e21d3b29214c3aece69
 const useStyles = makeStyles((theme) => ({
   root: {
     justifyContent: "center",
@@ -112,43 +108,16 @@ export default function Processes({
                 ) : null}
               </>
             )}
-<<<<<<< HEAD
-            {!editTitle && auth.is_superuser ? (
-              <EditButton
-                onClick={handleEdit}
-                editState={editTitle}
-              />
-            ) : null}
-            <Grid container spacing={2} className={classes.gridContainer}>
-              {processes.map((step, index) => (
-                <Grid
-                  item
-                  xs={12}
-                  sm={12}
-                  md={6}
-                  lg={4}
-                  className={classes.center}
-                >
-=======
             <Container style={{ marginTop: showTitleBlock ? 24 : 0 }}>
               {processData.map((step, index) => (
                 <Item xs={12} sm={12} md={12} lg={4} xl={4} justify="center">
->>>>>>> 6c5a6f19d25665b98ba02e21d3b29214c3aece69
                   <Process step={step} />
                 </Item>
               ))}
             </Container>
           </Paper>
-<<<<<<< HEAD
-        </Grid>
-      </Grid>
-      {open && 
-        <AdvancedSnackbar onClose={handleClose} open={open} message={message} position='top-center' type='info' duration='4000' />
-      }
-=======
         </Item>
       </Container>
->>>>>>> 6c5a6f19d25665b98ba02e21d3b29214c3aece69
     </Box>
   );
 }

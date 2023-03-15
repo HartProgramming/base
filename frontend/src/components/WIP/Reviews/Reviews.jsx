@@ -9,12 +9,6 @@ import {
   makeStyles,
 } from "@material-ui/core";
 import { Rating } from "@material-ui/lab";
-<<<<<<< HEAD
-import { Select } from "@mui/material";
-import { ReviewStyles1, ReviewStyles2 } from "./ReviewsStyles";
-import { useEffect } from "react";
-import { useFetcher } from "react-router-dom";
-=======
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -64,7 +58,6 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 }));
->>>>>>> 6c5a6f19d25665b98ba02e21d3b29214c3aece69
 
 const reviewsData = [
   {

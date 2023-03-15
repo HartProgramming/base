@@ -9,20 +9,6 @@ import MemberEdit from "./MemberEdit";
 import MemberContent from "./MemberContent";
 import { baseClasses } from "../../../classes";
 import EditDeleteButtonMenu from "../../Elements/Buttons/EditDeleteButtonMenu";
-<<<<<<< HEAD
-import { MemberStyles1, MemberStyles2, MemberStyles3 } from "./MemberStyles";
-import { IconButton } from "@mui/material";
-import Typography from "@material-ui/core/Typography";
-import CardContent from "@material-ui/core/CardContent";
-import LinkedInIcon from "@material-ui/icons/LinkedIn";
-import GitHubIcon from "@material-ui/icons/GitHub";
-import TwitterIcon from "@material-ui/icons/Twitter";
-import { useEffect } from "react";
-const Member = ({ member, layout }) => {
-  const layout1 = MemberStyles1();
-  const layout2 = MemberStyles2();
-  const layout3 = MemberStyles3();
-=======
 import Flexbox from "../../Elements/Layout/Flexbox/Flexbox";
 
 const useStyles = makeStyles((theme) => ({
@@ -66,7 +52,6 @@ const useStyles = makeStyles((theme) => ({
 
 const Member = ({ member }) => {
   const classes = useStyles();
->>>>>>> 6c5a6f19d25665b98ba02e21d3b29214c3aece69
   const { fadeIn } = baseClasses();
   const [editing, setEditing] = useState(false);
   const [memberData, setMemberData] = useState(member);
@@ -96,76 +81,25 @@ const Member = ({ member }) => {
 
   return (
     <>
-<<<<<<< HEAD
-      {design === 1 && (
-        <Grid
-          container
-          xs={12}
-          sm={6}
-          md={6}
-          key={memberData.name}
-          className={`${align.container}`}
-        >
-          {!editing ? (
-            <Card className={`${align.card} ${fadeIn}`}>
-=======
       <Flexbox key={memberData.name} className={classes.container}>
         <div xs={12} md={12} key={memberData.name}>
           {!editing ? (
             <Card className={`${classes.card} ${fadeIn}`}>
->>>>>>> 6c5a6f19d25665b98ba02e21d3b29214c3aece69
               <CardHeader
                 avatar={
                   <Avatar
                     variant="rounded"
                     src={memberData.image}
-<<<<<<< HEAD
-                    className={align.avatar}
-=======
                     className={classes.avatar}
->>>>>>> 6c5a6f19d25665b98ba02e21d3b29214c3aece69
                   />
                 }
                 title={memberData.name}
                 subheader={memberData.role}
                 classes={{
-<<<<<<< HEAD
-                  title: align.title,
-                  subheader: align.subheader,
-                }}
-              />
-              <div className={align.socialIcons}>
-                <IconButton
-                  className={align.iconButton}
-                  href={member.linkedIn}
-                  target="_blank"
-                  aria-label="LinkedIn"
-                >
-                  <LinkedInIcon />
-                </IconButton>
-                <IconButton
-                  className={align.iconButton}
-                  href={member.github}
-                  target="_blank"
-                  aria-label="GitHub"
-                >
-                  <GitHubIcon />
-                </IconButton>
-                <IconButton
-                  className={align.iconButton}
-                  href={member.twitter}
-                  target="_blank"
-                  aria-label="Twitter"
-                >
-                  <TwitterIcon />
-                </IconButton>
-              </div>
-=======
                   title: classes.title,
                   subheader: classes.subheader,
                 }}
               />
->>>>>>> 6c5a6f19d25665b98ba02e21d3b29214c3aece69
               <MemberContent member={memberData} />
               {!editing && auth.is_superuser ? (
                 <div style={{ marginTop: 4, marginBottom: 4, marginRight: 8 }}>
@@ -185,166 +119,8 @@ const Member = ({ member }) => {
               handleCancel={() => setEditing(!editing)}
             />
           )}
-<<<<<<< HEAD
-        </Grid>
-      )}
-      {design === 2 && (
-        <Grid
-          container
-          xs={12}
-          sm={6}
-          md={6}
-          key={memberData.name}
-          className={`${align.container}`}
-        >
-          {!editing ? (
-            <Card className={`${align.card} ${fadeIn}`}>
-              <MemberContent member={memberData} />
-              <div className={align.avatarContainer}>
-                <CardHeader
-                  avatar={
-                    <Avatar
-                      variant="rounded"
-                      src={memberData.image}
-                      className={align.avatar}
-                    />
-                  }
-                  title={memberData.name}
-                  subheader={memberData.role}
-                  classes={{
-                    title: align.title,
-                    subheader: align.subheader,
-                  }}
-                />
-              </div>
-              <div className={align.socialIcons}>
-                <IconButton
-                  className={align.iconButton}
-                  href={member.linkedIn}
-                  target="_blank"
-                  aria-label="LinkedIn"
-                >
-                  <LinkedInIcon />
-                </IconButton>
-                <IconButton
-                  className={align.iconButton}
-                  href={member.github}
-                  target="_blank"
-                  aria-label="GitHub"
-                >
-                  <GitHubIcon />
-                </IconButton>
-                <IconButton
-                  className={align.iconButton}
-                  href={member.twitter}
-                  target="_blank"
-                  aria-label="Twitter"
-                >
-                  <TwitterIcon />
-                </IconButton>
-              </div>
-
-              {!editing && auth.is_superuser ? (
-                <div style={{ marginTop: 4, marginBottom: 4, marginRight: 8 }}>
-                  <EditDeleteButtonMenu
-                    hideDelete
-                    editClick={() => setEditing(!editing)}
-                    position="flex-end"
-                    placement="bottom"
-                  />
-                </div>
-              ) : null}
-            </Card>
-          ) : (
-            <MemberEdit
-              member={memberData}
-              onUpdate={updateMember}
-              handleCancel={() => setEditing(!editing)}
-            />
-          )}
-        </Grid>
-      )}
-      {design === 3 && (
-        <Grid
-          container
-          xs={12}
-          sm={6}
-          md={6}
-          key={memberData.name}
-          className={`${align.container}`}
-        >
-          {!editing ? (
-            <Card className={`${align.card} ${fadeIn}`}>
-              <div className={align.avatarContainer}>
-                <CardHeader
-                  avatar={
-                    <Avatar
-                      variant="rounded"
-                      src={memberData.image}
-                      className={align.avatar}
-                    />
-                  }
-                  title={memberData.name}
-                  subheader={memberData.role}
-                  classes={{
-                    title: align.title,
-                    subheader: align.subheader,
-                    root: align.avatarContainer,
-                  }}
-                />
-                <div className={align.socialIcons}>
-                  <IconButton
-                    className={align.iconButton}
-                    href={member.linkedIn}
-                    target="_blank"
-                    aria-label="LinkedIn"
-                  >
-                    <LinkedInIcon />
-                  </IconButton>
-                  <IconButton
-                    className={align.iconButton}
-                    href={member.github}
-                    target="_blank"
-                    aria-label="GitHub"
-                  >
-                    <GitHubIcon />
-                  </IconButton>
-                  <IconButton
-                    className={align.iconButton}
-                    href={member.twitter}
-                    target="_blank"
-                    aria-label="Twitter"
-                  >
-                    <TwitterIcon />
-                  </IconButton>
-                </div>
-              </div>
-
-              <MemberContent member={memberData} />
-              {!editing && auth.is_superuser ? (
-                <div style={{ marginTop: 4, marginBottom: 4, marginRight: 8 }}>
-                  <EditDeleteButtonMenu
-                    hideDelete
-                    editClick={() => setEditing(!editing)}
-                    position="flex-end"
-                    placement="bottom"
-                  />
-                </div>
-              ) : null}
-            </Card>
-          ) : (
-            <MemberEdit
-              member={memberData}
-              onUpdate={updateMember}
-              handleCancel={() => setEditing(!editing)}
-            />
-          )}
-        </Grid>
-      )}
-=======
         </div>
       </Flexbox>
->>>>>>> 6c5a6f19d25665b98ba02e21d3b29214c3aece69
     </>
   );
 };

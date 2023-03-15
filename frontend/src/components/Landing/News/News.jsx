@@ -12,11 +12,7 @@ import TitleBlockEditor from "../../Elements/TextBlocks/TitleBlock/TitleBlockEdi
 import EditButton from "../../Elements/Buttons/EditButton";
 import ArticlesDisplayBase from "../../Articles/Display/DisplayBase/ArticlesDisplayBase";
 import BaseCarousel from "../../Elements/Base/BaseCarousel";
-<<<<<<< HEAD
-import AdvancedSnackbar from "../../Elements/Snackbars/Snackbar";
-=======
 import EditDeleteButtonMenu from "../../Elements/Buttons/EditDeleteButtonMenu";
->>>>>>> 6c5a6f19d25665b98ba02e21d3b29214c3aece69
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -71,57 +67,6 @@ export default function LatestNews({ articlesData, block, setBlock }) {
     setEditing(false);
   };
 
-<<<<<<< HEAD
-  useEffect(() => {
-    axiosInstance
-      .get("/titleblock/news/")
-      .then((response) => {
-        setTitleBlock(response.data);
-      })
-      .catch((err) => {
-        setError(err);
-      });
-
-    axiosInstance
-      .get("/articles/highlighted/")
-      .then((response) => {
-        setArticlesData(response.data);
-        setIsLoading(false);
-      })
-      .catch((err) => {
-        setError(err);
-      });
-  }, []);
-
-  const handleEdit = () => {
-    setOpen(true)
-    setMessage('Editing Mode')
-    setEditing(!editing)
-  }
-
-  const handleClose =() => {
-    setOpen(false)
-    setMessage(null)
-  }
-
-  if (isLoading) {
-    return (
-      <Grid container spacing={3}>
-        {[0, 1, 2].map((article) => (
-          <Grid item key={article} xs={12} sm={6} md={4}>
-            <Card className={classes.card}>
-              <CardContent className={classes.cardContent}>
-                <h5>Loading</h5>
-              </CardContent>
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
-    );
-  }
-
-=======
->>>>>>> 6c5a6f19d25665b98ba02e21d3b29214c3aece69
   if (error) {
     return (
       <Typography variant="body1" color="error">
@@ -134,17 +79,6 @@ export default function LatestNews({ articlesData, block, setBlock }) {
     <Grid container spacing={0} className={classes.root}>
       <Paper className={classes.paper} elevation={0}>
         <Grid item xs={12}>
-<<<<<<< HEAD
-          {!editing && auth.is_superuser ? (
-            <div style={{ marginTop: 20 }}>
-              <EditButton
-                onClick={handleEdit}
-                editState={editing}
-              />
-            </div>
-          ) : null}
-=======
->>>>>>> 6c5a6f19d25665b98ba02e21d3b29214c3aece69
           {!editing ? (
             <TitleBlock
               subtitle={block.subtitle}

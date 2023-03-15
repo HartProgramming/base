@@ -5,11 +5,7 @@ import { useSelector } from "react-redux";
 import CardHead from "./CardHead";
 import CardList from "./CardList";
 import CardButtons from "./CardButtons";
-<<<<<<< HEAD
-import AdvancedSnackbar from "../../Elements/Snackbars/Snackbar";
-=======
 import EditDeleteButtonMenu from "../../Elements/Buttons/EditDeleteButtonMenu";
->>>>>>> 6c5a6f19d25665b98ba02e21d3b29214c3aece69
 
 export default function CardBase({ plan, classes }) {
   const [planData, setPlanData] = useState(plan);
@@ -65,30 +61,6 @@ export default function CardBase({ plan, classes }) {
           handleCancel={() => setEditing(!editing)}
         />
       )}
-<<<<<<< HEAD
-
-      {!editing && auth.is_superuser ? (
-        <>
-          <EditButton
-            onClick={handleEdit}
-            editState={editing}
-            mt={0}
-            mb={0}
-          />
-        </>
-      ) : null}
-      {open && (
-        <AdvancedSnackbar
-          open={open}
-          duration="4000"
-          message={success}
-          type="info"
-          position="top-center"
-          onClose={handleClose}
-        />
-      )}
-=======
->>>>>>> 6c5a6f19d25665b98ba02e21d3b29214c3aece69
     </div>
   );
 }
