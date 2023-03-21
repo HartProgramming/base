@@ -29,7 +29,7 @@ import Loading from "../../Elements/Layout/Loading/Loading";
 import MultiParagraphEditor from "../Blog/Page";
 import QuestionnaireAnalysis from "../../Admin/Panel/Analysis";
 import SurveyAnalysis from "../../Admin/Panel/SurveyAnalysis";
-
+import Info from "../Info/Info";
 const actions = [
   <Grid
     container
@@ -102,6 +102,9 @@ const wipComponents = [
     props: {
       showStudies: true,
     },
+  },
+  {
+    component: Info,
   },
   {
     component: Infographic,
