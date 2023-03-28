@@ -61,15 +61,7 @@ const ArticleHighlightActions = ({ article, subtitleVariant }) => {
       justifyContent="space-between"
       alignItems="center"
     >
-      <div className={classes.chipContainer}>
-        {article.tags.map((tag, index) => (
-          <Chip
-            key={tag.name}
-            label={tag.name}
-            className={index % 2 === 0 ? classes.chip : classes.chipAlt}
-          />
-        ))}
-      </div>
+     
       <Grid container flex justifyContent="space-between" alignItems="center">
         <Typography variant={subtitleVariant}>By: {article.author}</Typography>
         <Tooltip

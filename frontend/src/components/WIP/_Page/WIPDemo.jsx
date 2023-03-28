@@ -13,6 +13,7 @@ import {
   Typography,
   useTheme,
 } from "@material-ui/core";
+import InteractiveInfo from "../InteractiveInfo/Interactive";
 import StoryTeller from "../StoryTeller/StoryTeller";
 import CaseStudiesBasic from "../CaseStudies/CaseStudiesBasic";
 import Reviews from "../Reviews/Reviews";
@@ -105,6 +106,9 @@ const wipComponents = [
   },
   {
     component: Info,
+  },
+  {
+    component: InteractiveInfo,
   },
   {
     component: Infographic,

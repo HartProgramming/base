@@ -1,11 +1,15 @@
-import React, { useState } from "react";
+import React, { useReducer, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { border, height, margin, width } from "@mui/system";
 import { FaArrowDown, FaArrowUp, FaCuttlefish } from "react-icons/fa";
 import {
-    IoMdPerson as CustomersIcon,
-    IoIosMap as MapIcon,
-  } from "react-icons/io";
+  IoMdPerson as CustomersIcon,
+  IoIosMap as MapIcon,
+} from "react-icons/io";
+import snackbarReducer from "../../../lib/Reducers/snackbar";
+import { useDispatch, useSelector } from "react-redux";
+import { ALERT_INFO, ALERT_SUCCESS, ALERT_WARNING, CLOSE_SNACKBAR } from "../../../lib/Actions/snackbar";
+import AdvancedSnackbar from "../../Elements/Snackbars/Snackbar";
 const useStyles = makeStyles((theme) => ({
   container: {
     backgroundColor: theme.palette.primary.light,
@@ -21,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
   },
   customer: {
     height: 50,
-    width: 50
+    width: 50,
   },
   infocontainer: {
     backgroundColor: theme.palette.primary.light,
@@ -39,21 +43,29 @@ const useStyles = makeStyles((theme) => ({
     width: 25,
     cursor: "pointer",
   },
-}));
+})); 
 
 const Info = () => {
+  const [state, dispatch] = useReducer(snackbarReducer, ALERT_SUCCESS)
   const classes = useStyles();
   const [openDrop, setOpenDrop] = useState(false);
   const handledrop = () => {
     if (openDrop === false) {
-      setOpenDrop(true);
+dispatch({type: ALERT_INFO, open: true,duration: 1000, message: 'More Info Opened'})
+        setOpenDrop(true);
     } else {
       setOpenDrop(false);
+      dispatch({type: CLOSE_SNACKBAR, duration: '2000', open: false})
     }
   };
 
+  const handleClose = () => {
+    dispatch({type: CLOSE_SNACKBAR,open: false})
+  }
+
   return (
     <>
+    {<AdvancedSnackbar onClose={handleClose} duration={state.duration} message={state.message} open={state.open} />}
       <div className={classes.container}>
         <h2>Customer</h2>
         <CustomersIcon className={classes.customer} />
@@ -71,6 +83,7 @@ const Info = () => {
             <h2>hi</h2>
           </div>
         )}
+        
       </div>
     </>
   );

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import List from "@material-ui/core/List";
 import Typography from "@material-ui/core/Typography";
-import { Grid } from "@material-ui/core";
+import { Divider, Grid } from "@material-ui/core";
 import DOMPurify from "dompurify";
 import BaseCard from "../../../Elements/Base/Card/BaseCard";
 import ArticleHighlightActions from "../Actions/ArticleHighlightActions";
@@ -18,6 +18,13 @@ import {
 } from "../../../Elements/Base/Card/BaseCardStyles";
 import BaseCarousel from "../../../Elements/Base/BaseCarousel";
 
+const useStyles = makeStyles(theme => ({
+  divide: {
+    border: '1px solid lightgray',
+    width: '85%'
+  }
+}))
+
 const ArticlesDisplayBase = ({
   articles,
   classSet = "default",
@@ -28,6 +35,7 @@ const ArticlesDisplayBase = ({
   actionSubtitle = "subtitle1",
   carousel = false,
 }) => {
+  const classes = useStyles();
   const { auth } = useSelector((state) => state);
   const [selectedId, setSelectedId] = useState([]);
   const [open, setOpen] = useState(false);
@@ -132,6 +140,7 @@ const ArticlesDisplayBase = ({
     const truncatedText = text.substr(0, 250) + "...";
 
     return (
+      <>
       <Grid
         item
         sm={layout.sm}
@@ -169,6 +178,8 @@ const ArticlesDisplayBase = ({
           </Typography>
         </BaseCard>
       </Grid>
+      <Divider className={classes.divide} />
+      </>
     );
   };
 
@@ -177,7 +188,7 @@ const ArticlesDisplayBase = ({
     <>
       <Grid
         container
-        spacing={0}
+        spacing={4}
         flex
         justifyContent="center"
         style={{ flexWrap: "wrap" }}

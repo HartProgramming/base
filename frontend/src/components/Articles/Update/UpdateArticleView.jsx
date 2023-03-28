@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useReducer } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Card";
 import CardActions from "@material-ui/core/CardActions";
@@ -13,7 +13,9 @@ import FormField from "../../Elements/Fields/FormField";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import { baseClasses } from "../../../classes";
 import StyledButton from "../../Elements/Buttons/StyledButton";
-
+import AdvancedSnackbar from "../../Elements/Snackbars/Snackbar";
+import snackbarReducer from "../../../lib/Reducers/snackbar";
+import { ALERT_FAIL, ALERT_SUCCESS, CLOSE_SNACKBAR } from "../../../lib/Actions/snackbar";
 function getCookie(name) {
   const value = `; ${document.cookie}`;
   const parts = value.split(`; ${name}=`);
@@ -76,6 +78,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const UpdateArticleView = ({ manualId }) => {
+  const [state, dispatch] = useReducer(snackbarReducer, ALERT_SUCCESS)
   const { id } = useParams();
   const classes = useStyles();
   const { fadeIn } = baseClasses();
@@ -114,11 +117,13 @@ const UpdateArticleView = ({ manualId }) => {
   };
 
   const handleSubmit = async (e) => {
+
     e.preventDefault();
     let formData = new FormData();
     formData.append("title", title);
     formData.append("content", content);
     formData.append("tags", tags.join(","));
+
     if (image) {
       formData.append("image", image);
     }
@@ -134,10 +139,18 @@ const UpdateArticleView = ({ manualId }) => {
         formData,
         config
       );
+      dispatch({type: ALERT_SUCCESS, duration: 2000, message: 'Updated', open: true})
+
     } catch (error) {
+      dispatch({type: ALERT_FAIL, duration: 2000, message: 'Failed to update', open: true})
+
       console.log(error);
     }
   };
+
+  const handleClose = () => {
+    dispatch({type: CLOSE_SNACKBAR, open: false})
+  }
 
   const handleClick = () => {
     document.getElementById("file-input").click();
@@ -145,6 +158,7 @@ const UpdateArticleView = ({ manualId }) => {
 
   return (
     <div className={`${classes.root} ${fadeIn}`}>
+      {<AdvancedSnackbar onClose={handleClose} open={state.open} type={state.type} message={state.message} />}
       <Paper className={classes.card} elevation={0}>
         <form onSubmit={handleSubmit}>
           <CardContent>

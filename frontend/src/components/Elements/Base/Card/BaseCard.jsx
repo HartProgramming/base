@@ -54,7 +54,7 @@ const BaseCard = ({
             sm={mediaLayout.sm}
             md={mediaLayout.md}
           >
-            <CardMedia className={classes.cardMedia} image={media} />
+            <CardMedia className={classes.cardMedia} style={{borderRadius: 7, padding: 2, width: 170}} image={media} />
           </Grid>
         )}
 

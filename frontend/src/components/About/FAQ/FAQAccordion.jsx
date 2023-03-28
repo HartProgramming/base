@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import { Typography, Paper } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { Grid } from "@material-ui/core";
@@ -6,6 +6,9 @@ import { Tabs, Tab } from "@material-ui/core";
 import AccordionQA from "./AccordionQA";
 import axiosInstance from "../../../lib/Axios/axiosInstance";
 import AdminButton from "../../Elements/Buttons/AdminButton";
+import snackbarReducer from "../../../lib/Reducers/snackbar";
+import AdvancedSnackbar from "../../Elements/Snackbars/Snackbar";
+import { ALERT_INFO } from "../../../lib/Actions/snackbar";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -64,6 +67,7 @@ const useStyles = makeStyles((theme) => ({
 
 const FAQAccordion = ({ setError, editMode }) => {
   const classes = useStyles();
+  const [state, dispatch] = useReducer(snackbarReducer, ALERT_INFO)
   const [currentCategory, setCurrentCategory] = useState([]);
   const [faqs, setFaqs] = useState([]);
   const [categories, setCategories] = useState([]);
