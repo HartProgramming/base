@@ -21,6 +21,8 @@ from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 from support.models import Subscribers
 from articles.models import Articles, Tags
+from django.db.models import Max
+from .utils import analyze_django_app
 
 
 def get_model_metadata(model_name):
@@ -77,14 +79,19 @@ def get_model_metadata(model_name):
         "access_level": model._meta.access_level
         if hasattr(model._meta, "access_level")
         else None,
+        "info_dump": model._meta.info_dump
+        if hasattr(model._meta, "info_dump")
+        else None,
     }
 
     for field_name, field in fields.items():
+        print(field_name)
         field_type = field.__class__.__name__
         if field_type == "CharField" and "base_template" in field.style:
             field_type = "TextField"
 
         choices = getattr(field, "choices", None)
+        print(choices)
         if choices:
             choices_dict = dict(choices)
             field_choices = [
@@ -106,6 +113,9 @@ def get_model_metadata(model_name):
             "max_value": getattr(field, "max_value", None),
             "source": getattr(field, "source", None),
             "choices": field_choices,
+            "verbose_name": getattr(
+                model._meta.get_field(field_name), "verbose_name", None
+            ),
         }
 
         metadata["fields"][field_name] = field_metadata
@@ -130,6 +140,8 @@ def get_model_metadata(model_name):
             metadata["fields"][field.name]["markdown"] = getattr(
                 field, "markdown", "false"
             )
+        if hasattr(field, "min_rows"):
+            metadata["fields"][field.name]["min_rows"] = getattr(field, "min_rows", 6)
 
     return metadata
 
@@ -184,10 +196,105 @@ def custom_admin_url_return(request, content_type_id, object_id):
 class RecentAdminActionsView(APIView):
     def get(self, request, *args, **kwargs):
         items = request.query_params.get("items", 10)
+        app = request.query_params.get("app", None)
+        model_query = request.query_params.get("model", None)
+        all_models = apps.get_models()
+
         if items == "all":
-            recent_actions = LogEntry.objects.order_by("-timestamp")
+            if app:
+                recent_actions = LogEntry.objects.filter(
+                    content_type__app_label=app
+                ).order_by("-timestamp")
+            elif model_query:
+                if model_query == "messages":
+                    content_type = ContentType.objects.get(
+                        model=model_query.lower(), app_label="support"
+                    )
+                elif (
+                    model_query == "questionnaire"
+                    or model_query == "questionset"
+                    or model_query == "question"
+                    or model_query == "answerchoice"
+                ):
+                    content_type = ContentType.objects.get(
+                        model=model_query.lower(), app_label="quizes"
+                    )
+                elif model_query == "teammember":
+                    content_type = ContentType.objects.get(
+                        model=model_query.lower(), app_label="contact"
+                    )
+                elif (
+                    model_query == "servicetablelabels"
+                    or model_query == "servicecomparerows"
+                    or model_query == "servicetable"
+                ):
+                    content_type = ContentType.objects.get(
+                        model=model_query.lower(), app_label="tables"
+                    )
+                elif model_query == "header":
+                    content_type = ContentType.objects.get(
+                        model=model_query.lower(), app_label="general"
+                    )
+                elif model_query == "contactinformation":
+                    content_type = ContentType.objects.get(
+                        model=model_query.lower(), app_label="contact"
+                    )
+                else:
+                    content_type = ContentType.objects.get(model=model_query.lower())
+
+                recent_actions = LogEntry.objects.filter(
+                    content_type=content_type
+                ).order_by("-timestamp")
+            else:
+                recent_actions = LogEntry.objects.order_by("-timestamp")
         else:
-            recent_actions = LogEntry.objects.order_by("-timestamp")[: int(items)]
+            if app:
+                recent_actions = LogEntry.objects.filter(
+                    content_type__app_label=app
+                ).order_by("-timestamp")[: int(items)]
+
+            elif model_query:
+                if model_query == "messages":
+                    content_type = ContentType.objects.get(
+                        model=model_query.lower(), app_label="support"
+                    )
+                elif (
+                    model_query == "questionnaire"
+                    or model_query == "questionset"
+                    or model_query == "question"
+                    or model_query == "answerchoice"
+                ):
+                    content_type = ContentType.objects.get(
+                        model=model_query.lower(), app_label="quizes"
+                    )
+                elif model_query == "teammember":
+                    content_type = ContentType.objects.get(
+                        model=model_query.lower(), app_label="contact"
+                    )
+                elif (
+                    model_query == "servicetablelabels"
+                    or model_query == "servicecomparerows"
+                    or model_query == "servicetable"
+                ):
+                    content_type = ContentType.objects.get(
+                        model=model_query.lower(), app_label="tables"
+                    )
+                elif model_query == "header":
+                    content_type = ContentType.objects.get(
+                        model=model_query.lower(), app_label="general"
+                    )
+                elif model_query == "contactinformation":
+                    content_type = ContentType.objects.get(
+                        model=model_query.lower(), app_label="contact"
+                    )
+                else:
+                    content_type = ContentType.objects.get(model=model_query.lower())
+
+                recent_actions = LogEntry.objects.filter(
+                    content_type=content_type
+                ).order_by("-timestamp")[: int(items)]
+            else:
+                recent_actions = LogEntry.objects.order_by("-timestamp")[: int(items)]
 
         data = []
         for action in recent_actions:
@@ -273,6 +380,7 @@ class RecentAdminActionsView(APIView):
                     "obj_url": obj_url,
                 }
             )
+
         return Response(data)
 
     dispatch = method_decorator(cache_page(60 * 5))(APIView.dispatch)
@@ -307,6 +415,10 @@ class ModelEndpointAPIView(APIView):
             ):
                 endpoints["configs"][app_label] = {
                     "icon": app_config.icon if hasattr(app_config, "icon") else None,
+                    "links": app_config.links if hasattr(app_config, "links") else None,
+                    "visibility": app_config.visibility
+                    if hasattr(app_config, "visibility")
+                    else None,
                 }
                 endpoints["models"][app_label] = []
 
@@ -379,6 +491,9 @@ class ModelEndpointAPIView(APIView):
                 "access_level": model._meta.access_level
                 if hasattr(model._meta, "access_level")
                 else None,
+                "info_dump": model._meta.info_dump
+                if hasattr(model._meta, "info_dump")
+                else None,
             }
 
             if hasattr(serializer, "SEARCH_KEYS"):
@@ -412,7 +527,6 @@ class SingleModelAPIView(APIView):
         metadata = {}
 
         for field_name, field in fields.items():
-            print(field_name, field)
             if not field_name == "id":
                 metadata[field_name] = {"type": field.__class__.__name__}
 
@@ -431,6 +545,42 @@ class SingleModelAPIView(APIView):
 
         if "alignment" in metadata:
             metadata["alignment"]["choices"] = dict(model.ALIGNMENT_CHOICES)
+
+        # metadata.update(
+        #     {
+        #         "autoFormLabel": model._meta.autoform_label
+        #         if hasattr(model._meta, "autoform_label")
+        #         else None,
+        #         "longDescription": model._meta.long_description
+        #         if hasattr(model._meta, "long_description")
+        #         else None,
+        #         "shortDescription": model._meta.short_description
+        #         if hasattr(model._meta, "short_description")
+        #         else None,
+        #         "pagesAssociated": model._meta.pages_associated
+        #         if hasattr(model._meta, "pages_associated")
+        #         else None,
+        #         "preview": model._meta.include_preview
+        #         if hasattr(model._meta, "include_preview")
+        #         else False,
+        #         "icon": model._meta.icon if hasattr(model._meta, "icon") else None,
+        #         "icon_class": model._meta.icon_class
+        #         if hasattr(model._meta, "icon_class")
+        #         else None,
+        #         "slug": model._meta.slug if hasattr(model._meta, "slug") else None,
+        #         "tags": model._meta.tags if hasattr(model._meta, "tags") else False,
+        #         "relatedComponents": model._meta.related_components
+        #         if hasattr(model._meta, "related_components")
+        #         else None,
+        #         "visibility": model._meta.visibility
+        #         if hasattr(model._meta, "visibility")
+        #         else None,
+        #         "access_level": model._meta.access_level
+        #         if hasattr(model._meta, "access_level")
+        #         else None,
+        #         "object_count": model.objects.aggregate(max_id=Max("id"))["max_id"],
+        #     }
+        # )
 
         endpoint = {
             "app_name": model._meta.app_label,
@@ -470,6 +620,9 @@ class SingleModelAPIView(APIView):
             "access_level": model._meta.access_level
             if hasattr(model._meta, "access_level")
             else None,
+            "info_dump": model._meta.info_dump
+            if hasattr(model._meta, "info_dump")
+            else None,
         }
 
         if hasattr(serializer, "SEARCH_KEYS"):
@@ -481,14 +634,14 @@ class SingleModelAPIView(APIView):
             all_tags = Tags.objects.all()
 
             for tag in all_tags:
-                tag_counts[tag.name] = 0
+                tag_counts[tag.detail] = 0
 
             for article in articles:
                 for tag in article.tags.all():
-                    if tag.name not in tag_counts:
-                        tag_counts[tag.name] = 1
+                    if tag.detail not in tag_counts:
+                        tag_counts[tag.detail] = 1
                     else:
-                        tag_counts[tag.name] += 1
+                        tag_counts[tag.detail] += 1
 
             endpoint["count"] = {
                 "type": "integer",
@@ -497,3 +650,112 @@ class SingleModelAPIView(APIView):
             }
 
         return Response(endpoint)
+
+
+class SingleAppEndpointAPIView(APIView):
+    def get(self, request, app_name=None, format=None):
+        app_config = apps.get_app_config(app_name)
+        models = app_config.get_models()
+
+        endpoints = {
+            "models": {},
+            "config": None,
+        }
+
+        if (
+            app_name == "authorization"
+            or app_name == "articles"
+            or app_name == "landing"
+            or app_name == "about"
+            or app_name == "services"
+            or app_name == "support"
+            or app_name == "jobs"
+            or app_name == "general"
+            or app_name == "tables"
+            or app_name == "quizes"
+            or app_name == "contact"
+            or app_name == "content"
+        ):
+            endpoints["config"] = {
+                "icon": app_config.icon if hasattr(app_config, "icon") else None,
+                "links": app_config.links if hasattr(app_config, "links") else None,
+                "app_info": analyze_django_app(app_config.get_models()),
+            }
+
+        for model in models:
+            model_name = model.__name__.lower()
+            endpoints["models"][model_name] = []
+            serializer_class = getattr(model, "serializer_class", None)
+            if serializer_class is None:
+                continue
+
+            serializer = serializer_class()
+            fields = serializer.get_fields()
+            metadata = {}
+
+            for field_name, field in fields.items():
+                if not field_name == "id":
+                    metadata[field_name] = {"type": field.__class__.__name__}
+
+                    try:
+                        if model._meta.get_field(field_name).verbose_name:
+                            metadata[field_name][
+                                "verbose_name"
+                            ] = model._meta.get_field(field_name).verbose_name
+                    except:
+                        metadata[field_name]["verbose_name"] = None
+
+            if "alignment" in metadata:
+                metadata["alignment"]["choices"] = dict(model.ALIGNMENT_CHOICES)
+
+            try:
+                url = reverse(f"{model_name}-list")
+                url = url.replace("/api/", "/")
+            except NoReverseMatch:
+                url = None
+
+            endpoint = {
+                "model_name": model_name,
+                "verbose_name": model._meta.verbose_name,
+                "verbose_name_plural": model._meta.verbose_name_plural,
+                "url": url,
+                "metadata": metadata,
+                "keys": serializer.FIELD_KEYS,
+                "autoFormLabel": model._meta.autoform_label
+                if hasattr(model._meta, "autoform_label")
+                else None,
+                "longDescription": model._meta.long_description
+                if hasattr(model._meta, "long_description")
+                else None,
+                "shortDescription": model._meta.short_description
+                if hasattr(model._meta, "short_description")
+                else None,
+                "pagesAssociated": model._meta.pages_associated
+                if hasattr(model._meta, "pages_associated")
+                else None,
+                "preview": model._meta.include_preview
+                if hasattr(model._meta, "include_preview")
+                else False,
+                "icon": model._meta.icon if hasattr(model._meta, "icon") else None,
+                "icon_class": model._meta.icon_class
+                if hasattr(model._meta, "icon_class")
+                else None,
+                "slug": model._meta.slug if hasattr(model._meta, "slug") else None,
+                "tags": model._meta.tags if hasattr(model._meta, "tags") else False,
+                "relatedComponents": model._meta.related_components
+                if hasattr(model._meta, "related_components")
+                else None,
+                "visibility": model._meta.visibility
+                if hasattr(model._meta, "visibility")
+                else None,
+                "access_level": model._meta.access_level
+                if hasattr(model._meta, "access_level")
+                else None,
+            }
+
+            if hasattr(serializer, "SEARCH_KEYS"):
+                endpoint["search_keys"] = serializer.SEARCH_KEYS
+
+            endpoints["models"][model_name].append(endpoint)
+
+        return Response(endpoints)

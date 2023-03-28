@@ -9,6 +9,7 @@ import {
   Checkbox,
   TableSortLabel,
   makeStyles,
+  Tooltip,
 } from "@material-ui/core";
 import { Edit as EditIcon, Delete as DeleteIcon } from "@material-ui/icons";
 import DeleteConfirmationModal from "../../../Elements/Modals/DeleteConfirmationModal";
@@ -31,6 +32,11 @@ const useStyles = makeStyles((theme) => ({
   editIcon: {
     color: theme.palette.success.light,
   },
+  tooltip: {
+    backgroundColor: theme.palette.text.secondary,
+    color: "#ffffff",
+    fontSize: "12px",
+  },
 }));
 
 const PanelTable = ({
@@ -46,9 +52,9 @@ const PanelTable = ({
   handleMultipleDeleteAction,
   updateMultipleItems,
   handleView,
+  type,
 }) => {
-  console.log("keys: ", keys);
-  console.log("metadata: ", metadata);
+  console.log(model);
   const classes = useStyles();
   const [selectedItems, setSelectedItems] = useState([]);
   const [selectedAction, setSelectedAction] = useState("Test");
@@ -59,6 +65,7 @@ const PanelTable = ({
   const [searchTerm, setSearchTerm] = useState("");
   const [isReadFilter, setIsReadFilter] = useState(null);
   const [isArchivedFilter, setIsArchivedFilter] = useState(null);
+  const [statusFilter, setStatusFilter] = useState(null);
   const [filteredData, setFilteredData] = useState(data);
 
   function filterReadData(data) {
@@ -74,14 +81,20 @@ const PanelTable = ({
     }
     return data.filter((item) => item.is_archived === isArchivedFilter);
   }
+  function filterStatusData(data) {
+    if (statusFilter === null) {
+      return data;
+    }
+    return data.filter((item) => item.status === statusFilter);
+  }
 
   const handleFilterData = () => {
-    const result = filterReadData(filterArchivedData(data));
+    const result = filterReadData(filterArchivedData(filterStatusData(data)));
     setFilteredData(result);
   };
 
   useEffect(() => {
-    if (model.model_name === "messages") {
+    if (type === "new") {
       setIsReadFilter(false);
       setIsArchivedFilter(false);
     }
@@ -89,12 +102,14 @@ const PanelTable = ({
 
   useEffect(() => {
     handleFilterData();
-  }, [data, isReadFilter, isArchivedFilter]);
+  }, [data, isReadFilter, isArchivedFilter, statusFilter]);
 
   const handleClearFilters = () => {
     setIsReadFilter(null);
     setIsArchivedFilter(null);
+    setStatusFilter(null);
   };
+
   const handleClearSearch = () => {
     setSearchTerm("");
   };
@@ -186,10 +201,13 @@ const PanelTable = ({
   return (
     <>
       <ControlPanel
+        modelName={model.model_name}
         keys={keys}
         isReadFilter={isReadFilter}
         setIsReadFilter={setIsReadFilter}
         isArchivedFilter={isArchivedFilter}
+        statusFilter={statusFilter}
+        setStatusFilter={setStatusFilter}
         setIsArchivedFilter={setIsArchivedFilter}
         handleClearFilters={handleClearFilters}
         selectedAction={selectedAction}
@@ -201,8 +219,7 @@ const PanelTable = ({
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
       />
-
-      <Table>
+      <Table size="small">
         <TableHead>
           <TableRow>
             <TableCell style={{ width: "5%" }}>
@@ -228,7 +245,9 @@ const PanelTable = ({
                     direction={orderBy === key ? order : "asc"}
                     onClick={() => handleSort(key)}
                   >
-                    {metadata[key].verbose_name}
+                    {metadata[key].verbose_name === "image"
+                      ? "Thumbnail"
+                      : metadata[key].verbose_name}
                   </TableSortLabel>
                 </TableCell>
                 {metadata[key].verbose_name === "Tag Name" && (
@@ -267,9 +286,15 @@ const PanelTable = ({
         <TableBody>
           {stableSort(filteredData, getComparator(order, orderBy))
             .filter((item) => {
-              const values = Object.values(item).map((val) =>
-                typeof val === "string" ? val.toLowerCase() : val
-              );
+              console.log(item["image"]);
+              if (item === "author") {
+                console.log(item);
+              }
+              const values = Object.values(item)
+                .filter((val) => val !== null)
+                .map((val) =>
+                  typeof val === "string" ? val.toLowerCase() : val
+                );
               return values.some((val) =>
                 val.toString().toLowerCase().includes(searchTerm.toLowerCase())
               );
@@ -297,7 +322,7 @@ const PanelTable = ({
                         <img
                           src={item[key]}
                           alt="Thumbnail"
-                          style={{ width: 150, height: 100 }}
+                          style={{ width: 100, height: 75 }}
                         />
                       </TableCell>
                     ) : (
@@ -311,7 +336,7 @@ const PanelTable = ({
                             "false"
                           )
                         ) : key === "token" ? (
-                          "..." + item[key].substring(80, 120) + "..." // display only first 10 characters of the token string
+                          "..." + item[key].substring(80, 120) + "..."
                         ) : key.includes("color") ? (
                           <div
                             style={{
@@ -322,6 +347,8 @@ const PanelTable = ({
                               border: "1px solid grey",
                             }}
                           />
+                        ) : key === "author" ? (
+                          item["author_details"].username
                         ) : (
                           item[key]
                         )}
@@ -352,22 +379,39 @@ const PanelTable = ({
                   style={{ width: "5%" }}
                   className={classes.tableCell}
                 >
-                  <IconButton size="small" onClick={() => handleEdit(item)}>
-                    {model.model_name === "messages" ||
-                    model.model_name === "application" ? (
-                      <MarkEmailReadIcon className={classes.editIcon} />
-                    ) : (
-                      <EditIcon className={classes.editIcon} />
-                    )}
-                  </IconButton>
+                  <Tooltip
+                    title={
+                      model.model_name === "messages" ||
+                      model.model_name === "application"
+                        ? `Read`
+                        : "Edit"
+                    }
+                    placement="bottom"
+                    classes={{ tooltip: classes.tooltip }}
+                  >
+                    <IconButton size="small" onClick={() => handleEdit(item)}>
+                      {model.model_name === "messages" ||
+                      model.model_name === "application" ? (
+                        <MarkEmailReadIcon className={classes.editIcon} />
+                      ) : (
+                        <EditIcon className={classes.editIcon} />
+                      )}
+                    </IconButton>
+                  </Tooltip>
                 </TableCell>
                 <TableCell
                   style={{ width: "5%" }}
                   className={classes.tableCell}
                 >
-                  <IconButton size="small" onClick={() => handleDelete(item)}>
-                    <DeleteIcon color="error" />
-                  </IconButton>
+                  <Tooltip
+                    title={"Delete"}
+                    placement="bottom"
+                    classes={{ tooltip: classes.tooltip }}
+                  >
+                    <IconButton size="small" onClick={() => handleDelete(item)}>
+                      <DeleteIcon color="error" />
+                    </IconButton>
+                  </Tooltip>
                 </TableCell>
               </TableRow>
             ))}

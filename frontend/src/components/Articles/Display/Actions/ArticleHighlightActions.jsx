@@ -2,15 +2,15 @@ import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import { Link } from "react-router-dom";
-import { Button, Chip, Grid, Tooltip } from "@material-ui/core";
+import { Button, Chip, Divider, Grid, Tooltip } from "@material-ui/core";
 import StyledButton from "../../../Elements/Buttons/StyledButton";
 import ReadMoreIcon from "@mui/icons-material/ReadMore";
 
 const useStyles = makeStyles((theme) => ({
   chip: {
     borderRadius: 14,
-    backgroundColor: theme.palette.primary.light,
-    color: theme.palette.text.light,
+    backgroundColor: "#e0e0e0",
+    color: theme.palette.text.dark,
     marginRight: 5,
     marginTop: 5,
     fontWeight: 600,
@@ -30,7 +30,8 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     alignItems: "center",
     flexWrap: "wrap",
-    paddingBottom: 5,
+    paddingBottom: theme.spacing(1),
+    marginTop: theme.spacing(1.5),
   },
   button: {
     boxShadow: theme.shadows[3],
@@ -61,9 +62,22 @@ const ArticleHighlightActions = ({ article, subtitleVariant }) => {
       justifyContent="space-between"
       alignItems="center"
     >
+<<<<<<< HEAD
      
       <Grid container flex justifyContent="space-between" alignItems="center">
         <Typography variant={subtitleVariant}>By: {article.author}</Typography>
+=======
+      <div className={classes.chipContainer}>
+        {article.tags.map((tag, index) => (
+          <Chip
+            key={tag.id}
+            label={tag.detail}
+            className={index % 2 === 0 ? classes.chip : classes.chip}
+          />
+        ))}
+      </div>
+      {/* <Grid container flex justifyContent="flex-end" alignItems="center">
+>>>>>>> 4417815b945fae04e080e81a3b62602eb2b23094
         <Tooltip
           title="Read Full Post"
           placement="bottom"
@@ -81,7 +95,7 @@ const ArticleHighlightActions = ({ article, subtitleVariant }) => {
             </Button>
           </Link>
         </Tooltip>
-      </Grid>
+      </Grid> */}
     </Grid>
   );
 };

@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
   tooltip: {
     backgroundColor: theme.palette.text.secondary,
     color: "#ffffff",
-    fontSize: "14px",
+    fontSize: "12px",
   },
   linkText: {
     fontSize: "5rem",
@@ -175,7 +175,7 @@ const AdminDrawerContent = ({
           </ListItem>
         </Link>
       </Tooltip>
-      <Tooltip
+      {/* <Tooltip
         title="View User Log"
         placement="right"
         classes={{ tooltip: classes.tooltip }}
@@ -192,7 +192,7 @@ const AdminDrawerContent = ({
             <ListItemText primary="Users (WIP)" />
           </ListItem>
         </Link>
-      </Tooltip>
+      </Tooltip> */}
 
       <Divider className={classes.divider} />
       {renderLinks({

@@ -25,7 +25,7 @@ class ServiceTableLabelsSerializer(serializers.ModelSerializer):
 
 
 class ServiceCompareRowsSerializer(serializers.ModelSerializer):
-    FIELD_KEYS = ["feature", "tier1_value", "tier2_value", "tier3_value", "table_name"]
+    FIELD_KEYS = ["detail", "tier1_value", "tier2_value", "tier3_value", "table_name"]
 
     class Meta:
         model = ServiceCompareRows
@@ -33,13 +33,13 @@ class ServiceCompareRowsSerializer(serializers.ModelSerializer):
 
 
 class ServiceTableSerializer(serializers.ModelSerializer):
-    labels = ServiceTableLabelsSerializer()
-    rows = ServiceCompareRowsSerializer(many=True)
+    labels = ServiceTableLabelsSerializer(required=False)
+    rows = ServiceCompareRowsSerializer(many=True, required=False)
     FIELD_KEYS = ["name"]
 
     class Meta:
         model = ServiceTable
-        fields = "__all__"
+        fields = ["id", "name", "labels", "rows"]
 
 
 ServiceTable.serializer_class = ServiceTableSerializer

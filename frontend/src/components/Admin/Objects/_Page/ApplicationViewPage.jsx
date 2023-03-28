@@ -1,12 +1,17 @@
-import { Breadcrumbs, makeStyles, Typography } from "@material-ui/core";
+import {
+  Breadcrumbs,
+  makeStyles,
+  Tooltip,
+  Typography,
+} from "@material-ui/core";
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
 import PageContainer from "../../../Elements/Layout/PageContainer";
 import { NavigateNext } from "@material-ui/icons";
 import BaseContent from "../../../Elements/Base/BaseContent";
 import axiosInstance from "../../../../lib/Axios/axiosInstance";
-import ReadMessage from "../../Panel/ReadMessage";
 import ReadApplication from "../../Panel/ReadApplication";
+import Loading from "../../../Elements/Layout/Loading/Loading";
 
 const useStyles = makeStyles((theme) => ({
   activeLink: {
@@ -20,6 +25,11 @@ const useStyles = makeStyles((theme) => ({
     paddingRight: 16,
     fontWeight: 600,
     fontFamily: "Poppins",
+  },
+  tooltip: {
+    backgroundColor: theme.palette.text.secondary,
+    color: "#ffffff",
+    fontSize: "12px",
   },
 }));
 
@@ -81,10 +91,14 @@ function ApplicationViewPage({}) {
     }
   }, []);
 
+  if (!ready) {
+    return <Loading loading={true} message="Gathering Resources" />;
+  }
+
   return (
     <PageContainer seoEdit={false} backgroundColor="#F5F5F5">
       {metadata && data && job && (
-        <BaseContent maxWidth={1200} pt={4} pb={4}>
+        <BaseContent maxWidth={1200} pt={4} pb={8}>
           <div style={{ paddingBottom: 16, display: "flex" }}>
             <Typography variant="h3" className={classes.title}>
               {model.verbose_name}
@@ -94,28 +108,40 @@ function ApplicationViewPage({}) {
               aria-label="breadcrumb"
               style={{ display: "flex" }}
             >
-              <Link className={classes.activeLink} to="/admin">
-                Home
-              </Link>
-              <Link
-                to={`/admin${url}`}
-                state={{
-                  url: url,
-                  keys: keys,
-                  appName: appName,
-                  model: model,
-                  metadata: metadata,
-                  id: id,
-                }}
-                key={appName}
-                className={classes.activeLink}
+              <Tooltip
+                title={`View Dashboard`}
+                placement="bottom"
+                classes={{ tooltip: classes.tooltip }}
               >
-                {model.verbose_name}
-              </Link>
+                <Link className={classes.activeLink} to="/admin">
+                  Home
+                </Link>
+              </Tooltip>
+              <Tooltip
+                title={`View ${model.verbose_name} Model`}
+                placement="bottom"
+                classes={{ tooltip: classes.tooltip }}
+              >
+                <Link
+                  to={`/admin${url}`}
+                  state={{
+                    url: url,
+                    keys: keys,
+                    appName: appName,
+                    model: model,
+                    metadata: metadata,
+                    id: id,
+                  }}
+                  key={appName}
+                  className={classes.activeLink}
+                >
+                  {model.verbose_name}
+                </Link>
+              </Tooltip>
               <Typography color="textPrimary">Read</Typography>
             </Breadcrumbs>
           </div>
-          <ReadApplication application={data} job={job} />
+          <ReadApplication application={data} job={job} metadata={metadata} />
         </BaseContent>
       )}
     </PageContainer>

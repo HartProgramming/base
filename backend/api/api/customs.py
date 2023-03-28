@@ -15,6 +15,7 @@ def custom_metadata(
     related_components=None,
     visibility=True,
     access_level="All",
+    info_dump={"text": ""},
 ):
     def decorator(cls):
         cls._meta.autoform_label = autoform_label
@@ -29,6 +30,7 @@ def custom_metadata(
         cls._meta.related_components = related_components
         cls._meta.visibility = visibility
         cls._meta.access_level = access_level
+        cls._meta.info_dump = info_dump
         return cls
 
     return decorator
@@ -64,6 +66,7 @@ class CustomTextField(models.TextField):
         self.md_column_count = kwargs.pop("md_column_count", 12)
         self.justify = kwargs.pop("justify", "left")
         self.markdown = kwargs.pop("markdown", "false")
+        self.min_rows = kwargs.pop("min_rows", 6)
         super().__init__(*args, **kwargs)
 
 

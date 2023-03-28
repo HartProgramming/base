@@ -6,6 +6,7 @@ import {
   makeStyles,
   MenuItem,
   Select,
+  Typography,
 } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
@@ -42,6 +43,11 @@ const useStyles = makeStyles((theme) => ({
       overflowY: "auto",
     },
   },
+  helpText: {
+    margin: theme.spacing(1, 0, 0, 0),
+    padding: 0,
+    color: theme.palette.text.secondary,
+  },
 }));
 
 const ChoiceType = ({
@@ -52,10 +58,10 @@ const ChoiceType = ({
   choices,
   xsColumnCount,
   mdColumnCount,
+  helpText,
 }) => {
   const classes = useStyles();
-  console.log(fieldName);
-  console.log(choices);
+  console.log(choices)
   return (
     <Grid
       item
@@ -64,8 +70,12 @@ const ChoiceType = ({
       style={{
         paddingRight: 8,
         paddingLeft: 8,
+        width: "100%",
       }}
     >
+      <Typography className={classes.helpText}>
+        {helpText || verboseName}
+      </Typography>
       <FormControl style={{ width: "100%" }}>
         <FormControlLabel
           style={{

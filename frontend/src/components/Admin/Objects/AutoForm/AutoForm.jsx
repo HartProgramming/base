@@ -12,6 +12,7 @@ import {
   ListItemText,
   ListItemIcon,
   makeStyles,
+  Tooltip,
 } from "@material-ui/core";
 import axiosInstance from "../../../../lib/Axios/axiosInstance";
 import BaseForm from "../../../Elements/Base/BaseForm";
@@ -45,6 +46,11 @@ const useStyles = makeStyles((theme) => ({
     "&:hover": {
       backgroundColor: theme.palette.secondary.light,
     },
+  },
+  tooltip: {
+    backgroundColor: theme.palette.text.secondary,
+    color: "#ffffff",
+    fontSize: "12px",
   },
 }));
 
@@ -96,6 +102,7 @@ const AutoForm = ({ endpointUrl, data = {}, handleUpdate }) => {
     axiosInstance.get(`/get_metadata${endpointUrl}`).then((response) => {
       setFieldMetadata(response.data.fields);
       setModelMetadata(response.data);
+      console.log(response.data);
     });
   }, []);
 
@@ -106,8 +113,6 @@ const AutoForm = ({ endpointUrl, data = {}, handleUpdate }) => {
   };
 
   const handleInputChange = (e) => {
-    console.log(e.target.type);
-    console.log(formData);
     const { name, value, type, checked } = e.target;
     setFormData((prevFormData) => ({
       ...prevFormData,
@@ -128,7 +133,12 @@ const AutoForm = ({ endpointUrl, data = {}, handleUpdate }) => {
   };
 
   const handleManyToManyChange = (fieldName, fieldValue) => {
-    if (fieldName === "features" || fieldName === "supported_sites") {
+    if (
+      fieldName === "features" ||
+      fieldName === "supported_sites" ||
+      fieldName === "responsibilities" ||
+      fieldName === "requirements"
+    ) {
       const newFeatures = formData[fieldName] ? [...formData[fieldName]] : [];
       newFeatures.push({ detail: fieldValue });
       setFormData((prevFormData) => ({
@@ -167,9 +177,6 @@ const AutoForm = ({ endpointUrl, data = {}, handleUpdate }) => {
         "Content-Type": "multipart/form-data",
       },
     };
-
-    console.log("DATA SENT: ", formData);
-
     const formDataWithoutId = {};
     for (const [key, value] of Object.entries(formData)) {
       if (key !== "id") {
@@ -178,7 +185,6 @@ const AutoForm = ({ endpointUrl, data = {}, handleUpdate }) => {
     }
 
     if (Object.keys(data).length === 0) {
-      console.log("if'd", model);
       try {
         const response = await axiosInstance.post(
           endpointUrl,
@@ -195,8 +201,6 @@ const AutoForm = ({ endpointUrl, data = {}, handleUpdate }) => {
         console.log(err);
       }
     } else {
-      console.log("else'd");
-      console.log("else'd id: ", data);
       try {
         const response = await axiosInstance.patch(
           `${endpointUrl}${data.id}/`,
@@ -218,15 +222,19 @@ const AutoForm = ({ endpointUrl, data = {}, handleUpdate }) => {
       {ready ? (
         <BaseForm
           handleSubmit={handleSubmit}
-          maxWidth={800}
-          minWidth={800}
+          maxWidth={isSmallScreen ? 370 : 800}
+          minWidth={isSmallScreen ? 370 : 800}
           minHeight={isSmallScreen ? 400 : 600}
-          title={modelMetadata.autoFormLabel || modelMetadata.verboseName}
+          title={`${Object.keys(data).length === 0 ? "Create" : "Update"} ${
+            modelMetadata.autoFormLabel || modelMetadata.verboseName
+          } Object`}
           body={modelMetadata.longDescription}
+          bodyAlign="start"
           background="#F5F5F5"
           boxShadow={2}
+          infoDump={modelMetadata.info_dump}
         >
-          <Grid container justifyContent="center">
+          <Grid container justifyContent="flex-start">
             {fieldMetadata &&
               metadata &&
               Object.keys(fieldMetadata).map((fieldName) => {
@@ -234,6 +242,7 @@ const AutoForm = ({ endpointUrl, data = {}, handleUpdate }) => {
                   fieldName === "id" ||
                   fieldName === "created_at" ||
                   fieldName === "updated_at" ||
+                  fieldName === "blacklisted_at" ||
                   fieldName === "last_login" ||
                   fieldName === "date_joined" ||
                   fieldName === "subscribed_on" ||
@@ -254,13 +263,10 @@ const AutoForm = ({ endpointUrl, data = {}, handleUpdate }) => {
                   justify,
                   markdown,
                   help_text,
+                  min_rows,
                 } = fieldMetadata[fieldName];
 
-                if (fieldName === "features") {
-                  console.log(fieldMetadata[fieldName]);
-                } else if (fieldName === "title") {
-                  console.log("HELP TEXT: ", modelMetadata);
-                }
+                console.log(fieldMetadata["question_sets"]);
 
                 const { verbose_name } = metadata[fieldName];
 
@@ -282,6 +288,7 @@ const AutoForm = ({ endpointUrl, data = {}, handleUpdate }) => {
                   md_column_count,
                   justify,
                   markdown,
+                  min_rows,
                   help_text
                 );
 
@@ -293,20 +300,38 @@ const AutoForm = ({ endpointUrl, data = {}, handleUpdate }) => {
               })}
           </Grid>
           <Grid container justifyContent="center" style={{ marginTop: 16 }}>
-            <StyledButton
-              buttonText={Object.keys(data).length === 0 ? "Create" : "Update"}
-              minWidth={80}
-              color="primary"
-              type="submit"
+            <Tooltip
+              title={`${
+                Object.keys(data).length === 0 ? "Create" : "Update"
+              } Object`}
+              placement="bottom"
+              classes={{ tooltip: classes.tooltip }}
             >
-              {Object.keys(data).length === 0 ? "Create" : "Update"}
-            </StyledButton>
-            <StyledButton
-              buttonText={"Cancel"}
-              color="primary"
-              onClick={routeBackToModel}
-              minWidth={80}
-            />
+              <div>
+                <StyledButton
+                  buttonText={
+                    Object.keys(data).length === 0 ? "Create" : "Update"
+                  }
+                  minWidth={80}
+                  color="primary"
+                  type="submit"
+                />
+              </div>
+            </Tooltip>
+            <Tooltip
+              title={`Cancel Creation`}
+              placement="bottom"
+              classes={{ tooltip: classes.tooltip }}
+            >
+              <div>
+                <StyledButton
+                  buttonText={"Cancel"}
+                  color="primary"
+                  onClick={routeBackToModel}
+                  minWidth={80}
+                />
+              </div>
+            </Tooltip>
           </Grid>
 
           <Grid
@@ -358,18 +383,24 @@ const AutoForm = ({ endpointUrl, data = {}, handleUpdate }) => {
                 {Object.entries(modelMetadata.pagesAssociated).map(
                   ([page, url], index) => (
                     <React.Fragment key={page}>
-                      <ListItem
-                        button
-                        component={Link}
-                        to={url}
-                        className={classes.listItem}
-                        style={{ maxWidth: "25%" }}
+                      <Tooltip
+                        title={`View ${page} Page`}
+                        placement="bottom"
+                        classes={{ tooltip: classes.tooltip }}
                       >
-                        <ListItemIcon>
-                          <HomeIcon />
-                        </ListItemIcon>
-                        <ListItemText primary={page} />
-                      </ListItem>
+                        <ListItem
+                          button
+                          component={Link}
+                          to={url}
+                          className={classes.listItem}
+                          style={{ maxWidth: "25%" }}
+                        >
+                          <ListItemIcon>
+                            <HomeIcon />
+                          </ListItemIcon>
+                          <ListItemText primary={page} />
+                        </ListItem>
+                      </Tooltip>
                     </React.Fragment>
                   )
                 )}

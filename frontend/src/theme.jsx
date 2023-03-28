@@ -55,7 +55,7 @@ const palettes = {
     dark: "#1976d2",
   },
   text: {
-    dark: "black",
+    dark: "#222",
     light: "#fff",
     primary: "rgba(0, 0, 0, 1)",
     secondary: "rgba(0, 0, 0, 0.6)",
@@ -65,6 +65,7 @@ const palettes = {
   action: {
     active: "rgba(0, 0, 0, 0.54)",
     hover: "rgba(121, 134, 203 , 0.75)",
+    hoverLight: "rgba(121, 134, 203 , 0.10)",
     hoverOpacity: 0.08,
     selected: "rgba(0, 0, 0, 0.14)",
     disabled: "rgba(0, 0, 0, 0.26)",
@@ -137,7 +138,7 @@ const baseTheme = createTheme({
       letterSpacing: "0.00735em",
     },
     h5: {
-      fontWeight: 600,
+      fontWeight: 500,
       fontSize: "1rem",
       lineHeight: 1.334,
       letterSpacing: "0em",

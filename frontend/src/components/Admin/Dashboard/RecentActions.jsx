@@ -13,6 +13,7 @@ import {
   Collapse,
   IconButton,
   CardHeader,
+  Tooltip,
 } from "@material-ui/core";
 import ExpandLess from "@material-ui/icons/ExpandLess";
 import ExpandMore from "@material-ui/icons/ExpandMore";
@@ -25,6 +26,11 @@ const useStyles = makeStyles((theme) => ({
   card: {
     margin: 24,
     background: "#F5F5F5",
+    width: "100%",
+    [theme.breakpoints.down("sm")]: {
+      margin: theme.spacing(3, 0, 3, 0),
+      madWidth: 200,
+    },
   },
   tableContainer: {
     maxHeight: 400,
@@ -46,19 +52,33 @@ const useStyles = makeStyles((theme) => ({
     color: "#007bff",
   },
   cardHeader: {
-    backgroundColor: "#E6E6E6",
+    backgroundColor: theme.palette.primary.main,
+    color: theme.palette.common.white,
+    padding: theme.spacing(3, 2, 2, 2),
+    alignItems: "flex-start",
   },
   tableCell: {
     padding: "6px 16px",
     fontSize: "0.875rem",
   },
   icon: {
-    color: theme.palette.info.dark,
+    color: theme.palette.secondary.main,
     marginRight: theme.spacing(2),
+  },
+  tooltip: {
+    backgroundColor: theme.palette.text.secondary,
+    color: "#ffffff",
+    fontSize: "12px",
   },
 }));
 
-function RecentActions({ actionsOpen, setActionsOpen, recentActions }) {
+function RecentActions({
+  actionsOpen,
+  setActionsOpen,
+  recentActions,
+  appName,
+  modelName,
+}) {
   const classes = useStyles();
   const handleExpandClick = () => {
     setActionsOpen(!actionsOpen);
@@ -71,15 +91,25 @@ function RecentActions({ actionsOpen, setActionsOpen, recentActions }) {
           className={classes.cardHeader}
           action={
             <>
-              <Link
-                to="/adminlog"
-                style={{ textDecoration: "none", color: "inherit" }}
+              <Tooltip
+                title={`View Full Log`}
+                placement="bottom"
+                classes={{ tooltip: classes.tooltip }}
               >
-                <IconButton color="secondary">
-                  <AutoStoriesIcon />
-                </IconButton>
-              </Link>
-              <IconButton onClick={handleExpandClick}>
+                <Link
+                  to="/adminlog"
+                  state={{
+                    appName: appName ? appName : null,
+                    modelName: modelName ? modelName : null,
+                  }}
+                  style={{ textDecoration: "none", color: "inherit" }}
+                >
+                  <IconButton color="secondary">
+                    <AutoStoriesIcon />
+                  </IconButton>
+                </Link>
+              </Tooltip>
+              <IconButton onClick={handleExpandClick} color="secondary">
                 {actionsOpen ? <ExpandLess /> : <ExpandMore />}
               </IconButton>
             </>
@@ -98,7 +128,7 @@ function RecentActions({ actionsOpen, setActionsOpen, recentActions }) {
           <CardContent>
             {recentActions.length > 0 ? (
               <TableContainer className={classes.tableContainer}>
-                <Table>
+                <Table size="small">
                   <TableHead>
                     <TableRow>
                       <TableCell className={classes.headerCell}>User</TableCell>

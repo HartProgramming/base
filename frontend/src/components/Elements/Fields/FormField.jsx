@@ -6,7 +6,7 @@ import SearchIcon from "@material-ui/icons/Search";
 const useStyles = makeStyles((theme) => ({
   field: {
     width: "100%",
-    margin: theme.spacing(0, 0, 1, 0),
+    margin: theme.spacing(0, 0, 0, 0),
     "& .MuiOutlinedInput-root": {
       fontFamily: "Roboto",
       padding: 0,
@@ -26,11 +26,11 @@ const useStyles = makeStyles((theme) => ({
     },
     "& .MuiFormLabel-root": {
       fontFamily: "Roboto",
-      color: "black",
+      color: theme.palette.text.dark,
       fontWeight: "500",
     },
     "& input": {
-      color: "black",
+      color: theme.palette.text.dark,
     },
     "& .MuiFormHelperText-contained": {
       fontFamily: "Roboto",
@@ -44,10 +44,10 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: 5,
     width: "100%",
     "& .MuiOutlinedInput-inputMultiline": {
-      color: "black",
+      color: theme.palette.text.dark,
     },
     "& .MuiOutlinedInput-input": {
-      color: "black",
+      color: theme.palette.text.dark,
       textAlign: "left",
     },
     "& .MuiOutlinedInput-root": {
@@ -73,9 +73,9 @@ const useStyles = makeStyles((theme) => ({
     },
     "& .MuiFormHelperText-contained": {
       fontFamily: "Roboto",
-      color: "black",
+      color: theme.palette.text.secondary,
       fontWeight: "500",
-      fontSize: "0.95rem",
+      margin: theme.spacing(0, 0, 1, 0),
     },
     "& input": {
       color: "black",
@@ -106,6 +106,9 @@ const FormField = ({
   children,
   required = null,
   type = null,
+  style,
+  minRows = 6,
+  variant = "outlined",
 }) => {
   const classes = useStyles();
 
@@ -114,20 +117,21 @@ const FormField = ({
       name={id}
       id={id}
       className={!multiline ? classes.field : classes.multiline}
-      classes={{ helperText: classes.helperText }}
-      variant="outlined"
+      // classes={{ helperText: classes.helperText }}
+      variant={variant}
       label={label}
       margin="dense"
       value={value}
       onChange={onChange}
       multiline={multiline}
-      minRows={6}
+      minRows={minRows}
       error={error}
       helperText={helperText}
       select={select}
       SelectProps={SelectProps}
       type={type}
       required={required}
+      style={style}
       InputProps={{
         ...(label === "Search" && {
           classes: {

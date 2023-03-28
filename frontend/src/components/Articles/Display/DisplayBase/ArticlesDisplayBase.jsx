@@ -11,7 +11,7 @@ import { useSelector } from "react-redux";
 import DeleteConfirmationModal from "../../../Elements/Modals/DeleteConfirmationModal";
 import axios from "axios";
 import axiosInstance from "../../../../lib/Axios/axiosInstance";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   defaultCardStyle,
   listCardStyle,
@@ -34,6 +34,7 @@ const ArticlesDisplayBase = ({
   body = "body1",
   actionSubtitle = "subtitle1",
   carousel = false,
+  editMode,
 }) => {
   const classes = useStyles();
   const { auth } = useSelector((state) => state);
@@ -137,10 +138,11 @@ const ArticlesDisplayBase = ({
     const modifiedHtml = doc.body.innerHTML;
     const text = parser.parseFromString(modifiedHtml, "text/html").body
       .textContent;
-    const truncatedText = text.substr(0, 250) + "...";
+    const truncatedText = text.substr(0, 150) + "...";
 
     return (
       <>
+<<<<<<< HEAD
       <Grid
         item
         sm={layout.sm}
@@ -179,6 +181,61 @@ const ArticlesDisplayBase = ({
         </BaseCard>
       </Grid>
       <Divider className={classes.divide} />
+=======
+        <Grid
+          item
+          sm={layout.sm}
+          md={layout.md}
+          lg={layout.lg}
+          style={layout.style}
+        >
+          <Link to={`/articles/${article.id}`}>
+            <BaseCard
+              title={article.title}
+              subtitle={
+                <Typography
+                  variant={layout.actionSubtitle}
+                  color="textSecondary"
+                >
+                  By: {article.author_details.first_name}{" "}
+                  {article.author_details.last_name}
+                </Typography>
+              }
+              headerAction={
+                editMode ? (
+                  <div>
+                    <ArticleAuthActions
+                      article={article}
+                      handleDelete={handleDelete}
+                      navigate={navigate}
+                    />
+                  </div>
+                ) : null
+              }
+              headerTitleProps={layout.header}
+              headerSubheaderProps={layout.subtitle}
+              media={`${article.image}`}
+              mediaPosition={mediaPosition}
+              classes={layout.classes}
+              elevation={layout.elevation}
+              imagePadding={layout.imagePadding}
+              actions={
+                <ArticleHighlightActions
+                  subtitleVariant={layout.actionSubtitle}
+                  article={article}
+                />
+              }
+            >
+              <Typography variant={layout.body} style={{ marginBottom: 5 }}>
+                {truncatedText}
+              </Typography>
+            </BaseCard>
+          </Link>
+          <div style={{ width: "100%" }}>
+            <Divider style={{ color: "black" }} />
+          </div>
+        </Grid>
+>>>>>>> 4417815b945fae04e080e81a3b62602eb2b23094
       </>
     );
   };
@@ -191,7 +248,10 @@ const ArticlesDisplayBase = ({
         spacing={4}
         flex
         justifyContent="center"
-        style={{ flexWrap: "wrap" }}
+        style={{
+          flexWrap: "wrap",
+          maxWidth: classSet === "list" ? 1000 : 1200,
+        }}
       >
         {carousel ? (
           <BaseCarousel>
@@ -200,7 +260,6 @@ const ArticlesDisplayBase = ({
         ) : (
           <>{articles.map((article) => renderArticles(article))} </>
         )}
-        ;
       </Grid>
 
       <DeleteConfirmationModal

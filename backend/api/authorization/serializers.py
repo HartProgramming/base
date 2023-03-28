@@ -7,11 +7,24 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = "__all__"
+        fields = [
+            "id",
+            "username",
+            "email",
+            "first_name",
+            "last_name",
+            "phone_number",
+            "address",
+            "city",
+            "state",
+            "zip_code",
+            "country",
+            "is_staff",
+        ]
 
 
 class TokenBlacklistSerializer(serializers.ModelSerializer):
-    FIELD_KEYS = ["token", "blacklisted_at"]
+    FIELD_KEYS = ["token"]
 
     class Meta:
         model = TokenBlacklist

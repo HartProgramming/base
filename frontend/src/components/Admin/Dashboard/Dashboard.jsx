@@ -5,6 +5,9 @@ import {
   Grid,
   Breadcrumbs,
   IconButton,
+  Tooltip,
+  useTheme,
+  useMediaQuery,
 } from "@material-ui/core";
 import axiosInstance from "../../../lib/Axios/axiosInstance";
 import BaseContent from "../../Elements/Base/BaseContent";
@@ -27,10 +30,14 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     justifyContent: "space-between",
     margin: 24,
+    [theme.breakpoints.down("sm")]: {
+      margin: theme.spacing(2, 0, 2, 0),
+    },
   },
   cardHeader: {
+    backgroundColor: theme.palette.primary.main,
+    color: theme.palette.common.white,
     padding: theme.spacing(3, 2, 1, 2),
-    backgroundColor: "#E6E6E6",
     alignItems: "flex-start",
   },
   link: {
@@ -52,10 +59,19 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 600,
     fontFamily: "Poppins",
   },
+  breadCrumbTitleMain: {
+    textAlign: "center",
+    color: "black",
+    marginRight: 16,
+    paddingRight: 16,
+    fontWeight: 600,
+    fontFamily: "Poppins",
+  },
   collapseAllContainer: {
     display: "flex",
     justifyContent: "flex-end",
     alignItems: "center",
+    width: "100%",
   },
   background: {
     background: "#F5F5F5",
@@ -83,13 +99,40 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   modelIcon: {
-    color: theme.palette.info.dark,
+    color: theme.palette.secondary.main,
     marginRight: theme.spacing(2),
     fontSize: "2rem",
   },
   hoverLink: {
     "&:hover": {
       background: "rgba(0, 0, 0, 0.2)",
+    },
+  },
+  icon: {
+    color: theme.palette.secondary.main,
+  },
+  hoverAppLink: {
+    "&:hover": {
+      color: theme.palette.secondary.main,
+      textDecoration: "underline",
+      textDecorationThickness: "0.1em",
+      textUnderlineOffset: "0.25em",
+    },
+  },
+  tooltip: {
+    backgroundColor: theme.palette.text.secondary,
+    color: "#ffffff",
+    fontSize: "12px",
+  },
+  dashContainer: {
+    justifyContent: "center",
+  },
+  dashInnerContainer: {
+    [theme.breakpoints.down("sm")]: {
+      maxWidth: "75%",
+    },
+    [theme.breakpoints.down("xs")]: {
+      maxWidth: "100%",
     },
   },
 }));
@@ -103,6 +146,8 @@ function Dashboard() {
   const [collapsed, setCollapsed] = useState(false);
   const [actionsOpen, setActionsOpen] = useState(false);
   const [statsOpen, setStatsOpen] = useState(false);
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   const handleCollapseAll = () => {
     const closedAppSections = {};
@@ -132,7 +177,7 @@ function Dashboard() {
       .then((response) => {
         setModels(response.data.models);
         setConfigs(response.data.configs);
-        console.log("Models: ", response.data);
+        console.log("Models: ", response.data.models.authorization);
 
         const initialOpenAppSections = {};
         Object.keys(response.data.models).forEach((app) => {
@@ -154,7 +199,7 @@ function Dashboard() {
   }, []);
 
   return (
-    <BaseContent maxWidth={1200} pt={4} pb={4}>
+    <BaseContent maxWidth={1200} pt={4} pb={4} pad={isSmallScreen ? 3 : 3}>
       {Object.keys(models).length > 0 ? (
         <>
           <Typography variant="h3" className={classes.breadCrumbTitle}>
@@ -165,12 +210,10 @@ function Dashboard() {
             aria-label="breadcrumb"
             style={{ display: "flex" }}
           >
-            <Link className={classes.activeLink} to="/admin">
-              Home
-            </Link>
             <Typography color="textPrimary">Dashboard</Typography>
           </Breadcrumbs>
-          <div>
+
+          <Grid container className={classes.dashContainer}>
             <div className={classes.collapseAllContainer}>
               <Typography color="textPrimary">
                 {collapsed ? "Open All" : "Collapse All"}
@@ -181,8 +224,7 @@ function Dashboard() {
                 {collapsed ? <ExpandMore /> : <ExpandLess />}
               </IconButton>
             </div>
-
-            <Grid container>
+            <Grid container className={classes.dashInnerContainer}>
               {renderSections({
                 models,
                 configs,
@@ -190,15 +232,14 @@ function Dashboard() {
                 setOpenAppSections,
                 classes,
               })}
-              <Grid item xs={12}>
-                <RecentActions
-                  actionsOpen={actionsOpen}
-                  setActionsOpen={setActionsOpen}
-                  recentActions={recentActions}
-                />
-              </Grid>
             </Grid>
-          </div>
+            <RecentActions
+              actionsOpen={actionsOpen}
+              setActionsOpen={setActionsOpen}
+              recentActions={recentActions}
+            />
+          </Grid>
+
           <Statistics
             statsOpen={statsOpen}
             setStatsOpen={setStatsOpen}

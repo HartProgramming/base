@@ -6,7 +6,7 @@ import Container from "../../../../Elements/Layout/Container/Container";
 
 const useStyles = makeStyles((theme) => ({
   helpText: {
-    margin: theme.spacing(1, 0, 0, 0),
+    margin: theme.spacing(1, 0, 0.5, 0),
     padding: 0,
     color: theme.palette.text.secondary,
   },
@@ -19,6 +19,7 @@ const CharType = ({
   handleInputChange,
   xsColumnCount,
   mdColumnCount,
+  justifyContent = "flex-start",
   helpText,
   modelMetadata,
 }) => {
@@ -30,7 +31,7 @@ const CharType = ({
       md={mdColumnCount}
       style={{
         display: "flex",
-        justifyContent: "center",
+        justifyContent: justifyContent,
         paddingRight: 8,
         paddingLeft: 8,
       }}
@@ -42,6 +43,7 @@ const CharType = ({
             formData={formData}
             handleChange={handleInputChange}
             background="#F5F5F5"
+            helpText={helpText}
           />
         </div>
       ) : (
@@ -51,10 +53,11 @@ const CharType = ({
           </Typography>
           <FormField
             id={fieldName}
-            label={verboseName}
+            // label={helpText}
             onChange={handleInputChange}
             value={formData[fieldName]}
             classes={{ helperText: classes.helperText }}
+            // helperText={helpText}
           />
         </Container>
       )}

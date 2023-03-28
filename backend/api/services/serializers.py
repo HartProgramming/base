@@ -8,11 +8,11 @@ from api.views import get_model_metadata
 
 
 class BenefitsSerializer(serializers.ModelSerializer):
-    FIELD_KEYS = ["title", "description", "icon", "buttonText", "page_link"]
+    FIELD_KEYS = ["title", "description", "page_link"]
 
     class Meta:
         model = Benefits
-        fields = ["id", "icon", "title", "buttonText", "description", "page_link"]
+        fields = ["id", "icon", "title", "page_link", "description", "buttonText"]
 
 
 class ProcessTextItemSerializer(serializers.ModelSerializer):
@@ -31,35 +31,6 @@ class ProcessImageItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProcessImageItem
         fields = "__all__"
-
-
-class ServiceViewSerializer(serializers.Serializer):
-    process_text = ProcessTextItemSerializer(many=True)
-    process_image = ProcessImageItemSerializer(many=True)
-    contact_information = ContactInformationSerializer()
-    socials = SocialsSerializer()
-    service_tier = ServiceTierSerializer(many=True)
-    service_table_services = ServiceTableSerializer()
-    service_table_competitors = ServiceTableSerializer()
-    benefits = BenefitsSerializer(many=True)
-    title_block_benefits = TitleBlockSerializer()
-    content_text_block = ContentTextBlockSerializer()
-    metadata = serializers.SerializerMethodField()
-
-    def get_metadata(self, obj):
-        metadata = []
-        for model in [
-            "ProcessTextItem",
-            "ProcessImageItem",
-            "ContactInformation",
-            "ServiceTier",
-            "ServiceTableLabels",
-            "ServiceCompareRows",
-            "Benefits",
-            "TitleBlock",
-        ]:
-            metadata.append(get_model_metadata(model))
-        return metadata
 
 
 ProcessImageItem.serializer_class = ProcessImageItemSerializer

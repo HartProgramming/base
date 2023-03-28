@@ -24,7 +24,7 @@ class HeroBlockSerializer(serializers.ModelSerializer):
 
 
 class TitleBlockSerializer(serializers.ModelSerializer):
-    FIELD_KEYS = ["title", "subtitle"]
+    FIELD_KEYS = ["name", "title", "subtitle"]
 
     class Meta:
         model = TitleBlock
@@ -102,32 +102,6 @@ class TestimonialSerializer(serializers.ModelSerializer):
     class Meta:
         model = Testimonial
         fields = "__all__"
-
-
-class LandingFullSerializer(serializers.Serializer):
-    hero_block = HeroBlockSerializer()
-    title_block_process = TitleBlockSerializer()
-    title_block_news = TitleBlockSerializer()
-    service_tiers = ServiceTierSerializer(many=True)
-    processes = ProcessSerializer(many=True)
-    contact_information = ContactInformationSerializer()
-    socials = SocialsSerializer()
-    articles = ArticleSerializer(many=True)
-    metadata = serializers.SerializerMethodField()
-
-    def get_metadata(self, obj):
-        metadata = []
-        for model in [
-            "HeroBlock",
-            "TitleBlock",
-            "ServiceTier",
-            "Process",
-            "TeamMember",
-            "ContactInformation",
-            "Article",
-        ]:
-            metadata.append(get_model_metadata(model))
-        return metadata
 
 
 HeroBlock.serializer_class = HeroBlockSerializer

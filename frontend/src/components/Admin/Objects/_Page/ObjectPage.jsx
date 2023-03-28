@@ -1,4 +1,11 @@
-import { Breadcrumbs, makeStyles, Typography } from "@material-ui/core";
+import {
+  Breadcrumbs,
+  makeStyles,
+  Tooltip,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from "@material-ui/core";
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
 import PageContainer from "../../../Elements/Layout/PageContainer";
@@ -23,11 +30,21 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 600,
     fontFamily: "Poppins",
   },
+  tooltip: {
+    backgroundColor: theme.palette.text.secondary,
+    color: "#ffffff",
+    fontSize: "12px",
+  },
+  breadCrumbs: {
+    [theme.breakpoints.down("sm")]: {
+      fontSize: "0.85rem",
+      margin: theme.spacing(0, 0, 0, 0),
+    },
+  },
 }));
 
 function ObjectPage() {
   const { str, pk } = useParams();
-  console.log(str);
   const classes = useStyles();
   const location = useLocation();
   const [model, setModel] = useState(null);
@@ -39,6 +56,10 @@ function ObjectPage() {
   const [data, setData] = useState(null);
   const [ready, setReady] = useState(false);
   const [create, setCreate] = useState(false);
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
+  console.log(str, "str");
+  console.log(pk, "pk");
 
   const fetchData = async () => {
     if (url && keys) {
@@ -57,7 +78,6 @@ function ObjectPage() {
   useEffect(() => {
     setReady(false);
     if (!location.state && !pk) {
-      console.log("HERE");
       axiosInstance
         .get(`/get_models/${str}/`)
         .then((response) => {
@@ -106,8 +126,6 @@ function ObjectPage() {
       setModel(location.state.model);
       setId(location.state.id);
       setData(location.state.data);
-      console.log("OBJ PAGE URL2: ", location.state.url);
-      console.log("OBJ PAGE KEYS2: ", location.state.keys);
       setReady(true);
     }
   }, []);
@@ -124,33 +142,67 @@ function ObjectPage() {
     <PageContainer seoEdit={false} backgroundColor="#F5F5F5">
       {metadata && (
         <BaseContent maxWidth={1200} pt={4} pb={4}>
-          <Typography variant="h3" className={classes.title}>
-            {model.verbose_name}
-          </Typography>
+          {!isSmallScreen && (
+            <Typography variant="h3" className={classes.title}>
+              {model.verbose_name}
+            </Typography>
+          )}
           <Breadcrumbs
+            className={classes.breadCrumbs}
             separator={<NavigateNext fontSize="small" />}
             aria-label="breadcrumb"
             style={{ display: "flex" }}
+            classes={{ separator: classes.breadCrumbs }}
           >
-            <Link className={classes.activeLink} to="/admin">
-              Home
-            </Link>
-            <Link
-              to={`/admin${url}`}
-              state={{
-                url: url,
-                keys: keys,
-                appName: appName,
-                model: model,
-                metadata: metadata,
-                id: id,
-              }}
-              key={appName}
-              className={classes.activeLink}
+            <Tooltip
+              title={`Dashboard`}
+              placement="bottom"
+              classes={{ tooltip: classes.tooltip }}
             >
-              {model.verbose_name}
-            </Link>
-            <Typography color="textPrimary">
+              <Link className={classes.activeLink} to="/admin">
+                Home
+              </Link>
+            </Tooltip>
+            <Tooltip
+              title={`${
+                appName.charAt(0).toUpperCase() + appName.slice(1)
+              } Overview`}
+              placement="bottom"
+              classes={{ tooltip: classes.tooltip }}
+            >
+              <Link
+                className={classes.activeLink}
+                to={`/admin/model/${appName}`}
+              >
+                {appName.charAt(0).toUpperCase() + appName.slice(1)}
+              </Link>
+            </Tooltip>
+            <Tooltip
+              title={`${model.verbose_name} Model`}
+              placement="bottom"
+              classes={{ tooltip: classes.tooltip }}
+            >
+              <Link
+                to={`/admin${url}`}
+                state={{
+                  url: url,
+                  keys: keys,
+                  appName: appName,
+                  model: model,
+                  metadata: metadata,
+                  id: id,
+                }}
+                key={appName}
+                className={classes.activeLink}
+              >
+                {model.verbose_name}
+              </Link>
+            </Tooltip>
+
+            <Typography
+              color="textPrimary"
+              style={{ fontSize: isSmallScreen ? "0.8rem" : "0.95rem" }}
+            >
               {Array.isArray(id) ? "Creation" : "Update"}
             </Typography>
           </Breadcrumbs>

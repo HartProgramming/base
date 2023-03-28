@@ -28,8 +28,10 @@ const getByType = (
   md_column_count,
   justify,
   markDownMixin,
+  min_rows,
   help_text
 ) => {
+  console.log(min_rows, "min_rows");
   switch (fieldType) {
     case "BooleanField":
       return (
@@ -55,6 +57,7 @@ const getByType = (
           handleInputChange={handleInputChange}
           xsColumnCount={xs_column_count}
           mdColumnCount={md_column_count}
+          justifyContent={justify}
           helpText={help_text}
           modelMetadata={modelMetadata}
         />
@@ -68,6 +71,7 @@ const getByType = (
           handleInputChange={handleInputChange}
           xsColumnCount={xs_column_count}
           mdColumnCount={md_column_count}
+          helpText={help_text}
         />
       );
     case "TextField":
@@ -82,6 +86,7 @@ const getByType = (
           mdColumnCount={md_column_count}
           markDownMixin={markDownMixin}
           helpText={help_text}
+          min_rows={min_rows}
         />
       );
     case "IntegerField":
@@ -99,6 +104,7 @@ const getByType = (
           handleInputChange={handleInputChange}
           xsColumnCount={xs_column_count}
           mdColumnCount={md_column_count}
+          helpText={help_text}
         />
       );
     case "DateTimeField":
@@ -122,6 +128,7 @@ const getByType = (
           handleManyToManyChange={handleManyToManyChange}
           xsColumnCount={xs_column_count}
           mdColumnCount={md_column_count}
+          helpText={help_text}
         />
       );
     case "ImageField":
@@ -144,6 +151,7 @@ const getByType = (
           choices={choices}
           xsColumnCount={xs_column_count}
           mdColumnCount={md_column_count}
+          helpText={help_text}
         />
       );
     case "FileField":

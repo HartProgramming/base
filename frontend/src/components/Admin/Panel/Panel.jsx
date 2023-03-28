@@ -5,6 +5,10 @@ import {
   Breadcrumbs,
   Typography,
   makeStyles,
+  Tooltip,
+  Divider,
+  useTheme,
+  useMediaQuery,
 } from "@material-ui/core";
 import axiosInstance from "../../../lib/Axios/axiosInstance";
 import BaseContent from "../../Elements/Base/BaseContent";
@@ -14,6 +18,8 @@ import { NavigateNext } from "@material-ui/icons";
 import PanelTable from "./Table/PanelTable";
 import Loading from "../../Elements/Layout/Loading/Loading";
 import { useDispatch } from "react-redux";
+import RecentActions from "../Dashboard/RecentActions";
+import InfoTooltip from "../../Elements/Base/InfoTooltip";
 
 const useStyles = makeStyles((theme) => ({
   activeLink: {
@@ -29,15 +35,33 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 600,
     fontFamily: "Poppins",
   },
+  tooltip: {
+    backgroundColor: theme.palette.text.secondary,
+    color: "#ffffff",
+    fontSize: "12px",
+  },
+  breadCrumbs: {
+    [theme.breakpoints.down("sm")]: {
+      fontSize: "0.85rem",
+      margin: theme.spacing(0, 0, 0, 0),
+    },
+  },
 }));
 
-const Panel = ({ apiData, setCount }) => {
+const Panel = ({
+  apiData,
+  setCount,
+  recentActions,
+  setRecentActions,
+  type,
+}) => {
   const classes = useStyles();
   const navigate = useNavigate();
   const { id } = useParams();
   const location = useLocation();
   const [data, setData] = useState([]);
   const [selected, setSelected] = useState([]);
+  const [actionsOpen, setActionsOpen] = useState(true);
   const [open, setOpen] = useState(false);
   const [ready, setReady] = useState(false);
   const [model, setModel] = useState(null);
@@ -45,6 +69,8 @@ const Panel = ({ apiData, setCount }) => {
   const [keys, setKeys] = useState(null);
   const [url, setUrl] = useState(null);
   const [metadata, setMetadata] = useState(null);
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const dispatch = useDispatch();
 
   const handleArticleEdit = (data) => {
@@ -135,7 +161,7 @@ const Panel = ({ apiData, setCount }) => {
       setModel(apiData);
     }
     handleUpdate();
-  }, [url, apiData]);
+  }, [url, apiData, location.state]);
 
   const handleClose = () => {
     setOpen(false);
@@ -273,19 +299,44 @@ const Panel = ({ apiData, setCount }) => {
     <>
       {ready && model && apiData ? (
         <BaseContent maxWidth={1200} pt={4} pb={4}>
-          <Typography variant="h3" className={classes.breadCrumbTitle}>
-            {model.verbose_name}
-          </Typography>
+          {!isSmallScreen && (
+            <Typography variant="h3" className={classes.breadCrumbTitle}>
+              {model.verbose_name}
+            </Typography>
+          )}
           <Breadcrumbs
             separator={<NavigateNext fontSize="small" />}
             aria-label="breadcrumb"
             style={{ display: "flex" }}
+            className={classes.breadCrumbs}
+            classes={{ separator: classes.breadCrumbs }}
           >
-            <Link className={classes.activeLink} to="/admin">
-              Home
-            </Link>
+            <Tooltip
+              title={`Dashboard`}
+              placement="bottom"
+              classes={{ tooltip: classes.tooltip }}
+            >
+              <Link className={classes.activeLink} to="/admin">
+                Dashboard
+              </Link>
+            </Tooltip>
+            <Tooltip
+              title={`${
+                appName.charAt(0).toUpperCase() + appName.slice(1)
+              } Overview`}
+              placement="bottom"
+              classes={{ tooltip: classes.tooltip }}
+            >
+              <Link
+                className={classes.activeLink}
+                to={`/admin/model/${appName}`}
+              >
+                {appName.charAt(0).toUpperCase() + appName.slice(1)}
+              </Link>
+            </Tooltip>
             <Typography color="textPrimary">{model.verbose_name}</Typography>
           </Breadcrumbs>
+
           <Grid container justifyContent="center">
             <Grid
               item
@@ -295,20 +346,36 @@ const Panel = ({ apiData, setCount }) => {
                 justifyContent: "flex-end",
               }}
             >
-              <Link
-                to={`/admin/${model.model_name}/control`}
-                state={{
-                  url: url,
-                  keys: keys,
-                  appName: appName,
-                  model: model,
-                  metadata: metadata,
-                  id: selected ? selected : null,
-                }}
-                key={appName}
+              <InfoTooltip text={model.info_dump} />
+            </Grid>
+            <Grid
+              item
+              style={{
+                display: "flex",
+                width: "100%",
+                justifyContent: "flex-end",
+              }}
+            >
+              <Tooltip
+                title={`Create ${model.verbose_name} Object`}
+                placement="bottom"
+                classes={{ tooltip: classes.tooltip }}
               >
-                <StyledButton buttonText="Create" minWidth={0} />
-              </Link>
+                <Link
+                  to={`/admin/${model.model_name}/control`}
+                  state={{
+                    url: url,
+                    keys: keys,
+                    appName: appName,
+                    model: model,
+                    metadata: metadata,
+                    id: selected ? selected : null,
+                  }}
+                  key={appName}
+                >
+                  <StyledButton buttonText="Create" minWidth={0} />
+                </Link>
+              </Tooltip>
             </Grid>
           </Grid>
           <TableContainer>
@@ -327,6 +394,7 @@ const Panel = ({ apiData, setCount }) => {
                     handleClose={handleClose}
                     handleMultipleDeleteAction={handleMultipleDeleteAction}
                     updateMultipleItems={updateMultipleItems}
+                    type={type}
                   />
                 ) : id === "messages" || id === "application" ? (
                   <PanelTable
@@ -341,6 +409,7 @@ const Panel = ({ apiData, setCount }) => {
                     handleClose={handleClose}
                     handleMultipleDeleteAction={handleMultipleDeleteAction}
                     updateMultipleItems={updateMultipleItems}
+                    type={type}
                   />
                 ) : (
                   <PanelTable
@@ -356,11 +425,21 @@ const Panel = ({ apiData, setCount }) => {
                     handleMultipleDeleteAction={handleMultipleDeleteAction}
                     updateMultipleItems={updateMultipleItems}
                     handleView={handleView}
+                    type={type}
                   />
                 )}
               </>
             )}
           </TableContainer>
+          <div style={{ width: "100%", margin: "24px 0px 24px 0px" }}>
+            <Divider />
+          </div>
+          <RecentActions
+            actionsOpen={actionsOpen}
+            setActionsOpen={setActionsOpen}
+            recentActions={recentActions}
+            modelName={model.verbose_name}
+          />
         </BaseContent>
       ) : (
         <Loading loading={true} />

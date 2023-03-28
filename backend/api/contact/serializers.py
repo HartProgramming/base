@@ -1,6 +1,5 @@
 from rest_framework import serializers
 from .models import *
-from jobs.serializers import JobPostingSerializer
 from PIL import Image
 
 
@@ -46,15 +45,16 @@ class SocialsSerializer(serializers.ModelSerializer):
 
 class TeamMemberSerializer(serializers.ModelSerializer):
     image = serializers.ImageField(required=False, allow_null=True)
+
     FIELD_KEYS = ["name", "role", "image"]
 
     class Meta:
         model = TeamMember
         fields = (
+            "image",
             "id",
             "name",
             "role",
-            "image",
             "bio",
             "linkedIn",
             "github",
@@ -80,14 +80,6 @@ class TeamMemberSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Invalid image format")
 
         return image
-
-
-class AppInfoFullSerializer(serializers.Serializer):
-    contact_information = ContactInformationSerializer()
-    socials = SocialsSerializer()
-    hours = HoursSerializer()
-    members = TeamMemberSerializer(many=True)
-    jobs = JobPostingSerializer(many=True)
 
 
 TeamMember.serializer_class = TeamMemberSerializer

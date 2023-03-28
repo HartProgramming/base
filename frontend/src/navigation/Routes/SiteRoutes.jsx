@@ -34,6 +34,10 @@ import ReadPage from "../../components/Admin/Objects/_Page/ReadPage";
 import Footer from "../Components/Footer/Footer";
 import ApplicationViewPage from "../../components/Admin/Objects/_Page/ApplicationViewPage";
 import AnalysisPage from "../../components/Admin/Objects/_Page/AnalysisPage";
+import IndividualDashboard from "../../components/Admin/Dashboard/IndividualDashboard";
+import WIPPage from "../../components/Elements/Layout/WIPPage";
+import CreateUpdateArticle from "../../components/Articles/Create/ArticleCreateUpdate";
+import { useMediaQuery, useTheme } from "@material-ui/core";
 
 {
   /* 
@@ -59,7 +63,8 @@ export default function SiteRoutes({ handleUpdate }) {
   const dispatch = useDispatch();
   const loading = useSelector((state) => state.loading);
   const auth = useSelector((state) => state.auth);
-
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const isAdminPath = location.pathname.startsWith("/admin");
   const { message, type, open } = useSelector((state) => state.snackbar);
   const [count, setCount] = useState(null);
@@ -69,8 +74,8 @@ export default function SiteRoutes({ handleUpdate }) {
       axiosInstance
         .get("/appinfo/")
         .then((response) => {
-          setJobPostings(response.data.jobs);
-          setSocialData(response.data.socials);
+          setJobPostings(response.data.JobPosting);
+          setSocialData(response.data.Socials);
         })
         .catch((err) => {
           setError(err);
@@ -95,6 +100,7 @@ export default function SiteRoutes({ handleUpdate }) {
         type={type}
         open={open}
         onClose={() => dispatch(closeSnackbar())}
+        position={isSmallScreen ? "top-center" : "top-right"}
       />
       <ScrollTopFab />
 
@@ -136,6 +142,7 @@ export default function SiteRoutes({ handleUpdate }) {
             element={<ContactPage handleUpdate={handleUpdate} />}
           />
           {/* Demo Routes */}
+          <Route path="/inprogress" element={<WIPPage />} />
           <Route path="/WIP" element={<WIPDemo />} />
           <Route path="/WIP2" element={<WIP2Demo />} />
           <Route
@@ -151,7 +158,14 @@ export default function SiteRoutes({ handleUpdate }) {
             path="/articles"
             element={<ArticlesPage handleUpdate={handleUpdate} />}
           />
-          <Route path="/articles/:id" element={<IndividualArticleView />} />
+          <Route
+            path="/articles/create"
+            element={<CreateUpdateArticle handleUpdate={handleUpdate} />}
+          />
+          <Route
+            path="/articles/:id"
+            element={<IndividualArticleView handleUpdate={handleUpdate} />}
+          />
           <Route
             path="/articles/:id/update"
             element={
@@ -193,6 +207,7 @@ export default function SiteRoutes({ handleUpdate }) {
             path="/admin/application/read/:pk"
             element={<ApplicationViewPage />}
           />
+          <Route path="/admin/model/:str" element={<IndividualDashboard />} />
         </Routes>
       ) : (
         <div>
