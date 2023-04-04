@@ -2,22 +2,39 @@ import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { styled } from "@material-ui/core/styles";
 import BaseInteractive from "./BaseInteractive";
+import AnimationWrapper from "../../AnimationWrapper/AnimationWrapper";
+import useOpacityGrow from "../../../hooks/Animations/useOpacityGrow";
+import useOpacityShrink from "../../../hooks/Animations/useOpacityShrink";
 const userStyles = makeStyles((theme) => ({
   container: {
-    border: "2px solid red",
     width: "60%",
     height: "250px",
+    border: "2px solid red",
+  },
+  wrapper: {
+    width: "100%",
+    height: "100%",
     display: "flex",
+    alignItems: "center",
+    flexDirection: "row",
     flexWrap: "wrap",
+    margin: "auto",
+    border: '1px solid white',
+    justifyContent: "center",
   },
   square: {
-    width: "50%",
     height: "50%",
-    border: "1px solid white",
+    width: "50%",
     display: "flex",
     margin: "auto",
     justifyContent: "center",
     alignItems: "center",
+    cursor: 'pointer',
+    '&:hover':{
+      scale: '1.05',
+      border: '1px solid white',
+      boxShadow: '2px 2px 5px black, -2px -2px 5px black'
+    }
   },
   squareNone: {
     display: "none",
@@ -28,6 +45,8 @@ const userStyles = makeStyles((theme) => ({
     margin: "auto",
     alignItems: "center",
     flexDirection: "column",
+    height: "100%",
+    width: "100%",
   },
   p: {
     width: "80%",
@@ -48,7 +67,9 @@ const baseStyles = makeStyles((theme) => ({
     backgroundColor: "lightgray",
     display: "flex",
     marginTop: "20px",
-    animation: `$rotate 3s infinite`
+  },
+  rotate: {
+    animation: `$rotate 3s`,
   },
   theone: {
     width: "55%",
@@ -71,25 +92,30 @@ const baseStyles = makeStyles((theme) => ({
   },
   "@keyframes rotate": {
     "0%": {
-      transform: "rotate(20deg)"
+      transform: "rotateY(20deg)",
     },
     "100%": {
-      transform: "rotate(180deg)"
-    }
-
-  }
+      transform: "rotateY(180deg)",
+    },
+  },
 }));
-
 
 export default function InteractiveInfo() {
   const cindy =
     "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.hawtcelebs.com%2Fwp-content%2Fuploads%2F2017%2F09%2Fbest-from-the-past-cindy-crawford-at-2nd-annual-revlon-s-unforgettable-women-contest-in-new-york-08-02-1990_3.jpg&f=1&nofb=1&ipt=b28db338317b2bcfe59ab51b3c5768992c876528ece1fdb8137a556ce21e27e7&ipo=images";
   const [displayNone, setDisplayNone] = useState(false);
+  const [transition, setTransition] = useState(false);
   const [displayDetails, setDisplayDetails] = useState(false);
   const [details, setDetails] = useState("");
   const [flip, setFlip] = useState(false);
   const [isAnimated, setIsAnimated] = useState(false);
+  const [opacity, setOpacity] = useState(false);
+  const [grow, setGrow] = useState(false);
   const classes = userStyles();
+  const [opacityGrow, setOpacityGrow, opacityGrowClass] = useOpacityGrow(false);
+  const [opacityShrink, setOpacityShrink, opacityClass] =
+    useOpacityShrink(false);
+
   const base = baseStyles();
   const info1 =
     "Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius illum non, quod veniam et amet rem voluptates dicta, molestiae explicabo commodi maiores. Fugiat, sapiente! Eius aspernatur voluptate vitae temporibus ex!";
@@ -100,22 +126,41 @@ export default function InteractiveInfo() {
   const info4 =
     "steep ipsum dolor sit amet consectetur adipisicing elit. Eius illum non, quod veniam et amet rem voluptates dicta, molestiae explicabo commodi maiores. Fugiat, sapiente! Eius aspernatur voluptate vitae temporibus ex!";
 
+  const handleAnimation = () => {};
+
   const handleDetails = (e) => {
+    setTransition("shrink");
     console.log(e.target.title);
-    setDisplayDetails(true);
-    setDisplayNone(true);
-    setDetails(e.target.title);
+    console.log(transition);
+    setTimeout(() => {
+      setDetails(e.target.title);
+    }, 1500);
+    setTimeout(() => {
+      setDisplayDetails(true);
+      setDisplayNone(true);
+      setTransition("grow");
+
+    }, 1600);
   };
 
   const handleBack = () => {
-    setDisplayDetails(false);
-    setDisplayNone(false);
-    setDetails("");
+    setTransition("shrink");
+    setTimeout(() => {
+      setDetails("");
+    }, 1200);
+    setTimeout(() => {
+      setTransition("grow");
+      setDisplayNone(false);
+      setDisplayDetails(false);
+    }, 1600);
   };
 
   const handleFlip = () => {
     console.log("cindy");
     setIsAnimated(true);
+    setTimeout(() => {
+      setIsAnimated(false);
+    }, 3000);
 
     if (flip === true) {
       setFlip(false);
@@ -130,39 +175,55 @@ export default function InteractiveInfo() {
   return (
     <>
       <div className={classes.container}>
-        <div className={!displayNone ? classes.square : classes.squareNone}>
-          <h3 title={info1} onClick={handleDetails}>
-            My
-          </h3>
-        </div>
-        <div className={!displayNone ? classes.square : classes.squareNone}>
-          <h3 title={info2} onClick={handleDetails}>
-            Tits
-          </h3>
-        </div>
-        <div className={!displayNone ? classes.square : classes.squareNone}>
-          <h3 title={info3} onClick={handleDetails}>
-            Has
-          </h3>
-        </div>
-        <div className={!displayNone ? classes.square : classes.squareNone}>
-          <h3 title={info4} onClick={handleDetails}>
-            Customer
-          </h3>
-        </div>
-        {displayDetails && (
-          <div className={classes.detailContainer}>
-            <p className={classes.p}>{details}</p>
-            <button onClick={handleBack}>Back</button>
+        <AnimationWrapper
+          data="shrink-grow"
+          animate={transition}
+          className={classes.wrapper}
+        >
+          <div className={!displayNone ? classes.square : classes.squareNone}>
+            <h3 onClick={handleDetails} title={info1}>
+              My
+            </h3>
           </div>
-        )}
+          <div className={!displayNone ? classes.square : classes.squareNone}>
+            <h3 onClick={handleDetails} title={info2}>
+              Tits
+            </h3>
+          </div>
+          <div className={!displayNone ? classes.square : classes.squareNone}>
+            <h3 onClick={handleDetails} title={info3}>
+              Has
+            </h3>
+          </div>
+          <div className={!displayNone ? classes.square : classes.squareNone}>
+            <h3 onClick={handleDetails} title={info4}>
+              Customer
+            </h3>
+          </div>
+          {displayDetails && (
+            <div className={`${classes.detailContainer} ${opacityGrowClass}`}>
+              <p className={classes.para}>{details}</p>
+              <button onClick={handleBack}>Back</button>
+            </div>
+          )}
+        </AnimationWrapper>
       </div>
       <BaseInteractive
         onClick={handleFlip}
-        baseDiv={`${base.card}`}
+        baseDiv={`${base.card} ${isAnimated && base.rotate}`}
       >
-        {!flip && <img className={base.theone} src={cindy} alt="" />}
-        {flip && <span className={base.para}>{data}</span>}
+        {!flip && (
+          <img
+            className={`${base.theone} ${isAnimated && base.rotate}`}
+            src={cindy}
+            alt=""
+          />
+        )}
+        {flip && (
+          <span className={`${base.para} ${isAnimated && base.rotate}`}>
+            {data}
+          </span>
+        )}
       </BaseInteractive>
     </>
   );

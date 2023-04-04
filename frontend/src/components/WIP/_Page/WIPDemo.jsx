@@ -21,14 +21,7 @@ import TestForm from "../TestForm";
 import LayeredGradientBackground from "../../Elements/Layout/GradientContent";
 import { useState } from "react";
 import Loading from "../../Elements/Layout/Loading/Loading";
-<<<<<<< HEAD
-import MultiParagraphEditor from "../Blog/Page";
-import QuestionnaireAnalysis from "../../Admin/Panel/Analysis";
-import SurveyAnalysis from "../../Admin/Panel/SurveyAnalysis";
 import Info from "../Info/Info";
-=======
-
->>>>>>> 4417815b945fae04e080e81a3b62602eb2b23094
 const actions = [
   <Grid
     container

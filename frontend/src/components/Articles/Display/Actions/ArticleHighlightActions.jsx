@@ -62,11 +62,6 @@ const ArticleHighlightActions = ({ article, subtitleVariant }) => {
       justifyContent="space-between"
       alignItems="center"
     >
-<<<<<<< HEAD
-     
-      <Grid container flex justifyContent="space-between" alignItems="center">
-        <Typography variant={subtitleVariant}>By: {article.author}</Typography>
-=======
       <div className={classes.chipContainer}>
         {article.tags.map((tag, index) => (
           <Chip
@@ -77,7 +72,6 @@ const ArticleHighlightActions = ({ article, subtitleVariant }) => {
         ))}
       </div>
       {/* <Grid container flex justifyContent="flex-end" alignItems="center">
->>>>>>> 4417815b945fae04e080e81a3b62602eb2b23094
         <Tooltip
           title="Read Full Post"
           placement="bottom"

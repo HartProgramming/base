@@ -142,46 +142,6 @@ const ArticlesDisplayBase = ({
 
     return (
       <>
-<<<<<<< HEAD
-      <Grid
-        item
-        sm={layout.sm}
-        md={layout.md}
-        lg={layout.lg}
-        style={layout.style}
-      >
-        <BaseCard
-          title={article.title}
-          subtitle="Subtitle"
-          headerAction={
-            auth.is_superuser ? (
-              <ArticleAuthActions
-                article={article}
-                handleDelete={handleDelete}
-                navigate={navigate}
-              />
-            ) : null
-          }
-          headerTitleProps={layout.header}
-          headerSubheaderProps={layout.subtitle}
-          media={`${article.image}`}
-          mediaPosition={mediaPosition}
-          classes={layout.classes}
-          elevation={layout.elevation}
-          actions={
-            <ArticleHighlightActions
-              subtitleVariant={layout.actionSubtitle}
-              article={article}
-            />
-          }
-        >
-          <Typography variant={layout.body} style={{ marginBottom: 5 }}>
-            {truncatedText}
-          </Typography>
-        </BaseCard>
-      </Grid>
-      <Divider className={classes.divide} />
-=======
         <Grid
           item
           sm={layout.sm}
@@ -235,7 +195,6 @@ const ArticlesDisplayBase = ({
             <Divider style={{ color: "black" }} />
           </div>
         </Grid>
->>>>>>> 4417815b945fae04e080e81a3b62602eb2b23094
       </>
     );
   };

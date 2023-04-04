@@ -19,18 +19,12 @@ import FormField from "../../Elements/Fields/FormField";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import { baseClasses } from "../../../classes";
 import StyledButton from "../../Elements/Buttons/StyledButton";
-<<<<<<< HEAD
-import AdvancedSnackbar from "../../Elements/Snackbars/Snackbar";
-import snackbarReducer from "../../../lib/Reducers/snackbar";
-import { ALERT_FAIL, ALERT_SUCCESS, CLOSE_SNACKBAR } from "../../../lib/Actions/snackbar";
-=======
 import PostSidebar from "../Display/List/PostSidebar";
 import ManyToManyField from "../../Elements/Fields/ManyToManyField";
 import ImageEdit from "../../Elements/Fields/ImageEdit";
 import ImageInput from "../../Elements/Fields/ImageInput";
 import { useDispatch } from "react-redux";
 
->>>>>>> 4417815b945fae04e080e81a3b62602eb2b23094
 function getCookie(name) {
   const value = `; ${document.cookie}`;
   const parts = value.split(`; ${name}=`);
@@ -109,12 +103,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-<<<<<<< HEAD
-const UpdateArticleView = ({ manualId }) => {
-  const [state, dispatch] = useReducer(snackbarReducer, ALERT_SUCCESS)
-=======
 const UpdateArticleView = ({ article, updateArticle, handleCancel }) => {
->>>>>>> 4417815b945fae04e080e81a3b62602eb2b23094
   const { id } = useParams();
   const classes = useStyles();
   const { fadeIn } = baseClasses();
@@ -156,22 +145,11 @@ const UpdateArticleView = ({ article, updateArticle, handleCancel }) => {
   const handleSubmit = async (e) => {
 
     e.preventDefault();
-<<<<<<< HEAD
-    let formData = new FormData();
-    formData.append("title", title);
-    formData.append("content", content);
-    formData.append("tags", tags.join(","));
-
-    if (image) {
-      formData.append("image", image);
-    }
-=======
     console.log(formData);
 
     formData.image = newImageFile;
     formData.content = content;
 
->>>>>>> 4417815b945fae04e080e81a3b62602eb2b23094
     const config = {
       headers: {
         Authorization: `JWT ${getCookie("jwt")}`,
@@ -184,14 +162,9 @@ const UpdateArticleView = ({ article, updateArticle, handleCancel }) => {
         formData,
         config
       );
-<<<<<<< HEAD
-      dispatch({type: ALERT_SUCCESS, duration: 2000, message: 'Updated', open: true})
-
-=======
       setFormData(response.data);
       updateArticle(response.data);
       dispatch({ type: "ALERT_SUCCESS", message: "Data Updated" });
->>>>>>> 4417815b945fae04e080e81a3b62602eb2b23094
     } catch (error) {
       dispatch({type: ALERT_FAIL, duration: 2000, message: 'Failed to update', open: true})
 
@@ -209,31 +182,6 @@ const UpdateArticleView = ({ article, updateArticle, handleCancel }) => {
 
   return (
     <div className={`${classes.root} ${fadeIn}`}>
-<<<<<<< HEAD
-      {<AdvancedSnackbar onClose={handleClose} open={state.open} type={state.type} message={state.message} />}
-      <Paper className={classes.card} elevation={0}>
-        <form onSubmit={handleSubmit}>
-          <CardContent>
-            {article.image && (
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    width: "50%",
-                  }}
-                >
-                  <CardMedia
-                    className={classes.image}
-                    image={`${article.image}`}
-=======
       <Grid
         container
         spacing={0}
@@ -268,7 +216,6 @@ const UpdateArticleView = ({ article, updateArticle, handleCancel }) => {
                     newImage={newImage}
                     newImageName={newImageName}
                     width="50%"
->>>>>>> 4417815b945fae04e080e81a3b62602eb2b23094
                   />
                 </>
               )}

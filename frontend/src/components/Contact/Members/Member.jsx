@@ -10,6 +10,7 @@ import MemberContent from "./MemberContent";
 import { baseClasses } from "../../../classes";
 import EditDeleteButtonMenu from "../../Elements/Buttons/EditDeleteButtonMenu";
 import Flexbox from "../../Elements/Layout/Flexbox/Flexbox";
+import AnimationWrapper from "../../AnimationWrapper/AnimationWrapper";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -56,6 +57,8 @@ const Member = ({ member, editMode = false, newImage }) => {
   const [editing, setEditing] = useState(false);
   const [memberData, setMemberData] = useState(member);
   const auth = useSelector((state) => state.auth);
+  const [animated, setAnimated] = useState();
+  const [ghost, setGhost] = useState(false);
 
   useEffect(() => {
     setMemberData(member);
@@ -66,28 +69,43 @@ const Member = ({ member, editMode = false, newImage }) => {
     setEditing(false);
   };
 
+  const handleClick = () => {
+    console.log("hi");
+    setGhost(true);
+    console.log(ghost);
+    setAnimated("shrink-grow");
+    console.log(animated);
+  };
+
   return (
     <>
       <Flexbox key={memberData.name} className={classes.container}>
         <div xs={12} md={12} key={memberData.name}>
           {!editing ? (
-            <Card className={`${classes.card} ${fadeIn}`}>
-              <CardHeader
-                avatar={
-                  <Avatar
-                    variant="rounded"
-                    src={newImage ? newImage : memberData.image}
-                    className={classes.avatar}
-                  />
-                }
-                title={memberData.name}
-                subheader={memberData.role}
-                classes={{
-                  title: classes.title,
-                  subheader: classes.subheader,
-                }}
-              />
-              <MemberContent member={memberData} />
+            <Card onClick={handleClick} className={`${classes.card} ${fadeIn}`}>
+              <AnimationWrapper
+                className={classes.card}
+                animate="shrink"
+                data={animated}
+              >
+                <CardHeader
+                  avatar={
+                    <Avatar
+                      variant="rounded"
+                      src={newImage ? newImage : memberData.image}
+                      className={classes.avatar}
+                    />
+                  }
+                  title={memberData.name}
+                  subheader={memberData.role}
+                  classes={{
+                    title: classes.title,
+                    subheader: classes.subheader,
+                  }}
+                />
+                <MemberContent trans={ghost} member={memberData} />
+              </AnimationWrapper>
+
               {!editing && editMode ? (
                 <div style={{ marginTop: 4, marginBottom: 4, marginRight: 8 }}>
                   <EditDeleteButtonMenu
