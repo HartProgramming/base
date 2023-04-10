@@ -3,7 +3,7 @@ from api.customs import *
 from auditlog.registry import auditlog
 
 
-@custom_metadata(
+@metadata(
     autoform_label="SEO Header",
     long_description="This model represents the headers used for SEO purposes on various pages of the website. It includes fields for the page name, title, description, keywords, image, and URL.",
     short_description="Headers for SEO",
@@ -38,6 +38,11 @@ from auditlog.registry import auditlog
             "General app documentation": "/docs/app/general/",
         },
     },
+    filter_options=[
+        "page",
+        "keywords",
+    ],
+    allowed=False,
 )
 class Header(models.Model):
     page = CustomCharField(
@@ -45,6 +50,7 @@ class Header(models.Model):
         md_column_count=6,
         verbose_name="Page",
         help_text="Referential Page",
+        db_index=True,
     )
     title = CustomTextField(
         max_length=200,
@@ -75,12 +81,16 @@ class Header(models.Model):
         help_text="SEO URL",
     )
 
+    def __str__(self):
+        return self.page
+
     class Meta:
+        ordering = ["page"]
         verbose_name = "SEO Headers"
         verbose_name_plural = "SEO Headers"
 
 
-@custom_metadata(
+@metadata(
     autoform_label="Content Text Block",
     long_description="This model represents a content text block used to display a header or a description in the hero section of various pages.",
     short_description="Content Text Block",
@@ -112,6 +122,8 @@ class Header(models.Model):
             "General app documentation": "/docs/app/general/",
         },
     },
+    filter_options=["slug"],
+    allowed=True,
 )
 class ContentTextBlock(models.Model):
     slug = CustomCharField(
@@ -120,6 +132,7 @@ class ContentTextBlock(models.Model):
         md_column_count=6,
         verbose_name="Slug",
         help_text="Identifier",
+        db_index=True,
     )
     title = CustomCharField(
         max_length=200,
@@ -134,6 +147,9 @@ class ContentTextBlock(models.Model):
         help_text="Description",
         min_rows=3,
     )
+
+    def __str__(self):
+        return self.slug
 
     class Meta:
         verbose_name = "Content Text Blocks"

@@ -27,14 +27,16 @@ import {
   Info as InfoIcon,
   ContactMail as ContactMailIcon,
 } from "@material-ui/icons";
+import { renderObjectPreview } from "./renderObjectPreview";
+import LoadingIndicator from "../../../Elements/Layout/Loading/LoadingIndicator";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: theme.palette.background.paper,
     borderRadius: theme.shape.borderRadius,
     padding: theme.spacing(2),
-    margin: theme.spacing(3, 0, 1, 0),
-    width: "100%",
+    margin: theme.spacing(0, 0, 1, 0),
+    // width: "100%",
   },
   listItem: {
     marginBottom: theme.spacing(2),
@@ -54,15 +56,28 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const AutoForm = ({ endpointUrl, data = {}, handleUpdate }) => {
+const AutoForm = ({
+  endpointUrl,
+  data = {},
+  handleUpdate,
+  handleModalUpdate,
+  variant = "full",
+  handleClose,
+  refresh,
+  setRefresh,
+}) => {
+  console.log("yup", endpointUrl);
+  console.log("yup2", data);
   const classes = useStyles();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("xs"));
+  const isLargeScreen = useMediaQuery(theme.breakpoints.up("xl"));
   const [formData, setFormData] = useState(data);
   const [modelMetadata, setModelMetadata] = useState({});
   const [fieldMetadata, setFieldMetadata] = useState({});
+  const [componentPreviewData, setComponentPreviewData] = useState({});
   const [url, setUrl] = useState([]);
   const [keys, setKeys] = useState([]);
   const [appName, setAppName] = useState([]);
@@ -70,7 +85,9 @@ const AutoForm = ({ endpointUrl, data = {}, handleUpdate }) => {
   const [metadata, setMetadata] = useState([]);
   const [newImage, setNewImage] = useState(null);
   const [newImageName, setNewImageName] = useState(null);
+  const [selectedModelName, setSelectedModelName] = useState("");
   const [ready, setReady] = useState(false);
+  const [previewReady, setPreviewReady] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
@@ -99,12 +116,70 @@ const AutoForm = ({ endpointUrl, data = {}, handleUpdate }) => {
   }, []);
 
   useEffect(() => {
+    console.log("DASDDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     axiosInstance.get(`/get_metadata${endpointUrl}`).then((response) => {
       setFieldMetadata(response.data.fields);
       setModelMetadata(response.data);
       console.log(response.data);
     });
   }, []);
+
+  useEffect(() => {
+    setReady(false);
+    setRefresh(false);
+    axiosInstance
+      .get(`/get_models${endpointUrl}`)
+      .then((response) => {
+        console.log(response.data);
+        setUrl(response.data.url);
+        setAppName(response.data.app_name);
+        setKeys(response.data.keys);
+        setMetadata(response.data.metadata);
+        setModel(response.data);
+        setReady(true);
+      })
+      .catch((error) => console.log(error));
+  }, [refresh]);
+
+  const handleModelNameChange = (model_name) => {
+    setSelectedModelName(model_name);
+    handleUpdatePreview(model_name, formData["query_params"]);
+  };
+
+  useEffect(() => {
+    console.log("test");
+    if (modelMetadata.modelName === "ComponentObj") {
+      if (selectedModelName) {
+        handleUpdatePreview(selectedModelName, formData["query_params"]);
+      } else {
+        handleUpdatePreview(formData["content"], formData["query_params"]);
+      }
+    }
+  }, [formData["query_params"]]);
+
+  const handleUpdatePreview = (model_name, query_params) => {
+    setPreviewReady(false);
+    if (model_name !== "None") {
+      axiosInstance
+        .get("preview-data/", {
+          params: {
+            model_name: model_name,
+            query_params: query_params,
+          },
+        })
+
+        .then((response) => {
+          setComponentPreviewData(response.data.data);
+          setSelectedModelName(response.data.model_name);
+          setTimeout(() => {
+            setPreviewReady(true);
+          }, 250);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  };
 
   const handleImageChange = (event) => {
     formData.image = event.target.files[0];
@@ -114,6 +189,7 @@ const AutoForm = ({ endpointUrl, data = {}, handleUpdate }) => {
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
+
     setFormData((prevFormData) => ({
       ...prevFormData,
       [name]:
@@ -121,6 +197,10 @@ const AutoForm = ({ endpointUrl, data = {}, handleUpdate }) => {
           ? checked
           : type === "file"
           ? e.target.files[0]
+          : name === "content"
+          ? value !== "None Selected"
+            ? parseInt(value)
+            : "None Selected"
           : value,
     }));
   };
@@ -132,7 +212,16 @@ const AutoForm = ({ endpointUrl, data = {}, handleUpdate }) => {
     }));
   };
 
+  const handleComponentsChange = (fieldName, newObjects) => {
+    const updatedFormData = { ...formData };
+    updatedFormData[fieldName] = newObjects;
+    setFormData(updatedFormData);
+    console.log("formData", formData);
+    console.log("modelMetadata.modelName", modelMetadata.modelName);
+  };
+
   const handleManyToManyChange = (fieldName, fieldValue) => {
+    console.log(fieldName);
     if (
       fieldName === "features" ||
       fieldName === "supported_sites" ||
@@ -145,6 +234,14 @@ const AutoForm = ({ endpointUrl, data = {}, handleUpdate }) => {
         ...prevFormData,
         [fieldName]: newFeatures,
       }));
+    } else if (fieldName === "components") {
+      const newFeatures = formData[fieldName] ? [...formData[fieldName]] : [];
+      newFeatures.push({ name: fieldValue });
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        [fieldName]: newFeatures,
+      }));
+      console.log("newf", newFeatures);
     } else if (fieldName === "items") {
       setFormData((prevFormData) => ({
         ...prevFormData,
@@ -159,18 +256,23 @@ const AutoForm = ({ endpointUrl, data = {}, handleUpdate }) => {
   };
 
   const routeBackToModel = () => {
-    navigate(`/admin/${model.model_name}/`, {
-      state: {
-        url: url,
-        keys: keys,
-        appName: appName,
-        model: model,
-        metadata: metadata,
-      },
-    });
+    if (variant === "modal") {
+      handleClose();
+    } else if (variant === "full") {
+      navigate(`/admin/${model.model_name}/`, {
+        state: {
+          url: url,
+          keys: keys,
+          appName: appName,
+          model: model,
+          metadata: metadata,
+        },
+      });
+    }
   };
 
   const handleSubmit = async (e) => {
+    console.log(formData);
     e.preventDefault();
     const config = {
       headers: {
@@ -191,6 +293,7 @@ const AutoForm = ({ endpointUrl, data = {}, handleUpdate }) => {
           formDataWithoutId,
           config
         );
+
         routeBackToModel();
         handleUpdate();
         dispatch({
@@ -222,190 +325,266 @@ const AutoForm = ({ endpointUrl, data = {}, handleUpdate }) => {
       {ready ? (
         <BaseForm
           handleSubmit={handleSubmit}
-          maxWidth={isSmallScreen ? 370 : 800}
+          maxWidth={isSmallScreen ? "100%" : "100%"}
           minWidth={isSmallScreen ? 370 : 800}
           minHeight={isSmallScreen ? 400 : 600}
           title={`${Object.keys(data).length === 0 ? "Create" : "Update"} ${
             modelMetadata.autoFormLabel || modelMetadata.verboseName
           } Object`}
           body={modelMetadata.longDescription}
-          bodyAlign="start"
+          bodyAlign={modelMetadata.preview ? "flex-start" : "center"}
           background="#F5F5F5"
-          boxShadow={2}
+          boxShadow={0}
           infoDump={modelMetadata.info_dump}
+          noPadding
         >
-          <Grid container justifyContent="flex-start">
-            {fieldMetadata &&
-              metadata &&
-              Object.keys(fieldMetadata).map((fieldName) => {
-                if (
-                  fieldName === "id" ||
-                  fieldName === "created_at" ||
-                  fieldName === "updated_at" ||
-                  fieldName === "blacklisted_at" ||
-                  fieldName === "last_login" ||
-                  fieldName === "date_joined" ||
-                  fieldName === "subscribed_on" ||
-                  fieldName === "password" ||
-                  fieldName === "salt" ||
-                  fieldName === "question_sets" ||
-                  fieldName === "questions" ||
-                  fieldName === "answer_choices"
-                ) {
-                  return null;
-                }
-
-                const {
-                  type,
-                  choices,
-                  xs_column_count,
-                  md_column_count,
-                  justify,
-                  markdown,
-                  help_text,
-                  min_rows,
-                } = fieldMetadata[fieldName];
-
-                console.log(fieldMetadata["question_sets"]);
-
-                const { verbose_name } = metadata[fieldName];
-
-                const inputElement = getByType(
-                  fieldName,
-                  modelMetadata,
-                  verbose_name,
-                  type,
-                  handleInputChange,
-                  choices,
-                  formData,
-                  setFormData,
-                  handleManyToManyChange,
-                  handleImageChange,
-                  handleQuillChange,
-                  newImage,
-                  newImageName,
-                  xs_column_count,
-                  md_column_count,
-                  justify,
-                  markdown,
-                  min_rows,
-                  help_text
-                );
-
-                if (inputElement) {
-                  return inputElement;
-                }
-
-                return null;
-              })}
-          </Grid>
-          <Grid container justifyContent="center" style={{ marginTop: 16 }}>
-            <Tooltip
-              title={`${
-                Object.keys(data).length === 0 ? "Create" : "Update"
-              } Object`}
-              placement="bottom"
-              classes={{ tooltip: classes.tooltip }}
-            >
-              <div>
-                <StyledButton
-                  buttonText={
-                    Object.keys(data).length === 0 ? "Create" : "Update"
-                  }
-                  minWidth={80}
-                  color="primary"
-                  type="submit"
-                />
-              </div>
-            </Tooltip>
-            <Tooltip
-              title={`Cancel Creation`}
-              placement="bottom"
-              classes={{ tooltip: classes.tooltip }}
-            >
-              <div>
-                <StyledButton
-                  buttonText={"Cancel"}
-                  color="primary"
-                  onClick={routeBackToModel}
-                  minWidth={80}
-                />
-              </div>
-            </Tooltip>
-          </Grid>
-
+          <div style={{ width: "100%" }}>
+            <Divider style={{ marginBottom: 32, marginTop: 24 }} />
+          </div>
           <Grid
-            item
-            xs={12}
-            style={{
-              justifyContent: "center",
-              display: "flex",
-              paddingTop: 16,
-            }}
+            container
+            justifyContent={modelMetadata.preview ? "flex-start" : "center"}
           >
-            <Paper
-              style={{
-                width: "100%",
-                background: "",
-                padding: 24,
-                display: "flex",
-                justifyContent: "center",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
+            <Grid
+              item
+              xs={12}
+              sm={12}
+              md={12}
+              lg={12}
+              xl={
+                modelMetadata.preview &&
+                modelMetadata.modelName === "ComponentObj"
+                  ? 12
+                  : modelMetadata.preview
+                  ? 7
+                  : 10
+              }
             >
-              {modelMetadata.preview ? (
-                <>
+              <Grid container justifyContent="flex-start">
+                {fieldMetadata &&
+                  metadata &&
+                  Object.keys(fieldMetadata).map((fieldName) => {
+                    if (
+                      fieldName === "id" ||
+                      fieldName === "created_at" ||
+                      fieldName === "updated_at" ||
+                      fieldName === "blacklisted_at" ||
+                      fieldName === "last_login" ||
+                      fieldName === "date_joined" ||
+                      fieldName === "subscribed_on" ||
+                      fieldName === "password" ||
+                      fieldName === "salt" ||
+                      fieldName === "question_sets" ||
+                      fieldName === "questions" ||
+                      fieldName === "answer_choices" ||
+                      fieldName === "author"
+                    ) {
+                      return null;
+                    }
+
+                    const {
+                      type,
+                      choices,
+                      xs_column_count,
+                      md_column_count,
+                      justify,
+                      markdown,
+                      help_text,
+                      min_rows,
+                    } = fieldMetadata[fieldName];
+
+                    if (fieldName === "content") {
+                      console.log(fieldMetadata, "fieldMetadata");
+                      console.log(modelMetadata, "modelMetadata");
+                    }
+
+                    console.log("metadata", fieldMetadata[fieldName]);
+
+                    const { verbose_name } = metadata[fieldName]
+                      ? metadata[fieldName]
+                      : fieldMetadata[fieldName].help_text;
+
+                    const inputElement = getByType(
+                      fieldMetadata,
+                      fieldName,
+                      modelMetadata,
+                      verbose_name,
+                      type,
+                      handleInputChange,
+                      choices,
+                      formData,
+                      setFormData,
+                      handleManyToManyChange,
+                      handleImageChange,
+                      handleQuillChange,
+                      handleComponentsChange,
+                      handleModelNameChange,
+                      newImage,
+                      newImageName,
+                      xs_column_count,
+                      md_column_count,
+                      justify,
+                      markdown,
+                      min_rows,
+                      help_text,
+                      handleModalUpdate
+                    );
+
+                    if (inputElement) {
+                      return inputElement;
+                    }
+
+                    return null;
+                  })}
+              </Grid>
+              {/* <div style={{ width: "100%" }}>
+                <Divider style={{ marginBottom: 32, marginTop: 32 }} />
+              </div> */}
+
+              <Grid
+                container
+                justifyContent="center"
+                style={{ marginTop: 48, marginBottom: 16 }}
+              >
+                <Tooltip
+                  title={`${
+                    Object.keys(data).length === 0 ? "Create" : "Update"
+                  } Object`}
+                  placement="bottom"
+                  classes={{ tooltip: classes.tooltip }}
+                >
+                  <div>
+                    <StyledButton
+                      buttonText={
+                        Object.keys(data).length === 0 ? "Create" : "Update"
+                      }
+                      minWidth={80}
+                      color="primary"
+                      type="submit"
+                    />
+                  </div>
+                </Tooltip>
+                <Tooltip
+                  title={`Cancel Creation`}
+                  placement="bottom"
+                  classes={{ tooltip: classes.tooltip }}
+                >
+                  <div>
+                    <StyledButton
+                      buttonText={"Cancel"}
+                      color="primary"
+                      onClick={
+                        variant === "full" ? routeBackToModel : handleClose
+                      }
+                      minWidth={80}
+                    />
+                  </div>
+                </Tooltip>
+              </Grid>
+            </Grid>
+            {modelMetadata.preview ? (
+              <Grid
+                item
+                xs={12}
+                sm={12}
+                md={12}
+                lg={12}
+                xl={modelMetadata.modelName === "ComponentObj" ? 12 : 5}
+                style={{
+                  justifyContent: "center",
+                  display: "flex",
+                  paddingTop: isLargeScreen ? 0 : 16,
+                }}
+              >
+                <Paper
+                  elevation={0}
+                  style={{
+                    width: "100%",
+                    background: "",
+                    padding: 12,
+                    display: "flex",
+                    // justifyContent: "center",
+                    flexDirection: "column",
+                    alignItems: "center",
+                  }}
+                >
+                  {!isLargeScreen &&
+                    modelMetadata.modelName !== "ComponentObj" && (
+                      <div style={{ width: "100%" }}>
+                        <Divider style={{ marginBottom: 32 }} />
+                      </div>
+                    )}
+                  {modelMetadata.modelName === "ComponentObj" && (
+                    <div style={{ width: "100%" }}>
+                      <Divider style={{ marginBottom: 32 }} />
+                    </div>
+                  )}
                   <Typography
                     variant="h3"
                     align="center"
-                    color="textSecondary"
-                    style={{ marginBottom: 16 }}
+                    style={{ marginBottom: 16, color: "#222" }}
                   >
                     Component Preview
                   </Typography>
-                  <Divider style={{ marginBottom: 16 }} />
-                  {renderComponentPreview(modelMetadata, formData, newImage)}
-                </>
-              ) : (
-                <Typography variant="h3" align="center" color="textSecondary">
-                  No Component Attached to Model
-                </Typography>
-              )}
-            </Paper>
+
+                  {modelMetadata.modelName === "ComponentObj" && previewReady
+                    ? renderComponentPreview(
+                        selectedModelName,
+                        componentPreviewData,
+                        newImage
+                      )
+                    : null}
+                  {modelMetadata.modelName !== "ComponentObj"
+                    ? renderObjectPreview(
+                        modelMetadata.modelName,
+                        formData,
+                        newImage
+                      )
+                    : null}
+                </Paper>
+              </Grid>
+            ) : null}
           </Grid>
+
+          <div style={{ width: "100%" }}>
+            <Divider style={{ marginBottom: 32, marginTop: 32 }} />
+          </div>
+
           {modelMetadata.pagesAssociated && (
-            <div className={classes.root}>
-              <Typography align="center" variant="h3" color="textSecondary">
-                Associated Pages
-              </Typography>
-              <List dense component="nav" style={{ display: "flex" }}>
-                {Object.entries(modelMetadata.pagesAssociated).map(
-                  ([page, url], index) => (
-                    <React.Fragment key={page}>
-                      <Tooltip
-                        title={`View ${page} Page`}
-                        placement="bottom"
-                        classes={{ tooltip: classes.tooltip }}
-                      >
-                        <ListItem
-                          button
-                          component={Link}
-                          to={url}
-                          className={classes.listItem}
-                          style={{ maxWidth: "25%" }}
+            <>
+              <div style={{ width: "100%", marginTop: 0 }}>
+                <Typography align="center" variant="h3" color="textSecondary">
+                  Associated Pages
+                </Typography>
+              </div>
+              <div className={classes.root}>
+                <List dense component="nav" style={{ display: "flex" }}>
+                  {Object.entries(modelMetadata.pagesAssociated).map(
+                    ([page, url], index) => (
+                      <React.Fragment key={page}>
+                        <Tooltip
+                          title={`View ${page} Page`}
+                          placement="bottom"
+                          classes={{ tooltip: classes.tooltip }}
                         >
-                          <ListItemIcon>
-                            <HomeIcon />
-                          </ListItemIcon>
-                          <ListItemText primary={page} />
-                        </ListItem>
-                      </Tooltip>
-                    </React.Fragment>
-                  )
-                )}
-              </List>
-            </div>
+                          <ListItem
+                            button
+                            component={Link}
+                            to={url}
+                            className={classes.listItem}
+                          >
+                            <ListItemIcon>
+                              <HomeIcon />
+                            </ListItemIcon>
+                            <ListItemText primary={page} />
+                          </ListItem>
+                        </Tooltip>
+                      </React.Fragment>
+                    )
+                  )}
+                </List>
+              </div>
+            </>
           )}
         </BaseForm>
       ) : (

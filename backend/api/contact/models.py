@@ -2,7 +2,7 @@ from django.db import models
 from api.customs import *
 
 
-@custom_metadata(
+@metadata(
     autoform_label="Company Contact Information",
     long_description="This model represents the contact information for a company, including their email address, phone number, and physical address.",
     short_description="Contact Information Model",
@@ -31,8 +31,20 @@ from api.customs import *
             "General app documentation": "/docs/app/contact/",
         },
     },
+    filter_options=[
+        "set_name",
+        "id",
+    ],
+    allowed=True,
 )
 class ContactInformation(models.Model):
+    set_name = CustomCharField(
+        max_length=100,
+        md_column_count=6,
+        verbose_name="Contact Information Set Name",
+        help_text="Contact Information Set Name",
+        unique=True,
+    )
     email = CustomEmailField(
         md_column_count=6,
         verbose_name="Email",
@@ -53,12 +65,15 @@ class ContactInformation(models.Model):
         min_rows=3,
     )
 
+    def __str__(self):
+        return self.set_name
+
     class Meta:
         verbose_name = "Contact Information"
         verbose_name_plural = verbose_name + "s"
 
 
-@custom_metadata(
+@metadata(
     autoform_label="Company Hours",
     long_description="This model stores the contact hours for the company.",
     short_description="Company Hours",
@@ -91,8 +106,20 @@ class ContactInformation(models.Model):
             "Contact app documentation": "/docs/app/contact/",
         },
     },
+    filter_options=[
+        "set_name",
+        "id",
+    ],
+    allowed=True,
 )
 class Hours(models.Model):
+    set_name = CustomCharField(
+        max_length=100,
+        md_column_count=6,
+        verbose_name="Hours Set Name",
+        help_text="Hours Set Name",
+        unique=True,
+    )
     monday = CustomCharField(
         max_length=40,
         null=True,
@@ -149,12 +176,15 @@ class Hours(models.Model):
         help_text="Sunday",
     )
 
+    def __str__(self):
+        return self.set_name
+
     class Meta:
         verbose_name = "Company Hours"
         verbose_name_plural = verbose_name + "s"
 
 
-@custom_metadata(
+@metadata(
     autoform_label="Company Social Contact",
     long_description="This model represents the social media accounts associated with a company or organization. It includes fields for Facebook, LinkedIn, Instagram, Twitter, Youtube, and Github.",
     short_description="Social Media Accounts for a Company",
@@ -186,8 +216,20 @@ class Hours(models.Model):
             "Contact app documentation": "/docs/app/contact/",
         },
     },
+    filter_options=[
+        "set_name",
+        "id",
+    ],
+    allowed=True,
 )
 class Socials(models.Model):
+    set_name = CustomCharField(
+        max_length=100,
+        md_column_count=6,
+        verbose_name="Social Set Name",
+        help_text="Social Set Name",
+        unique=True,
+    )
     facebook = CustomCharField(
         max_length=100,
         null=True,
@@ -234,12 +276,15 @@ class Socials(models.Model):
         help_text="Github",
     )
 
+    def __str__(self):
+        return self.set_name
+
     class Meta:
         verbose_name = "Company Socials"
         verbose_name_plural = verbose_name + "s"
 
 
-@custom_metadata(
+@metadata(
     autoform_label="Team Member",
     long_description="This model represents team members of our company.",
     short_description="Team Members",
@@ -275,6 +320,11 @@ class Socials(models.Model):
             "Contact app documentation": "/docs/app/contact/",
         },
     },
+    filter_options=[
+        "name",
+        "id",
+    ],
+    allowed=True,
 )
 class TeamMember(models.Model):
     image = models.ImageField(
@@ -357,3 +407,68 @@ class TeamMember(models.Model):
     class Meta:
         verbose_name = "Members"
         verbose_name_plural = "Members"
+
+
+@metadata(
+    autoform_label="Contact",
+    long_description="A model for storing contact information, social media links, and hours of operation for a business or organization.",
+    short_description="A model for storing contact information and hours of operation.",
+    pages_associated={
+        "Landing": "/",
+        "Contact": "/contact",
+    },
+    include_preview=True,
+    icon="PeopleIcon",
+    icon_class=None,
+    slug="contact",
+    tags=["Contact", "Information", "Hours"],
+    related_components=["Contact Form"],
+    visibility=True,
+    access_level="All",
+    info_dump={
+        "purpose": "This model is used to store the contact information, social media links, and hours of operation for a business or organization. It can be used to display this information on a contact page or in other relevant sections of a website.",
+        "fields": {
+            "Name": "The name of the contact person or department.",
+            "Contact Information": "The contact information, such as email, phone number, or address.",
+            "Socials": "The social media links associated with the contact person or department.",
+            "Hours": "The hours of operation for the contact person or department.",
+        },
+        "model_links": {
+            "Django documentation": "https://docs.djangoproject.com/en/3.2/topics/db/models/",
+            "Page model reference": "/docs/model/page/",
+            "Full App documentation": "/docs/app/app/",
+        },
+    },
+    allowed=True,
+    filter_options=["name"],
+)
+class Contact(models.Model):
+    name = CustomCharField(
+        max_length=20,
+        md_column_count=12,
+        verbose_name="Referential Name",
+        help_text="Referential Name",
+        default="Placeholder",
+    )
+    contact_info = models.ForeignKey(
+        ContactInformation,
+        on_delete=models.CASCADE,
+        default=1,
+    )
+    socials = models.ForeignKey(
+        Socials,
+        on_delete=models.CASCADE,
+        default=1,
+    )
+    hours = models.ForeignKey(
+        Hours,
+        on_delete=models.CASCADE,
+        default=1,
+    )
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = "Contact"
+        verbose_name_plural = "Contacts"

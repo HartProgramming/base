@@ -40,7 +40,13 @@ class ArticleSerializer(serializers.ModelSerializer):
     image = serializers.ImageField(required=False, allow_null=True)
     related_articles = serializers.SerializerMethodField()
     tags_options = serializers.SerializerMethodField()
-    FIELD_KEYS = ["created_at", "updated_at", "title", "author", "image"]
+    FIELD_KEYS = [
+        "created_at",
+        "updated_at",
+        "title",
+        "author",
+        "image",
+    ]
 
     class Meta:
         model = Articles
@@ -64,11 +70,13 @@ class ArticleSerializer(serializers.ModelSerializer):
             id=obj.id
         )
         return RelatedArticleSerializer(
-            related_articles, many=True, context={"request": self.context["request"]}
+            related_articles,
+            many=True,
+            context={"request": self.context["request"]},
         ).data
 
     def get_tags_options(self, obj):
-        return list(Tags.objects.values_list("detail", flat=True))
+        return list(Tags.objects.values())
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)

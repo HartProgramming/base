@@ -3,8 +3,16 @@ from .views import *
 
 
 urlpatterns = [
-    path("landing/", LandingFullTestView.as_view(), name="landing-full"),
-    path("feature/", FeatureAPIView.as_view(), name="feature-list"),
+    path(
+        "landing/",
+        LandingFullTestView.as_view(),
+        name="landing-full",
+    ),
+    path(
+        "feature/",
+        FeatureAPIView.as_view(),
+        name="feature-list",
+    ),
     path(
         "feature/<int:pk>/",
         FeatureDetailAPIView.as_view(),
@@ -16,7 +24,9 @@ urlpatterns = [
         name="feature-bulk-detail",
     ),
     path(
-        "supportedsites/", SupportedSitesAPIView.as_view(), name="supportedsites-list"
+        "supportedsites/",
+        SupportedSitesAPIView.as_view(),
+        name="supportedsites-list",
     ),
     path(
         "supportedsites/<int:pk>/",
@@ -28,32 +38,31 @@ urlpatterns = [
         SupportedSitesBulkAPIView.as_view(),
         name="supportedsites-bulk-detail",
     ),
-    path("item/", ItemViewSet.as_view({"get": "list"}), name="item-ignore-list"),
     path(
-        "item/<int:pk>/",
-        ItemViewSet.as_view({"patch": "update", "put": "update"}),
-        name="item2-list",
-    ),
-    path("testimonial/", TestimonialAPIView.as_view(), name="testimonial-ignore-list"),
-    path(
-        "testimonial/<int:pk>/",
-        TestimonialDetailAPIView.as_view(),
-        name="testimonial-ignore-detail",
+        "process/",
+        ProcessAPIView.as_view(),
+        name="process-list",
     ),
     path(
-        "testimonial/bulk/",
-        TestimonialBulkAPIView.as_view(),
-        name="testimonial-bulk-detail",
+        "process/<int:pk>/",
+        ProcessDetailAPIView.as_view(),
+        name="process-detail",
     ),
-    path("process/", ProcessAPIView.as_view(), name="process-list"),
-    path("process/<int:pk>/", ProcessDetailAPIView.as_view(), name="process-detail"),
     path(
         "process/bulk/",
         ProcessBulkAPIView.as_view(),
         name="process-bulk-detail",
     ),
-    path("heroblock/main/", HeroBlockMainAPIView.as_view(), name="heroblock-single"),
-    path("heroblock/", HeroBlockAPIView.as_view(), name="heroblock-list"),
+    path(
+        "heroblock/main/",
+        HeroBlockMainAPIView.as_view(),
+        name="heroblock-single",
+    ),
+    path(
+        "heroblock/",
+        HeroBlockAPIView.as_view(),
+        name="heroblock-list",
+    ),
     path(
         "heroblock/<int:pk>/",
         HeroBlockDetailAPIView.as_view(),
@@ -64,7 +73,11 @@ urlpatterns = [
         HeroBlockBulkAPIView.as_view(),
         name="heroblock-bulk-detail",
     ),
-    path("titleblock/", TitleBlockAPIView.as_view(), name="titleblock-list"),
+    path(
+        "titleblock/",
+        TitleBlockAPIView.as_view(),
+        name="titleblock-list",
+    ),
     path(
         "titleblock/<int:pk>/",
         TitleBlockUpdateAPIView.as_view(),
@@ -94,5 +107,50 @@ urlpatterns = [
         "servicetier/bulk/",
         ServiceTierBulkAPIView.as_view(),
         name="servicetier-bulk-detail",
+    ),
+    path(
+        "hero/",
+        HeroAPIView.as_view(),
+        name="hero-list",
+    ),
+    path(
+        "hero/<int:pk>/",
+        HeroDetailView.as_view(),
+        name="hero-detail",
+    ),
+    path(
+        "hero/bulk/",
+        HeroBulkAPIView.as_view(),
+        name="hero-bulk-detail",
+    ),
+    path(
+        "processes/",
+        ProcessesAPIView.as_view(),
+        name="processes-list",
+    ),
+    path(
+        "processes/<int:pk>/",
+        ProcessesDetailView.as_view(),
+        name="processes-detail",
+    ),
+    path(
+        "processes/bulk/",
+        ProcessesBulkAPIView.as_view(),
+        name="processes-bulk-detail",
+    ),
+    path(
+        "latestnews/",
+        LatestNewsAPIView.as_view(),
+        name="latestnews-list",
+    ),
+    path(
+        "latestnews/<int:pk>/",
+        LatestNewsDetailView.as_view(),
+        name="latestnews-detail",
+    ),
+    path(
+        "latestnews/bulk/",
+        LatestNewsBulkAPIView.as_view(),
+        name="latestnews-bulk-detail",
     ),
 ]

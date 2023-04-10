@@ -9,8 +9,10 @@ import CharType from "../../Objects/AutoForm/Types/CharType";
 import BooleanType from "../../Objects/AutoForm/Types/BooleanType";
 import ForeignKeyType from "../../Objects/AutoForm/Types/ForeignKeyType";
 import FileType from "./Types/FileType";
+import JSONType from "./Types/JSONType/JSONType";
 
 const getByType = (
+  fieldMetadata,
   fieldName,
   modelMetadata,
   verboseName,
@@ -22,6 +24,8 @@ const getByType = (
   handleManyToManyChange,
   handleImageChange,
   handleQuillChange,
+  handleComponentsChange,
+  handleModelNameChange,
   newImage,
   newImageName,
   xs_column_count,
@@ -29,9 +33,9 @@ const getByType = (
   justify,
   markDownMixin,
   min_rows,
-  help_text
+  help_text,
+  handleModalUpdate
 ) => {
-  console.log(min_rows, "min_rows");
   switch (fieldType) {
     case "BooleanField":
       return (
@@ -129,6 +133,8 @@ const getByType = (
           xsColumnCount={xs_column_count}
           mdColumnCount={md_column_count}
           helpText={help_text}
+          handleComponentsChange={handleComponentsChange}
+          modelMetadata={modelMetadata}
         />
       );
     case "ImageField":
@@ -144,6 +150,7 @@ const getByType = (
     case "PrimaryKeyRelatedField":
       return (
         <ChoiceType
+          fieldType={fieldType}
           formData={formData}
           fieldName={fieldName}
           verboseName={verboseName}
@@ -152,6 +159,9 @@ const getByType = (
           xsColumnCount={xs_column_count}
           mdColumnCount={md_column_count}
           helpText={help_text}
+          fieldMetadata={fieldMetadata}
+          handleModalUpdate={handleModalUpdate}
+          handleModelNameChange={handleModelNameChange}
         />
       );
     case "FileField":
@@ -165,7 +175,32 @@ const getByType = (
           mdColumnCount={md_column_count}
         />
       );
+    case "JSONField":
+      return (
+        <JSONType
+          fieldName={fieldName}
+          formData={formData}
+          modelMetadata={modelMetadata}
+          handleComponentsChange={handleComponentsChange}
+          xsColumnCount={xs_column_count}
+          mdColumnCount={md_column_count}
+        />
+      );
     default:
+      if (fieldType.includes("Serializer")) {
+        console.log("yeeters");
+        return (
+          <ForeignKeyType
+            formData={formData}
+            fieldName={fieldName}
+            verboseName={verboseName}
+            handleInputChange={handleInputChange}
+            xsColumnCount={xs_column_count}
+            mdColumnCount={md_column_count}
+            helpText={help_text}
+          />
+        );
+      }
       return null;
   }
 };

@@ -1,11 +1,14 @@
 from django.db import models
 from authorization.models import User
 from api.customs import *
-from auditlog.registry import auditlog
-from auditlog.models import AuditlogHistoryField
 
 
-@custom_metadata(
+class HighlightedArticlesManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(is_highlighted=True)
+
+
+@metadata(
     autoform_label="TitleBlock Titties",
     long_description="Description Placeholder",
     short_description="Short Description",
@@ -41,6 +44,8 @@ from auditlog.models import AuditlogHistoryField
             "JobPosting model reference": "/docs/jobposting/",
         },
     },
+    filter_options=["detail"],
+    allowed=False,
 )
 class Tags(models.Model):
     detail = CustomCharField(
@@ -63,8 +68,8 @@ class Tags(models.Model):
         verbose_name_plural = "Tags"
 
 
-@custom_metadata(
-    autoform_label="TitleBlock Titties",
+@metadata(
+    autoform_label="TitleBlock",
     long_description="Description Placeholder",
     short_description="Short Description",
     pages_associated={
@@ -99,16 +104,38 @@ class Tags(models.Model):
             "JobPosting model reference": "/docs/jobposting/",
         },
     },
+    filter_options=[
+        "title",
+        "is_highlighted",
+    ],
+    allowed=False,
 )
 class Articles(models.Model):
-    title = CustomCharField(max_length=255)
+    title = CustomCharField(
+        max_length=255,
+    )
     content = models.TextField()
-    author = models.ForeignKey(User, on_delete=models.SET_DEFAULT, default=1)
+    author = models.ForeignKey(
+        User,
+        on_delete=models.SET_DEFAULT,
+        default=1,
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    tags = models.ManyToManyField(Tags, related_name="articles", verbose_name="Tags")
-    image = models.ImageField(blank=True, null=True, upload_to="article_images")
+    tags = models.ManyToManyField(
+        Tags,
+        related_name="articles",
+        verbose_name="Tags",
+    )
+    image = models.ImageField(
+        blank=True,
+        null=True,
+        upload_to="article_images",
+    )
     is_highlighted = models.BooleanField(default=False)
+
+    highlighted_objects = HighlightedArticlesManager()
+    objects = models.Manager()
 
     class Meta:
         verbose_name = "Articles"

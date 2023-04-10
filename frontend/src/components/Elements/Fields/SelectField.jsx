@@ -52,7 +52,10 @@ const SelectField = ({
   handleInputChange,
   choices,
   variant = "outlined",
+  multiple = false,
 }) => {
+  console.log("fieldName", fieldName, formData);
+
   const classes = useStyles();
   const [manualEntry, setManualEntry] = useState(false);
   const toggleManualEntry = () => setManualEntry(!manualEntry);
@@ -73,23 +76,40 @@ const SelectField = ({
           <FormField
             id={fieldName}
             onChange={handleInputChange}
-            value={formData[fieldName]}
+            value={
+              fieldName === "social"
+                ? formData[fieldName].id
+                : fieldName === "contact_info"
+                ? formData[fieldName].id
+                : fieldName === "page_set"
+                ? formData[fieldName].set_name
+                : fieldName === "hero_block"
+                ? formData[fieldName].id
+                : formData[fieldName]
+            }
             variant={variant}
           />
         ) : (
           <Select
+            multiple={multiple}
             className={classes.select}
             variant={variant}
             value={
-              formData[fieldName]
-              // ? formData[fieldName]
-              //     .replace(/_/g, " ")
-              //     .replace(/\b\w/g, (l) => l.toUpperCase())
-              // : ""
+              formData[fieldName] && fieldName === "social"
+                ? formData[fieldName].id
+                : formData[fieldName] && fieldName === "hero_block"
+                ? formData[fieldName].id
+                : formData[fieldName] &&
+                  (fieldName === "page_set" ||
+                    fieldName === "contact_info" ||
+                    fieldName === "socials" ||
+                    fieldName === "hours")
+                ? formData[fieldName].id
+                : formData[fieldName]
             }
             onChange={handleChange}
-            displayEmpty
             name={fieldName}
+            displayEmpty
             margin="dense"
             style={{ minWidth: "100%", padding: 0 }}
             MenuProps={{
@@ -117,6 +137,9 @@ const SelectField = ({
             </MenuItem>
             {choices &&
               Object.entries(choices).map(([key, value]) => {
+                if (fieldName === "category") {
+                  console.log("kv", key, value);
+                }
                 return (
                   <MenuItem
                     key={key}
@@ -128,10 +151,19 @@ const SelectField = ({
                         ? value.position
                         : fieldName === "user"
                         ? value.username
+                        : fieldName === "category"
+                        ? value.name
                         : fieldName === "question"
                         ? value.id
                         : fieldName === "tags"
                         ? value.detail
+                        : fieldName === "social"
+                        ? value.id
+                        : fieldName === "page_set" ||
+                          fieldName == "contact_info" ||
+                          fieldName === "socials" ||
+                          fieldName === "hours"
+                        ? value.id
                         : value.id
                     }
                   >
@@ -147,6 +179,19 @@ const SelectField = ({
                         ? value.id
                         : fieldName === "tags"
                         ? value.detail
+                        : fieldName === "social"
+                        ? value.id
+                        : fieldName === "contact"
+                        ? value.id
+                        : fieldName === "hero_block"
+                        ? value.id
+                        : fieldName === "category"
+                        ? value.name
+                        : fieldName === "page_set" ||
+                          fieldName == "contact_info" ||
+                          fieldName === "socials" ||
+                          fieldName === "hours"
+                        ? value.set_name
                         : value.name}
                     </span>
                   </MenuItem>

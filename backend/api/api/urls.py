@@ -5,6 +5,7 @@ from django.conf.urls.static import static
 from . import views
 from authorization.views import *
 
+
 urlpatterns = (
     [
         path(
@@ -32,14 +33,30 @@ urlpatterns = (
             views.SingleAppEndpointAPIView.as_view(),
             name="get_model_metadata",
         ),
-        path("api/user/", views.UserListView.as_view(), name="user-list"),
-        path("admin/", admin.site.urls),
+        path(
+            "api/get_contenttype_info/<int:content_id>/",
+            views.ContentTypeEndpointAPIView.as_view(),
+            name="get_contenttype_info",
+        ),
+        path(
+            "api/user/",
+            views.UserListView.as_view(),
+            name="user-list",
+        ),
+        path(
+            "admin/",
+            admin.site.urls,
+        ),
         path(
             "api/recent_admin_actions/",
             views.RecentAdminActionsView.as_view(),
             name="recent_admin_actions",
         ),
-        path("api/subscribe/", views.subscribe_to_newsletter, name="subscribe-list"),
+        path(
+            "api/subscribe/",
+            views.subscribe_to_newsletter,
+            name="subscribe-list",
+        ),
         path(
             "api/themesettings/",
             ThemeSettingsAPIView.as_view(),
@@ -70,19 +87,74 @@ urlpatterns = (
             TokenBlacklistBulkAPIView.as_view(),
             name="tokenblacklist-bulk-detail",
         ),
-        path("api/auth/", include("authorization.urls")),
-        path("api/", include("content.urls")),
-        path("api/", include("contact.urls")),
-        path("api/", include("tables.urls")),
-        path("api/", include("quizes.urls")),
-        path("api/", include("articles.urls")),
-        path("api/", include("landing.urls")),
-        path("api/", include("about.urls")),
-        path("api/", include("services.urls")),
-        path("api/", include("support.urls")),
-        path("api/", include("jobs.urls")),
-        path("api/", include("general.urls")),
+        path(
+            "api/preview-data/",
+            views.component_preview_data,
+            name="component_preview_data",
+        ),
+        path(
+            "api/auth/",
+            include("authorization.urls"),
+        ),
+        path(
+            "api/",
+            include("pages.urls"),
+        ),
+        path(
+            "api/",
+            include("content.urls"),
+        ),
+        path(
+            "api/",
+            include("contact.urls"),
+        ),
+        path(
+            "api/",
+            include("tables.urls"),
+        ),
+        path(
+            "api/",
+            include("quizes.urls"),
+        ),
+        path(
+            "api/",
+            include("articles.urls"),
+        ),
+        path(
+            "api/",
+            include("landing.urls"),
+        ),
+        path(
+            "api/",
+            include("about.urls"),
+        ),
+        path(
+            "api/",
+            include("services.urls"),
+        ),
+        path(
+            "api/",
+            include("support.urls"),
+        ),
+        path(
+            "api/",
+            include("jobs.urls"),
+        ),
+        path(
+            "api/",
+            include("general.urls"),
+        ),
+        path(
+            "api/",
+            include("elements.urls"),
+        ),
     ]
-    + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-    + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    + static(
+        settings.MEDIA_URL,
+        document_root=settings.MEDIA_ROOT,
+    )
+    + static(
+        settings.STATIC_URL,
+        document_root=settings.STATIC_ROOT,
+    )
 )

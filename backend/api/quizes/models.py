@@ -2,7 +2,7 @@ from django.db import models
 from api.customs import *
 
 
-@custom_metadata(
+@metadata(
     autoform_label="Questionnaire",
     long_description="This model represents a questionnaire that users can fill out to provide feedback.",
     short_description="A model for creating and managing questionnaires.",
@@ -30,6 +30,11 @@ from api.customs import *
             "Quizes app documentation": "/docs/app/quizes/",
         },
     },
+    filter_options=[
+        "slug",
+        "id",
+    ],
+    allowed=True,
 )
 class Questionnaire(models.Model):
     title = CustomCharField(
@@ -59,14 +64,15 @@ class Questionnaire(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
+        ordering = ["slug"]
         verbose_name = "Questionnaire"
         verbose_name_plural = "Questionnaires"
 
     def __str__(self):
-        return self.title
+        return self.slug
 
 
-@custom_metadata(
+@metadata(
     autoform_label="Question Set",
     long_description="A set of questions to be answered in a questionnaire",
     short_description="Question Set",
@@ -95,6 +101,8 @@ class Questionnaire(models.Model):
             "Quizes app documentation": "/docs/app/quizes/",
         },
     },
+    filter_options=["id", "title", "questionnaire"],
+    allowed=False,
 )
 class QuestionSet(models.Model):
     questionnaire = models.ForeignKey(
@@ -127,15 +135,15 @@ class QuestionSet(models.Model):
     )
 
     class Meta:
+        ordering = ["title"]
         verbose_name = "Question Set"
         verbose_name_plural = "Question Sets"
-        ordering = ["order"]
 
     def __str__(self):
         return self.title
 
 
-@custom_metadata(
+@metadata(
     autoform_label="Question",
     long_description="This model represents a question that can be displayed in a Question Set within a Questionnaire on the website.",
     short_description="An individual question",
@@ -164,6 +172,8 @@ class QuestionSet(models.Model):
             "Quizes app documentation": "/docs/app/quizes/",
         },
     },
+    filter_options=["id", "slug", "question_set"],
+    allowed=False,
 )
 class Question(models.Model):
     question_set = CustomForeignKeyField(
@@ -202,7 +212,7 @@ class Question(models.Model):
         return self.text
 
 
-@custom_metadata(
+@metadata(
     autoform_label="Answer Choice",
     long_description="This model represents the answer choices for Questionnaire questions.",
     short_description="Answer Choices Model",
@@ -231,6 +241,8 @@ class Question(models.Model):
             "Quizes app documentation": "/docs/app/quizes/",
         },
     },
+    filter_options=["id", "text", "question"],
+    allowed=False,
 )
 class AnswerChoice(models.Model):
     question = CustomForeignKeyField(
@@ -263,7 +275,7 @@ class AnswerChoice(models.Model):
     )
 
     class Meta:
-        ordering = ["order"]
+        ordering = ["question"]
         verbose_name = "Answer Choice"
         verbose_name_plural = "Answer Choices"
 
@@ -271,7 +283,7 @@ class AnswerChoice(models.Model):
         return self.text
 
 
-@custom_metadata(
+@metadata(
     autoform_label="Questionnaire Result",
     long_description="Stores the results of a questionnaire filled out by a user.",
     short_description="Questionnaire Results Model",
@@ -301,6 +313,12 @@ class AnswerChoice(models.Model):
             "Quizes app documentation": "/docs/app/quizes/",
         },
     },
+    filter_options=[
+        "id",
+        "contact_state",
+        "questionnaire",
+    ],
+    allowed=False,
 )
 class QuestionnaireResults(models.Model):
     questionnaire = models.ForeignKey(
@@ -339,12 +357,16 @@ class QuestionnaireResults(models.Model):
     )
     results = models.JSONField()
 
+    def __str__(self):
+        return f"{self.contact_name} ({self.questionnaire})"
+
     class Meta:
+        ordering = ["questionnaire", "contact_name"]
         verbose_name = "Questionnaire Results"
         verbose_name_plural = "Questionnaire Results"
 
 
-@custom_metadata(
+@metadata(
     autoform_label="Questionnaire Result Answer Choice",
     long_description="This model stores the answer choices selected by a user for a specific question in a questionnaire result.",
     short_description="Stores answer choices for a question in a questionnaire result.",
@@ -374,6 +396,13 @@ class QuestionnaireResults(models.Model):
             "General app documentation": "/docs/app/quizes/",
         },
     },
+    filter_options=[
+        "id",
+        "question",
+        "answer_choice",
+        "questionnaire_result",
+    ],
+    allowed=False,
 )
 class QuestionnaireResultAnswer(models.Model):
     questionnaire_result = models.ForeignKey(
@@ -413,6 +442,9 @@ class QuestionnaireResultAnswer(models.Model):
         verbose_name="Answer Choice Text",
         help_text="Answer Choice Text",
     )
+
+    def __str__(self):
+        return f"{self.questionnaire_result} ({self.id})"
 
     class Meta:
         verbose_name = "Questionnaire Result Answer Choice"

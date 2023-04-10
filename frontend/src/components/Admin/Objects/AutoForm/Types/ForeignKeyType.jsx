@@ -23,6 +23,8 @@ const ForeignKeyType = ({
   const [data, setData] = useState();
   const classes = useStyles();
 
+  console.log(fieldName);
+
   useEffect(() => {
     if (fieldName.includes("service_tier")) {
       axiosInstance.get(`/servicetier/`).then((response) => {
@@ -41,6 +43,41 @@ const ForeignKeyType = ({
       });
     } else if (fieldName === "labels") {
       axiosInstance.get(`/servicetablelabels/`).then((response) => {
+        setData(response.data);
+        console.log("YEAH:", response.data);
+      });
+    } else if (fieldName === "social") {
+      axiosInstance.get(`/socials/`).then((response) => {
+        setData(response.data);
+        console.log("YEAH:", response.data);
+      });
+    } else if (fieldName === "contact_info") {
+      axiosInstance.get(`/contactinformation/`).then((response) => {
+        setData(response.data);
+        console.log("YEAH:", response.data);
+      });
+    } else if (fieldName === "hero_block") {
+      axiosInstance.get(`/heroblock/`).then((response) => {
+        setData(response.data);
+        console.log("YEAH:", response.data);
+      });
+    } else if (fieldName === "title_block") {
+      axiosInstance.get(`/titleblock/`).then((response) => {
+        setData(response.data);
+        console.log("YEAH:", response.data);
+      });
+    } else if (fieldName === "components") {
+      axiosInstance.get(`/componentobj/`).then((response) => {
+        setData(response.data);
+        console.log("YEAH:", response.data);
+      });
+    } else if (fieldName === "page_set") {
+      axiosInstance.get(`/pageset/`).then((response) => {
+        setData(response.data);
+        console.log("YEAH:", response.data);
+      });
+    } else if (fieldName === "element_set") {
+      axiosInstance.get(`/elementset/`).then((response) => {
         setData(response.data);
         console.log("YEAH:", response.data);
       });

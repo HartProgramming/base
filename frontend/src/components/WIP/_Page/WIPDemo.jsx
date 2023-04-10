@@ -1,6 +1,7 @@
 import Demo from "../../Elements/Demo/Demo";
 import FeatureCTA from "../Features/FeatureCTA/FeatureCTA";
 import Partners from "../Partners/Partners";
+<<<<<<< HEAD
 import {
   Button,
   Grid,
@@ -9,18 +10,19 @@ import {
   useTheme,
 } from "@material-ui/core";
 import InteractiveInfo from "../InteractiveInfo/Interactive";
+=======
+import { useTheme } from "@material-ui/core";
+>>>>>>> ca6f24797eb451333df09fd8b2bc82f00b72e1b6
 import StoryTeller from "../StoryTeller/StoryTeller";
 import CaseStudiesBasic from "../CaseStudies/CaseStudiesBasic";
 import Reviews from "../Reviews/Reviews";
 import Infographic from "../Infographic/Infographic";
-import Item from "../../Elements/Layout/Item/Item";
-import Container from "../../Elements/Layout/Container/Container";
-import Text from "../../Elements/Layout/Text/Text";
 import Magazine from "../Magazine/Magazine";
 import TestForm from "../TestForm";
 import LayeredGradientBackground from "../../Elements/Layout/GradientContent";
 import { useState } from "react";
 import Loading from "../../Elements/Layout/Loading/Loading";
+<<<<<<< HEAD
 import Info from "../Info/Info";
 const actions = [
   <Grid
@@ -36,6 +38,9 @@ const actions = [
     </Button>
   </Grid>,
 ];
+=======
+import TableBuilder from "../../Tables/Builder/TableBuilder";
+>>>>>>> ca6f24797eb451333df09fd8b2bc82f00b72e1b6
 
 const salesData = [
   { label: "Jan", value: 2486 },
@@ -53,39 +58,6 @@ const customersData = [
   { label: "Mary", value: 9 },
   { label: "Bob", value: 2 },
   { label: "Lisa", value: 11 },
-];
-
-const blogPosts = [
-  {
-    id: 1,
-    title: "My First Blog Post",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    image: "https://source.unsplash.com/1400x904/?service",
-    category: "food",
-  },
-  {
-    id: 2,
-    title: "My Second Blog Post",
-    description:
-      "Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.",
-    image: "https://source.unsplash.com/1400x903/?service",
-    category: "technology",
-  },
-  {
-    id: 3,
-    title: "My First Blog Post",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    image: "https://source.unsplash.com/1400x902/?service",
-    category: "food",
-  },
-  {
-    id: 4,
-    title: "My Second Blog Post",
-    description:
-      "Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.",
-    image: "https://source.unsplash.com/1400x901/?service",
-    category: "technology",
-  },
 ];
 
 const wipComponents = [
@@ -147,49 +119,9 @@ const wipComponents = [
   },
 ];
 
-const useStyles = makeStyles((theme) => ({
-  formControl: {
-    margin: theme.spacing(1),
-    minWidth: 120,
-  },
-  title: {
-    marginBottom: theme.spacing(3),
-  },
-  submitButton: {
-    margin: theme.spacing(3, 0, 2),
-    padding: theme.spacing(2, 5),
-    borderRadius: theme.spacing(2),
-    textTransform: "none",
-    fontWeight: "bold",
-  },
-  input: {
-    "& .MuiOutlinedInput-root": {
-      "& fieldset": {
-        borderColor: theme.palette.secondary.light,
-      },
-      "&:hover fieldset": {
-        borderColor: theme.palette.secondary.main,
-      },
-      "&.Mui-focused fieldset": {
-        borderColor: theme.palette.primary.main,
-      },
-    },
-    "& .MuiInputLabel-outlined": {
-      color: theme.palette.secondary.light,
-    },
-    "&:hover .MuiInputLabel-outlined": {
-      color: theme.palette.secondary.main,
-    },
-    "&.Mui-focused .MuiInputLabel-outlined": {
-      color: theme.palette.primary.main,
-    },
-  },
-}));
-
 export default function WIPDemo() {
   const theme = useTheme();
   const [loading, setLoading] = useState(false);
-  const classes = useStyles();
 
   if (loading) {
     return (
@@ -201,153 +133,16 @@ export default function WIPDemo() {
 
   return (
     <div style={{ maxWidth: "100vw", background: theme.palette.primary.main }}>
-      <LayeredGradientBackground>
-        <TestForm />
-        <Container spacing={2} style={{ padding: 4 }}>
-          <Item xs={12} sm={12} md={12} lg={12} xl={12} justify="center">
-            <Text type="h3">Custom Container/Item Responsive Test</Text>
-          </Item>
-          <Item
-            xs={12}
-            sm={12}
-            md={8}
-            lg={4}
-            xl={6}
-            justify="flex-end"
-            style={{
-              background: "lightgrey",
-              border: "1px solid grey",
-              marginBottom: 10,
-            }}
-          >
-            Item 1
-          </Item>
-          <Item
-            xs={12}
-            sm={12}
-            md={8}
-            lg={4}
-            xl={6}
-            justify="flex-start"
-            style={{
-              background: "lightgrey",
-              border: "1px solid grey",
-              marginBottom: 10,
-            }}
-          >
-            Item 2
-          </Item>
-          <Item
-            xs={12}
-            sm={12}
-            md={8}
-            lg={4}
-            xl={4}
-            justify="center"
-            style={{
-              background: "lightblue",
-              border: "1px solid grey",
-              marginBottom: 10,
-            }}
-          >
-            Item 3
-          </Item>
-          <Item
-            xs={12}
-            sm={12}
-            md={8}
-            lg={4}
-            xl={4}
-            justify="center"
-            style={{
-              background: "lightblue",
-              border: "1px solid grey",
-              marginBottom: 10,
-            }}
-          >
-            Item 4
-          </Item>
-          <Item
-            xs={12}
-            sm={12}
-            md={8}
-            lg={4}
-            xl={4}
-            justify="center"
-            style={{
-              background: "lightblue",
-              border: "1px solid grey",
-              marginBottom: 10,
-            }}
-          >
-            Item 5
-          </Item>
-          <Container spacing={2} padding={"0px !important"}>
-            <Item xs={12} sm={12} md={12} lg={12} xl={12} justify="center">
-              <Text type="h3">Nested Test</Text>
-            </Item>
-            <Item
-              xs={12}
-              sm={12}
-              md={3}
-              justify="center"
-              style={{
-                background: "lightgreen",
-                border: "1px solid grey",
-                marginBottom: 10,
-              }}
-            >
-              Item 6
-            </Item>
-            <Item
-              xs={12}
-              sm={12}
-              md={3}
-              justify="flex-end"
-              style={{
-                background: "lightgreen",
-                border: "1px solid grey",
-                marginBottom: 10,
-              }}
-            >
-              Item 7
-            </Item>
-            <Item
-              xs={12}
-              sm={12}
-              md={3}
-              justify="flex-start"
-              style={{
-                background: "lightgreen",
-                border: "1px solid grey",
-                marginBottom: 10,
-              }}
-            >
-              Item 8
-            </Item>
-            <Item
-              xs={12}
-              sm={12}
-              md={3}
-              justify="center"
-              style={{
-                background: "lightgreen",
-                border: "1px solid grey",
-                marginBottom: 10,
-              }}
-            >
-              Item 9
-            </Item>
-          </Container>
-        </Container>
-      </LayeredGradientBackground>
+      <div style={{ paddingTop: 48, marginBottom: 48 }}>
+        <TableBuilder />
+      </div>
       <div
         style={{
           height: "100%",
           width: "100%",
           display: "flex",
           justifyContent: "flex-end",
-          background: theme.palette.primary.light,
+          background: theme.palette.primary.main,
         }}
       >
         <svg
@@ -357,11 +152,14 @@ export default function WIPDemo() {
           viewBox="0 0 1920 100.1"
         >
           <path
-            fill={theme.palette.primary.main}
+            fill={theme.palette.primary.light}
             d="M0,0c0,0,934.4,93.4,1920,0v100.1H0L0,0z"
           />
         </svg>
       </div>
+      <LayeredGradientBackground>
+        <TestForm />
+      </LayeredGradientBackground>
 
       <Demo demoTitle="WIP Components" components={wipComponents} />
     </div>

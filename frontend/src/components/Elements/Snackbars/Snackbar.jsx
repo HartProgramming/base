@@ -77,7 +77,11 @@ const AdvancedSnackbar = ({
   type,
   open,
   onClose,
+<<<<<<< HEAD
   duration = 3000,
+=======
+  duration = 5000000,
+>>>>>>> ca6f24797eb451333df09fd8b2bc82f00b72e1b6
   position = "top-center",
 }) => {
   const classes = useStyles();

@@ -36,15 +36,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Hero({
-  heroData,
-  setHeroData,
-  contactData,
-  socialData,
-  editMode,
-  form = true,
-}) {
+function Hero({ data, contactData, socialData, editMode, form = true }) {
+  console.log("data", contactData);
   const classes = useStyles();
+  const [heroData, setHeroData] = useState(data);
   const [editing, setEditing] = useState(false);
   const auth = useSelector((state) => state.auth);
 

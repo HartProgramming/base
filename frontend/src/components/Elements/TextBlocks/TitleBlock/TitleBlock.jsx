@@ -70,6 +70,7 @@ function TitleBlock({
   showDivider = true,
 }) {
   const classes = useStyles();
+  console.log(alignment, "alignment");
   const alignClass = getAlignClass(alignment);
 
   return (
@@ -122,7 +123,11 @@ function TitleBlock({
 
       {children}
 
-      {showDivider && <Divider className={classes.divider} />}
+      {showDivider && (
+        <div style={{ width: "90%" }}>
+          <Divider className={classes.divider} />
+        </div>
+      )}
     </>
   );
 }

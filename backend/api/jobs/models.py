@@ -3,7 +3,7 @@ from auditlog.registry import auditlog
 from api.customs import *
 
 
-@custom_metadata(
+@metadata(
     autoform_label="Job Posting Requirement",
     long_description="A requirement for a job posting",
     short_description="Job Requirement",
@@ -30,6 +30,7 @@ from api.customs import *
             "Jobs documentation": "/docs/support/requirement/",
         },
     },
+    allowed=False,
 )
 class Requirement(models.Model):
     detail = models.CharField(max_length=200)
@@ -38,7 +39,7 @@ class Requirement(models.Model):
         return f"{self.detail[:50]}..."
 
 
-@custom_metadata(
+@metadata(
     autoform_label="Job Posting Responsibility",
     long_description="This model represents the responsibilities for a particular job posting.",
     short_description="Responsibilities for a Job Posting",
@@ -63,6 +64,7 @@ class Requirement(models.Model):
             "JobPosting": "/docs/models/job-posting/",
         },
     },
+    allowed=False,
 )
 class Responsibilities(models.Model):
     detail = models.CharField(max_length=200)
@@ -71,7 +73,7 @@ class Responsibilities(models.Model):
         return f"{self.detail[:50]}..."
 
 
-@custom_metadata(
+@metadata(
     autoform_label="Job Opening Post",
     long_description="This model represents a job posting on the company's contact page.",
     short_description="Model for a job posting",
@@ -107,6 +109,8 @@ class Responsibilities(models.Model):
             "JobPosting model reference": "/docs/jobposting/",
         },
     },
+    allowed=True,
+    filter_options=["position"],
 )
 class JobPosting(models.Model):
     position = CustomCharField(
@@ -114,6 +118,7 @@ class JobPosting(models.Model):
         md_column_count=4,
         verbose_name="Position",
         help_text="Job Title/Position",
+        db_index=True,
     )
     location = CustomCharField(
         max_length=80,
@@ -167,12 +172,19 @@ class JobPosting(models.Model):
         verbose_name="Why Apply",
         help_text="Why Apply Text",
     )
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created At")
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name="Created At",
+    )
     filled = models.BooleanField(
         default=False,
         verbose_name="Filled",
         help_text="Filled Status",
+        db_index=True,
     )
+
+    def __str__(self):
+        return self.position
 
     def delete(self, *args, **kwargs):
         self.requirements.all().delete()
@@ -184,7 +196,7 @@ class JobPosting(models.Model):
         verbose_name_plural = "Job Openings"
 
 
-@custom_metadata(
+@metadata(
     autoform_label="Application",
     long_description="This model represents a job application submitted through the company's website.",
     short_description="Job Application",
@@ -219,6 +231,11 @@ class JobPosting(models.Model):
             "Application model reference": "/docs/application/",
         },
     },
+    filter_options=[
+        "job",
+        "status",
+    ],
+    allowed=False,
 )
 class Application(models.Model):
     RESUME_UPLOAD_PATH = "resumes/"
@@ -257,7 +274,10 @@ class Application(models.Model):
         verbose_name="Phone",
         help_text="Phone Number",
     )
-    created_at = models.DateTimeField(verbose_name="Created At", auto_now_add=True)
+    created_at = models.DateTimeField(
+        verbose_name="Created At",
+        auto_now_add=True,
+    )
     city = CustomCharField(
         max_length=40,
         xs_column_count=12,
@@ -297,8 +317,13 @@ class Application(models.Model):
         default="Pending",
         verbose_name="Status",
         help_text="Application Status",
+        db_index=True,
     )
 
+    def __str__(self):
+        return f"{self.first_name} {self.last_name} - {self.job.name}"
+
     class Meta:
+        ordering = ["-id"]
         verbose_name = "Application"
         verbose_name_plural = "Applications"

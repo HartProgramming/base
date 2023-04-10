@@ -46,7 +46,7 @@ class CustomUserManager(UserManager):
         return user
 
 
-@custom_metadata(
+@metadata(
     autoform_label="User",
     long_description="This model represents a user account in our system.",
     short_description="User Account",
@@ -80,6 +80,7 @@ class CustomUserManager(UserManager):
             "Authorization app documentation": "/docs/app/authorization/",
         },
     },
+    allowed=False,
 )
 class User(AbstractUser):
     username = CustomCharField(
@@ -88,6 +89,7 @@ class User(AbstractUser):
         md_column_count=6,
         verbose_name="Username",
         help_text="Username",
+        db_index=True,
     )
     email = CustomEmailField(
         unique=True,
@@ -166,12 +168,15 @@ class User(AbstractUser):
 
     objects = CustomUserManager()
 
+    def __str__(self):
+        return self.username
+
     class Meta:
         verbose_name = "User"
         verbose_name_plural = "Users"
 
 
-@custom_metadata(
+@metadata(
     autoform_label="Theme User Setting",
     long_description="This model represents the theme settings for a user. Users can customize their primary, secondary, and background colors to personalize their experience.",
     short_description="Model for managing user theme settings.",
@@ -197,6 +202,7 @@ class User(AbstractUser):
             "Authorization app documentation": "/docs/app/authorization/",
         },
     },
+    allowed=False,
 )
 class ThemeSettings(models.Model):
     user = models.OneToOneField(
@@ -205,6 +211,7 @@ class ThemeSettings(models.Model):
         related_name="theme_settings",
         verbose_name="User",
         help_text="Help Text Placeholder",
+        db_index=True,
     )
     primary_color = CustomCharField(
         max_length=7,
@@ -231,7 +238,7 @@ class ThemeSettings(models.Model):
         verbose_name_plural = "Theme Settings"
 
 
-@custom_metadata(
+@metadata(
     autoform_label="Manage JWT Token Blacklist",
     long_description="This model represents a JWT token blacklist that is used to keep track of blacklisted tokens in the system. Whenever a token is blacklisted, a record is created in this model with the token and the time it was blacklisted. This model can be used to manage and monitor the blacklisted tokens.",
     short_description="A model for managing JWT token blacklist",
@@ -255,6 +262,7 @@ class ThemeSettings(models.Model):
             "Authorization app documentation": "/docs/app/authorization/",
         },
     },
+    allowed=False,
 )
 class TokenBlacklist(models.Model):
     token = CustomTextField(

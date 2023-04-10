@@ -1,9 +1,10 @@
 from django.db import models
 from api.customs import *
+from api.utils import *
 from auditlog.registry import auditlog
 
 
-@custom_metadata(
+@metadata(
     autoform_label="About Header",
     long_description="This model represents the header block of the About page.",
     short_description="Header block for the About page.",
@@ -30,26 +31,42 @@ from auditlog.registry import auditlog
             "About app documentation": "/docs/app/about/",
         },
     },
+    filter_options=[
+        "name",
+        "id",
+    ],
+    allowed=True,
+    category="About",
 )
 class AboutBlock(models.Model):
+    name = CustomCharField(
+        max_length=100,
+        unique=True,
+        md_column_count=12,
+        verbose_name="About Block Name",
+        help_text="Referential Name",
+    )
     title = CustomCharField(
         max_length=200,
         md_column_count=12,
         verbose_name="Title",
         help_text="Company Name",
     )
-    image = models.ImageField(
+    image = CustomImageFieldField(
         upload_to="about",
         verbose_name="Image",
         help_text="Help Text Placeholder",
     )
+
+    def __str__(self):
+        return self.name
 
     class Meta:
         verbose_name = "About Header"
         verbose_name_plural = verbose_name + "s"
 
 
-@custom_metadata(
+@metadata(
     autoform_label="Mission Statement",
     long_description="This model represents the mission statement for a company or organization.",
     short_description="A company's mission statement.",
@@ -76,8 +93,21 @@ class AboutBlock(models.Model):
             "About app documentation": "/docs/app/about/",
         },
     },
+    filter_options=[
+        "name",
+        "title",
+        "id",
+    ],
+    allowed=True,
 )
 class MissionStatement(models.Model):
+    name = CustomCharField(
+        max_length=100,
+        unique=True,
+        md_column_count=12,
+        verbose_name="Mission Statement Name",
+        help_text="Referential Name",
+    )
     title = CustomCharField(
         max_length=200,
         md_column_count=12,
@@ -93,12 +123,15 @@ class MissionStatement(models.Model):
         help_text="Mission Statement Body",
     )
 
+    def __str__(self):
+        return self.name
+
     class Meta:
         verbose_name = "Mission Statement"
         verbose_name_plural = verbose_name + "s"
 
 
-@custom_metadata(
+@metadata(
     autoform_label="Company History",
     long_description="This model represents the history of the company, including major milestones and events. It can be used to showcase the company's achievements and growth over time.",
     short_description="Model for company history",
@@ -125,8 +158,21 @@ class MissionStatement(models.Model):
             "About app documentation": "/docs/app/about/",
         },
     },
+    filter_options=[
+        "name",
+        "title",
+        "id",
+    ],
+    allowed=True,
 )
 class CompanyHistory(models.Model):
+    name = CustomCharField(
+        max_length=100,
+        unique=True,
+        md_column_count=12,
+        verbose_name="Company History Name",
+        help_text="Referential Name",
+    )
     title = CustomCharField(
         max_length=200,
         md_column_count=12,
@@ -141,12 +187,15 @@ class CompanyHistory(models.Model):
         help_text="Company History Body",
     )
 
+    def __str__(self):
+        return self.name
+
     class Meta:
-        verbose_name = "History"
+        verbose_name = "Company History"
         verbose_name_plural = verbose_name + "s"
 
 
-@custom_metadata(
+@metadata(
     autoform_label="Company Value",
     long_description="This model represents the core values of our company.",
     short_description="Core company values.",
@@ -173,6 +222,18 @@ class CompanyHistory(models.Model):
             "About app documentation": "/docs/app/about/",
         },
     },
+    filter_options=[
+        "title",
+        "id",
+    ],
+    filter_choices=lambda model: get_filter_choices(
+        model,
+        [
+            "title",
+            "id",
+        ],
+    ),
+    allowed=True,
 )
 class Value(models.Model):
     title = CustomCharField(
@@ -188,12 +249,15 @@ class Value(models.Model):
         help_text="Value Icon",
     )
 
+    def __str__(self):
+        return self.title
+
     class Meta:
         verbose_name = "Values"
         verbose_name_plural = "Values"
 
 
-@custom_metadata(
+@metadata(
     autoform_label="FAQ Category",
     long_description="This model represents a category for frequently asked questions on our website.",
     short_description="FAQ Category",
@@ -219,6 +283,11 @@ class Value(models.Model):
             "About app documentation": "/docs/app/about/",
         },
     },
+    filter_options=[
+        "name",
+        "id",
+    ],
+    allowed=False,
 )
 class Category(models.Model):
     name = CustomCharField(
@@ -228,12 +297,15 @@ class Category(models.Model):
         help_text="Category Name",
     )
 
+    def __str__(self):
+        return self.name
+
     class Meta:
         verbose_name = "FAQ Categories"
         verbose_name_plural = verbose_name + "Categories"
 
 
-@custom_metadata(
+@metadata(
     autoform_label="FAQ",
     long_description="This model represents frequently asked questions and answers related to our company and services.",
     short_description="FAQ Model",
@@ -261,8 +333,21 @@ class Category(models.Model):
             "About app documentation": "/docs/app/about/",
         },
     },
+    filter_options=[
+        "name",
+        "id",
+    ],
+    allowed=False,
 )
 class FAQ(models.Model):
+    name = CustomCharField(
+        max_length=100,
+        unique=True,
+        md_column_count=12,
+        verbose_name="FAQ Name",
+        help_text="Referential Name",
+        db_index=True,
+    )
     category = models.ForeignKey(
         Category,
         on_delete=models.CASCADE,
@@ -285,6 +370,10 @@ class FAQ(models.Model):
         min_rows=3,
     )
 
+    def __str__(self):
+        return self.name
+
     class Meta:
+        ordering = ["category"]
         verbose_name = "FAQ"
         verbose_name_plural = verbose_name + "s"

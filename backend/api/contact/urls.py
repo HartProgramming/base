@@ -18,6 +18,21 @@ urlpatterns = [
         name="contactinformation-bulk-detail",
     ),
     path(
+        "contact/",
+        ContactAPIView.as_view(),
+        name="contact-list",
+    ),
+    path(
+        "contact/<int:pk>/",
+        ContactDetailView.as_view(),
+        name="contact-update",
+    ),
+    path(
+        "contact/bulk/",
+        ContactBulkAPIView.as_view(),
+        name="contact-bulk-detail",
+    ),
+    path(
         "hours/",
         HoursAPIView.as_view(),
         name="hours-list",
@@ -47,7 +62,11 @@ urlpatterns = [
         SocialsBulkAPIView.as_view(),
         name="socials-bulk-detail",
     ),
-    path("teammember/", TeamMemberAPIView.as_view(), name="teammember-list"),
+    path(
+        "teammember/",
+        TeamMemberAPIView.as_view(),
+        name="teammember-list",
+    ),
     path(
         "teammember/<int:pk>/",
         TeamMemberDetailAPIView.as_view(),
@@ -58,5 +77,9 @@ urlpatterns = [
         TeamMemberBulkAPIView.as_view(),
         name="teammember-bulk-detail",
     ),
-    path("appinfo/", AppInfoFullView.as_view(), name="app-full"),
+    path(
+        "appinfo/",
+        AppInfoFullView.as_view(),
+        name="app-full",
+    ),
 ]
