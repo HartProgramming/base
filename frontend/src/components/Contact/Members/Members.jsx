@@ -6,7 +6,7 @@ import Flexbox from "../../Elements/Layout/Flexbox/Flexbox";
 import { IconButton, Tooltip } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import AdminButton from "../../Elements/Buttons/AdminButton";
-
+import AnimationWrapper from "../../AnimationWrapper/AnimationWrapper";
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
@@ -37,6 +37,7 @@ const Members = ({ membersData, editMode }) => {
   const classes = useStyles();
 
   return (
+    <>
     <div className={classes.root}>
       {membersData ? (
         <Flexbox className={classes.container}>
@@ -58,6 +59,28 @@ const Members = ({ membersData, editMode }) => {
         </Flexbox>
       ) : null}
     </div>
+      <div className={classes.root}>
+      {membersData ? (
+        <Flexbox className={classes.container}>
+          <div xs={12} sm={12}>
+            <Typography
+              variant="h2"
+              className={classes.sectionTitle}
+              style={{ width: "100%" }}
+            >
+              Company Management
+              {editMode && (
+                <AdminButton link="teammember" tooltipText={"Team Members"} />
+              )}
+            </Typography>
+          </div>
+          {membersData.map((member) => (
+            <Member member={member} editMode={editMode} />
+          ))}
+        </Flexbox>
+      ) : null}
+    </div>
+    </>
   );
 };
 

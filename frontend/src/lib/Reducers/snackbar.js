@@ -12,7 +12,7 @@ const initialState = {
   message: "",
   type: "",
   errorMessage: "",
-};
+}; 
 
 const snackbarReducer = (state = initialState, action) => {
   switch (action.type) {

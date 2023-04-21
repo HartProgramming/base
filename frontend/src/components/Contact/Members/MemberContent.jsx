@@ -10,7 +10,7 @@ import FacebookIcon from "@material-ui/icons/Facebook";
 import InstagramIcon from "@material-ui/icons/Instagram";
 import YouTubeIcon from "@material-ui/icons/YouTube";
 import { Tooltip } from "@material-ui/core";
-
+import { useEffect, useState } from "react";
 const useStyles = makeStyles((theme) => ({
   cardContent: {
     padding: "0px 16px 0px 16px",
@@ -55,8 +55,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const MemberContent = ({ member }) => {
+const MemberContent = ({ member, trans }) => {
   const classes = useStyles();
+  const [info, setInfo] = useState();
   const socialPlatforms = [
     {
       name: "facebook",
@@ -84,8 +85,12 @@ const MemberContent = ({ member }) => {
     },
   ];
 
-  return (
-    <CardContent className={classes.cardContent}>
+  const handleClick = () => {
+    console.log("hi");
+  };
+
+  useEffect(() => {
+    const content = (
       <Typography
         variant="body2"
         color="textSecondary"
@@ -94,6 +99,16 @@ const MemberContent = ({ member }) => {
       >
         {member.bio}
       </Typography>
+    );
+    if (trans === true) {
+      console.log("working");
+      setInfo(content);
+    }
+  }, [trans]);
+
+  return (
+    <CardContent className={classes.cardContent}>
+      {info}
       <div className={classes.socialIcons}>
         {socialPlatforms.map((platform, index) => {
           if (member[platform.name]) {
@@ -120,6 +135,7 @@ const MemberContent = ({ member }) => {
           }
         })}
       </div>
+      
     </CardContent>
   );
 };

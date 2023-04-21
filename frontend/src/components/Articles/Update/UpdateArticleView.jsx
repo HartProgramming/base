@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useReducer } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Card";
 import CardActions from "@material-ui/core/CardActions";
@@ -143,6 +143,7 @@ const UpdateArticleView = ({ article, updateArticle, handleCancel }) => {
   };
 
   const handleSubmit = async (e) => {
+
     e.preventDefault();
     console.log(formData);
 
@@ -165,9 +166,15 @@ const UpdateArticleView = ({ article, updateArticle, handleCancel }) => {
       updateArticle(response.data);
       dispatch({ type: "ALERT_SUCCESS", message: "Data Updated" });
     } catch (error) {
+      dispatch({type: ALERT_FAIL, duration: 2000, message: 'Failed to update', open: true})
+
       console.log(error);
     }
   };
+
+  const handleClose = () => {
+    dispatch({type: CLOSE_SNACKBAR, open: false})
+  }
 
   const handleClick = () => {
     document.getElementById("file-input").click();
