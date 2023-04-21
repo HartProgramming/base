@@ -5,12 +5,13 @@ import { useTheme } from "@material-ui/core";
 import LayeredGradientBackground from "../../Elements/Layout/GradientContent";
 import { useState } from "react";
 import Loading from "../../Elements/Layout/Loading/Loading";
-import TableBuilder from "../../Builders/Tables/Builder/TableBuilder";
-import ListBuilder from "../../Builders/Lists/Builder/ListBuilder";
-import FAQBuilder from "../../Builders/FAQs/Builder/FAQBuilder";
-import TaskListBuilder from "../../Builders/TaskList/TaskBuilder/TaskBuilder";
+import TableBuilder from "../../Builders/Tables/TableBuilder";
+import ListBuilder from "../../Builders/Lists/ListBuilder";
+import FAQBuilder from "../../Builders/FAQs/FAQBuilder";
+import TaskListBuilder from "../../Builders/TaskList/TaskListBuilder";
 import DemoItem from "../../Elements/Demo/DemoItem";
-import CardBuilder from "../../Builders/Cards/Builder/CardBuilder";
+import CardBuilder from "../../Builders/Cards/CardBuilder";
+import ElementSetBuilder from "../../Builders/ElementSet/ElementSetBuilder";
 
 const wipComponents = [
   
@@ -38,6 +39,9 @@ export default function WIPDemo() {
 
   return (
     <div style={{ maxWidth: "100vw", background: theme.palette.primary.main }}>
+      <div style={{ paddingTop: 0, marginBottom: 48 }}>
+        <ElementSetBuilder />
+      </div>
       <div style={{ paddingTop: 0, marginBottom: 48 }}>
         <DemoItem item="avatar-list" />
       </div>
