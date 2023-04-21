@@ -2,7 +2,6 @@ import Demo from "../../Elements/Demo/Demo";
 import FeatureCTA from "../Features/FeatureCTA/FeatureCTA";
 import Partners from "../Partners/Partners";
 import { useTheme } from "@material-ui/core";
-import Magazine from "../Magazine/Magazine";
 import LayeredGradientBackground from "../../Elements/Layout/GradientContent";
 import { useState } from "react";
 import Loading from "../../Elements/Layout/Loading/Loading";
@@ -14,12 +13,7 @@ import DemoItem from "../../Elements/Demo/DemoItem";
 import CardBuilder from "../../Builders/Cards/Builder/CardBuilder";
 
 const wipComponents = [
-  {
-    component: Magazine,
-    props: {
-      showStudies: true,
-    },
-  },
+  
   {
     component: FeatureCTA,
     title: "FeatureCTA",
