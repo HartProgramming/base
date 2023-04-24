@@ -137,7 +137,7 @@ const LoginForm = ({ handleLogin }) => {
               if (err) reject(err);
               resolve(hash);
             });
-          });
+          }); 
 
           loginData = {
             username: values.username,

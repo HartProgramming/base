@@ -18,6 +18,13 @@ import {
 } from "../../../Elements/Base/Card/BaseCardStyles";
 import BaseCarousel from "../../../Elements/Base/BaseCarousel";
 
+const useStyles = makeStyles(theme => ({
+  divide: {
+    border: '1px solid lightgray',
+    width: '85%'
+  }
+}))
+
 const ArticlesDisplayBase = ({
   articles,
   classSet = "default",
@@ -29,6 +36,7 @@ const ArticlesDisplayBase = ({
   carousel = false,
   editMode,
 }) => {
+  const classes = useStyles();
   const { auth } = useSelector((state) => state);
   const [selectedId, setSelectedId] = useState([]);
   const [open, setOpen] = useState(false);
@@ -197,7 +205,7 @@ const ArticlesDisplayBase = ({
     <>
       <Grid
         container
-        spacing={0}
+        spacing={4}
         flex
         justifyContent="center"
         style={{
