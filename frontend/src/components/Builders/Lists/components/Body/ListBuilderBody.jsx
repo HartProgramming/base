@@ -180,6 +180,7 @@ const ListBuilderBody = ({
                 ) : (
                   <FormField
                     required
+                    style={{backgroundColor: '#e6e6e6', boxShadow: '2px 2px 5px black'}}
                     id={field.name}
                     onChange={handleChange}
                     value={formData[field.name]}

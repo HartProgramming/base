@@ -25,6 +25,7 @@ const CardBuilderDetailForm = ({
                 required
                 fullWidth
                 id="name"
+                style={{backgroundColor: '#e6e6e6', boxShadow: '2px 2px 5px black'}}
                 value={formData.name}
                 onChange={handleChange}
               />
@@ -55,6 +56,7 @@ const CardBuilderDetailForm = ({
                 id="description"
                 value={formData.description}
                 onChange={handleChange}
+                style={{backgroundColor: '#e6e6e6', boxShadow: '2px 2px 5px black'}}
               />
             </Grid>
           </Grid>

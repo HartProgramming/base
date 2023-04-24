@@ -93,6 +93,7 @@ const CardBuilderTypeForm = ({
                     onChange={handleChange}
                     value={formData[field.name]}
                     minRows={4}
+                    style={{backgroundColor: '#e6e6e6', boxShadow: '2px 2px 5px black'}}
                   />
                 </React.Fragment>
               )}

@@ -154,6 +154,7 @@ const FAQBuilder = () => {
             handleClearFAQ={handleClearFAQ}
             handleAddFAQ={handleAddFAQ}
             errors={errors}
+            style={{backgroundColor: '#e6e6e6', boxShadow: '2px 2px 5px black'}}
             handleClearErrors={handleClearErrors}
           />
         </Grid>

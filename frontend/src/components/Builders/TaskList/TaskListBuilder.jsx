@@ -34,6 +34,9 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
     marginTop: 16,
   },
+  form: {
+    backgroundColor: 'gray'
+  }
 }));
 
 const listFields = [
@@ -44,6 +47,7 @@ const listFields = [
     type: "text",
     md: 8,
     multiline: true,
+
   },
 ];
 
@@ -111,7 +115,7 @@ const TaskListBuilder = () => {
                       >
                         <Container
                           justify="flex-start"
-                          style={{ width: "100%", padding: 0 }}
+                          style={{ width: "100%", padding: 0, }}
                         >
                           <Typography className={classes.helpText}>
                             {field.label}
@@ -124,6 +128,7 @@ const TaskListBuilder = () => {
                             onChange={handleListFormChange}
                             value={listFormData[field.name]}
                             minRows={4}
+                            style={{backgroundColor: '#e6e6e6', boxShadow: '2px 2px 5px black'}}
                           />
                         </Container>
                       </Grid>
