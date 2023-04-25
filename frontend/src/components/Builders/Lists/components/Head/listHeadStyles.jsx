@@ -12,6 +12,13 @@ export const listHeadStyles = makeStyles((theme) => ({
       display: "flex",
       justifyContent: "center",
       alignItems: "flex-end",
+      flexDirection: 'column',
+      padding: '5px'
     },
+    saveButton: {
+      padding: '5px',
+      margin: '10px',
+      border: '1px solid green'
+    }
   }));
   

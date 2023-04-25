@@ -30,7 +30,10 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     justifyContent: "center",
     alignItems: "flex-end",
+    flexDirection: "column",
+    marginBottom: '15px'
   },
+  
 }));
 
 const TableBuilder = () => {
@@ -238,7 +241,7 @@ const TableBuilder = () => {
           <Grid item xs={12}>
             <div className={classes.tableActions}>
               <div className={classes.saveActions}>
-                <div style={{ width: 300, marginRight: 24 }}>
+                <div style={{marginBottom: 15, width: 300, marginRight: 24 }}>
                   <TextField
                     required
                     fullWidth

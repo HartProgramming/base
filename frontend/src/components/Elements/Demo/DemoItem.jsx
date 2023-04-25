@@ -240,12 +240,14 @@ const DemoItem = () => {
 
           <Grid
             xs={12}
-            md={6}
+            md={12}
+            lg={6}
             style={{
               display: "flex",
+              width: '65%',
               alignItems: "center",
               flexDirection: "column",
-              padding: "0px 16px 16px 16px",
+              padding: "0px 8px 8px 8px",
               borderRight: "1px solid lightgrey",
             }}
           >
@@ -254,8 +256,10 @@ const DemoItem = () => {
           {selectedTaskList && (
             <Grid
               xs={12}
-              md={6}
+              md={12}
+              lg={6}
               style={{
+                width: '50%',
                 display: "flex",
                 alignItems: "center",
                 flexDirection: "column",

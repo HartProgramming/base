@@ -136,7 +136,8 @@ const ListBuilder = () => {
 
       <form onSubmit={handleSubmit}>
         <BaseContent>
-          <Grid container>
+          <Grid container
+          >
             <ListBuilderBody
               formData={formData}
               handleChange={handleChange}

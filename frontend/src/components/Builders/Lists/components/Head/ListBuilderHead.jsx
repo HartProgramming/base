@@ -13,11 +13,11 @@ const ListBuilderHead = ({
   const classes = listHeadStyles();
 
   return (
-    <Grid container spacing={3} style={{ marginBottom: 24 }}>
-      <Grid item xs={12}>
+    <Grid container spacing={3} xs={12} style={{ marginBottom: 24, flexDirection: 'column', margin: 'auto'}}>
+      <Grid item xs={12} md={12}>
         <div className={classes.tableActions}>
           <div className={classes.saveActions}>
-            <div style={{ width: 300, marginRight: 24 }}>
+            <div style={{padding: 5, width: 300, marginRight: 24 }}>
               <TextField
                 required
                 fullWidth
@@ -35,7 +35,7 @@ const ListBuilderHead = ({
                 name="listType"
                 displayEmpty
                 margin="dense"
-                style={{ minWidth: "100%", padding: 0 }}
+                style={{marginBottom: 15, minWidth: "100%", padding: 5 }}
                 MenuProps={{
                   anchorOrigin: {
                     vertical: "bottom",
@@ -66,7 +66,7 @@ const ListBuilderHead = ({
               </Select>
             </div>
             <div>
-              <SaveButton label="List" submitFunc={handleSubmit} />
+              <SaveButton className={classes.saveButton} label="List" submitFunc={handleSubmit} />
             </div>
           </div>
 
