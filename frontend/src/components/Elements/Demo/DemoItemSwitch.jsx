@@ -1,24 +1,20 @@
 import React from "react";
 
-import StandardCard from "../../Builders/Cards/examples/StandardCard";
 import TileCard from "../../Builders/Cards/examples/TileCard";
 import DenseCard from "../../Builders/Cards/examples/DenseCard";
-import LargeCard from "../../Builders/Cards/examples/LargeCard";
+import StandardCard from "../../Builders/Cards/examples/StandardCard";
+import LargerCard from "../../Builders/Cards/examples/LargerCard";
 
 import AvatarListExample from "../../Builders/Lists/examples/AvatarListExample";
 import IconListExample from "../../Builders/Lists/examples/IconListExample";
 import ImageListExample from "../../Builders/Lists/examples/ImageListExample";
-import PollingListExample from "../../Builders/Lists/examples/ListExample";
-import TaskListExample from "../../Builders/Lists/examples/TaskListExample";
-
-import TableSkeleton from "../../Builders/FAQs/skeletons/TableSkeleton";
-import AccordionSkeleton from "../../Builders/FAQs/skeletons/AccordionSkeleton";
-import ListSkeleton from "../../Builders/FAQs/skeletons/ListSkeleton";
-import CardSkeleton from "../../Builders/Cards/skeletons/CardSkeleton";
+import PollingListExample from "../../Builders/Parts/PollListExample";
+import TaskListExample from "../../Builders/Parts/TaskListExample";
 
 import FAQTabs from "../../Builders/FAQs/examples/FAQTabs";
 import FAQList from "../../Builders/FAQs/examples/FAQList";
 import FAQCondensedList from "../../Builders/FAQs/examples/FAQCondensedList";
+import StandardList from "../../Builders/Lists/examples/StandardList";
 
 const DemoItemSwitch = ({ item }) => {
   switch (item) {
@@ -32,6 +28,8 @@ const DemoItemSwitch = ({ item }) => {
       return <TaskListExample />;
     case "image":
       return <ImageListExample />;
+    case "ordered":
+      return <StandardList />;
     case "alternating-image":
       return <ImageListExample alternate />;
     case "tile":
@@ -40,16 +38,8 @@ const DemoItemSwitch = ({ item }) => {
       return <DenseCard />;
     case "standard":
       return <StandardCard />;
-    case "plugin":
-      return <PluginBasedCard />;
-    case "card-skeleton":
-      return <CardSkeleton />;
-    case "list-skeleton":
-      return <ListSkeleton />;
-    case "accordion-skeleton":
-      return <AccordionSkeleton />;
-    case "table-skeleton":
-      return <TableSkeleton />;
+    case "larger":
+      return <LargerCard />;
     case "faq-tabs":
       return <FAQTabs />;
     case "faq-list":
