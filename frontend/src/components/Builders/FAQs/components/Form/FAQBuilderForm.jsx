@@ -1,6 +1,12 @@
-import React from "react";
-import { Typography, Divider, Grid, Container } from "@material-ui/core";
-
+import React, { useEffect, useState } from "react";
+import {
+  Typography,
+  Divider,
+  Grid,
+  Container,
+  MenuItem,
+} from "@material-ui/core";
+import BasicSelect from "../../../../Elements/Fields/BasicSelect";
 import AddButton from "../../../Parts/Buttons/AddButton";
 import BaseContent from "../../../../Elements/Base/BaseContent";
 import ClearButton from "../../../Parts/Buttons/ClearButton";
@@ -10,6 +16,7 @@ import HelpText from "../../../Parts/Text/HelpText";
 
 import { faqBuilderStyles } from "../../faqBuilderStyles";
 import { faqFieldNames, fieldNames } from "../../const/faqConstants";
+import { faqExamplesStyles } from "../../examples/styles/faqExampleStyles";
 
 const FAQBuilderForm = ({
   formData,
@@ -20,7 +27,18 @@ const FAQBuilderForm = ({
   errors,
   handleClearErrors,
 }) => {
+  const [faqType, setFaqType] = useState();
   const classes = faqBuilderStyles();
+
+  const selectType = ["Standard", "Dense", "Tile"];
+  useEffect(() => {
+    setFaqType('Standard')
+  }, [])
+
+  const handleSelect = (e) => {
+    console.log(e);
+    setFaqType(e.target.value);
+  };
 
   return (
     <BaseContent
@@ -53,13 +71,28 @@ const FAQBuilderForm = ({
                 onChange={handleChange}
                 value={formData[field.name]}
                 minRows={4}
-                style={{backgroundColor: '#e6e6e6', boxShadow: '2px 2px 5px black'}}
+                style={{
+                  backgroundColor: "#e6e6e6",
+                  boxShadow: "2px 2px 5px black",
+                }}
               />
             </Container>
           </Grid>
         );
       })}
+
       <div style={{ marginBottom: 0, marginTop: 0, width: "65%" }}>
+        <div>
+          <BasicSelect onChange={handleSelect} value={faqType}>
+            <MenuItem value="" disabled>
+              <em>Select Type</em>
+            </MenuItem>
+            <MenuItem value="Tile">Tile</MenuItem>
+            <MenuItem value="Standard">Standard</MenuItem>
+            <MenuItem value="Dense">Dense</MenuItem>
+            {/* <MenuItem value="Large">Large</MenuItem> */}
+          </BasicSelect>
+        </div>
         <div
           style={{
             display: "flex",
@@ -102,7 +135,10 @@ const FAQBuilderForm = ({
                 onChange={handleChange}
                 value={formData[field.name]}
                 minRows={4}
-                style={{backgroundColor: '#e6e6e6', boxShadow: '2px 2px 5px black'}}
+                style={{
+                  backgroundColor: "#e6e6e6",
+                  boxShadow: "2px 2px 5px black",
+                }}
               />
             </Container>
           </Grid>

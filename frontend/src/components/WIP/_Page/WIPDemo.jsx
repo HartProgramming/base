@@ -1,6 +1,7 @@
 import Demo from "../../Elements/Demo/Demo";
 import FeatureCTA from "../Features/FeatureCTA/FeatureCTA";
 import Partners from "../Partners/Partners";
+import HelpText from "../../Builders/Parts/Text/HelpText";
 import {
   Button,
   Grid,
@@ -8,6 +9,7 @@ import {
   Typography,
   useTheme,
 } from "@material-ui/core";
+import Poll from "../../Poll/Poll";
 import InteractiveInfo from "../InteractiveInfo/Interactive";
 import TableBuilder from "../../Builders/Tables/TableBuilder";
 import ListBuilder from "../../Builders/Lists/ListBuilder";
@@ -71,6 +73,9 @@ const wipComponents = [
     component: Partners,
     title: "Partners",
   },
+  {
+    component: Poll,
+  }
 ];
 
 export default function WIPDemo() {
