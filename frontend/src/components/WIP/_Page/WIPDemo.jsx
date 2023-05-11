@@ -18,6 +18,7 @@ import TaskListBuilder from "../../Builders/TaskList/TaskListBuilder";
 import DemoItem from "../../Elements/Demo/DemoItem";
 import CardBuilder from "../../Builders/Cards/CardBuilder";
 import ElementSetBuilder from "../../Builders/ElementSet/ElementSetBuilder";
+<<<<<<< HEAD
 import TestForm from "../TestForm";
 import LayeredGradientBackground from "../../Elements/Layout/GradientContent";
 import { useState } from "react";
@@ -56,6 +57,10 @@ const customersData = [
   { label: "Bob", value: 2 },
   { label: "Lisa", value: 11 },
 ];
+=======
+import Poll from "../../Builders/Poll/Poll";
+import Pollv2 from "../../Builders/Poll/Pollv2";
+>>>>>>> 9cc434d34dea1e9786a68739c9ab574d19229e19
 
 const wipComponents = [
 
@@ -93,7 +98,10 @@ export default function WIPDemo() {
   return (
     <div style={{ maxWidth: "100vw", background: theme.palette.primary.main }}>
       <div style={{ paddingTop: 0, marginBottom: 48 }}>
-        <ElementSetBuilder />
+        <Pollv2 />
+      </div>
+      <div style={{ paddingTop: 0, marginBottom: 48 }}>
+        <Poll />
       </div>
       <div style={{ paddingTop: 0, marginBottom: 48 }}>
         <DemoItem item="avatar-list" />
