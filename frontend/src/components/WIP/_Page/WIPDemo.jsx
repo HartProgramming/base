@@ -18,49 +18,8 @@ import TaskListBuilder from "../../Builders/TaskList/TaskListBuilder";
 import DemoItem from "../../Elements/Demo/DemoItem";
 import CardBuilder from "../../Builders/Cards/CardBuilder";
 import ElementSetBuilder from "../../Builders/ElementSet/ElementSetBuilder";
-<<<<<<< HEAD
-import TestForm from "../TestForm";
-import LayeredGradientBackground from "../../Elements/Layout/GradientContent";
-import { useState } from "react";
-import Loading from "../../Elements/Layout/Loading/Loading";
-import Info from "../Info/Info";
-const actions = [
-  <Grid
-    container
-    flex
-    spacing={0}
-    justifyContent="space-between"
-    alignItems="center"
-  >
-    <Typography variant="subtitle2">By: Admin</Typography>
-    <Button key="2" size="small" variant="contained" color="primary">
-      More
-    </Button>
-  </Grid>,
-];
-
-
-const salesData = [
-  { label: "Jan", value: 2486 },
-  { label: "Feb", value: 3199 },
-  { label: "Mar", value: 3011 },
-  { label: "Apr", value: 4111 },
-  { label: "May", value: 3567 },
-  { label: "Jun", value: 5367 },
-];
-
-const customersData = [
-  { label: "John", value: 5 },
-  { label: "Sarah", value: 7 },
-  { label: "Tom", value: 4 },
-  { label: "Mary", value: 9 },
-  { label: "Bob", value: 2 },
-  { label: "Lisa", value: 11 },
-];
-=======
 import Poll from "../../Builders/Poll/Poll";
 import Pollv2 from "../../Builders/Poll/Pollv2";
->>>>>>> 9cc434d34dea1e9786a68739c9ab574d19229e19
 
 const wipComponents = [
 
