@@ -9,7 +9,6 @@ import {
   Typography,
   useTheme,
 } from "@material-ui/core";
-import Poll from "../../Poll/Poll";
 import InteractiveInfo from "../InteractiveInfo/Interactive";
 import TableBuilder from "../../Builders/Tables/TableBuilder";
 import ListBuilder from "../../Builders/Lists/ListBuilder";
@@ -20,12 +19,10 @@ import CardBuilder from "../../Builders/Cards/CardBuilder";
 import ElementSetBuilder from "../../Builders/ElementSet/ElementSetBuilder";
 import Poll from "../../Builders/Poll/Poll";
 import Pollv2 from "../../Builders/Poll/Pollv2";
+import { useState } from "react";
+
 
 const wipComponents = [
-
-  {
-    component: Info,
-  },
   {
     component: InteractiveInfo,
   },
@@ -101,7 +98,6 @@ export default function WIPDemo() {
           />
         </svg>
       </div>
-      <LayeredGradientBackground></LayeredGradientBackground>
 
       <Demo demoTitle="WIP Components" components={wipComponents} />
     </div>

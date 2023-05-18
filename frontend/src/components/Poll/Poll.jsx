@@ -55,6 +55,7 @@ export default function Poll() {
   const handleSaveDetails = () => {};
 
   const handleSelectType = (e) => {
+    console.log(e)
     setType(e.target.value);
     setOptions(false)
     if (e.target.value === "multiple") {
@@ -146,7 +147,9 @@ export default function Poll() {
             <input type='radio'>{x}</input>
           })}
           {multiple && optionsArr.length > 1 && optionsArr.map(x => {
+            return(
             <input type='checkbox'>{x}</input>
+            )
           })}
           
         </div>
