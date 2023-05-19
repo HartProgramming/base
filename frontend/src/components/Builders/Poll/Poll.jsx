@@ -37,6 +37,7 @@ export default function Poll() {
 
   const changeFormData = (e) => {
     // Handle Data Change is an imported function
+    console.log(e.target.value)
     // It takes in an event and a data state and provides generic data handling
     handleDataChange(e, setFormData, formData);
   };
@@ -54,6 +55,7 @@ export default function Poll() {
     });
     setOptionVal("");
     console.log([...formData.options, optionVal]);
+    console.log(formData)
   };
 
   /* When clicked this value will be passed to the backend then passed back to the frontend 
@@ -182,6 +184,7 @@ export default function Poll() {
             This should now work to map the options. 
             You will need some data handling for the actual selection process as well
              */}
+        <h3>{formData.question}</h3>
         {formData.options.map((option) => {
           return (
             <Flexer>

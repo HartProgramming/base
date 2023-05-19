@@ -12,6 +12,7 @@ import { handleDataChange } from "../../../utils/dataHandlers/dataHandlers";
 
 const initialPollFormData = {
   style: "List",
+  listStyle: "",
   question: "",
   type: "Single",
   votes: "Select Number of Votes",
@@ -27,12 +28,19 @@ const styleOptions = [
   { label: "List", value: "List" },
 ];
 
+const listStyleOptions = [
+  { label: "None", value: "None" },
+  { label: "Numbered", value: "Numbered" },
+  { label: "Alphabetical", value: "Alphabetical" },
+];
+
 export default function Pollv2() {
   const [formData, setFormData] = useState(initialPollFormData);
   const [optionVal, setOptionVal] = useState(null);
 
   const changeFormData = (e) => {
     handleDataChange(e, setFormData, formData);
+    console.log(formData)
   };
 
   const handleOption = (e) => {
@@ -46,6 +54,7 @@ export default function Pollv2() {
     });
     setOptionVal("");
     console.log([...formData.options, optionVal]);
+    console.log(formData)
   };
 
   return (
@@ -64,6 +73,15 @@ export default function Pollv2() {
           helpText="Select Style"
           optionsArray={styleOptions}
         />
+        {formData.style === "List" && (
+          <MappedSelectField
+            value={formData.listStyle}
+            name="listStyle"
+            onChange={changeFormData}
+            helpText="Select List Style"
+            optionsArray={listStyleOptions}
+          />
+        )}
         <HelpText>Create a Question</HelpText>
         <FormField
           required
@@ -106,22 +124,70 @@ export default function Pollv2() {
       <BaseSection
         header="Poll Preview"
         headerAlign="center"
+        fd="column"
         justifyChildren="flex-start"
         pad={0}
         boxShadow={0}
         pt={2}
       >
-        {formData.options.map((option) => {
-          return (
-            <Flexer>
-              <input
-                type={formData.type === "Single" ? "radio" : "checkbox"}
-                value={option}
-              />
-              <HelpText>{option}</HelpText>
-            </Flexer>
-          );
-        })}
+        <h2>{formData.question}</h2>
+            {formData.listStyle === 'None' && (
+              <ul>
+                {formData.options.map((option) => {
+                  return (
+                    <Flexer>
+                      <li>
+                        <input
+                          type={
+                            formData.type === "Single" ? "radio" : "checkbox"
+                          }
+                          value={option}
+                        />
+                        <HelpText>{option}</HelpText>
+                      </li>
+                    </Flexer>
+                  )
+                })}
+              </ul>
+            )}
+            {formData.listStyle === 'Numbered' && (
+              <ol>
+                {formData.options.map((option) => {
+                  return (
+                    <Flexer fd="row" a='center'>
+                      <li style={{flexDirection: 'row', alignItems: 'center'}}>
+                        <input
+                          type={
+                            formData.type === "Single" ? "radio" : "checkbox"
+                          }
+                          value={option}
+                        />
+                        </li>
+                        <HelpText>{option}</HelpText>
+                    </Flexer>
+                  )
+                })}
+              </ol>
+            )}
+            {formData.listStyle === 'Alphabetical' && (
+              <ol type="A">
+                {formData.options.map((option) => {
+                  return (
+                    <Flexer>
+                      <li>
+                        <input
+                          type={
+                            formData.type === "Single" ? "radio" : "checkbox"
+                          }
+                          value={option}
+                        />
+                        <HelpText>{option}</HelpText>
+                      </li>
+                    </Flexer>
+                  )
+                })}
+              </ol>
+            )}
       </BaseSection>
     </BaseBuilder>
   );
