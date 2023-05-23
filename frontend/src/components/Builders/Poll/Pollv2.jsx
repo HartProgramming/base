@@ -7,6 +7,7 @@ import Flexer from "../../Elements/Layout/Container/Flexer";
 import FormField from "../../Elements/Fields/FormField";
 import HelpText from "../Parts/Text/HelpText";
 import MappedSelectField from "./MappedSelectField";
+import Pollv2List from "./Pollv2List";
 
 import { handleDataChange } from "../../../utils/dataHandlers/dataHandlers";
 
@@ -40,7 +41,7 @@ export default function Pollv2() {
 
   const changeFormData = (e) => {
     handleDataChange(e, setFormData, formData);
-    console.log(formData)
+    console.log(formData);
   };
 
   const handleOption = (e) => {
@@ -54,7 +55,7 @@ export default function Pollv2() {
     });
     setOptionVal("");
     console.log([...formData.options, optionVal]);
-    console.log(formData)
+    console.log(formData);
   };
 
   return (
@@ -125,69 +126,19 @@ export default function Pollv2() {
         header="Poll Preview"
         headerAlign="center"
         fd="column"
-        justifyChildren="flex-start"
+        justifyChildren="center"
+        a='center'
         pad={0}
         boxShadow={0}
         pt={2}
       >
-        <h2>{formData.question}</h2>
-            {formData.listStyle === 'None' && (
-              <ul>
-                {formData.options.map((option) => {
-                  return (
-                    <Flexer>
-                      <li>
-                        <input
-                          type={
-                            formData.type === "Single" ? "radio" : "checkbox"
-                          }
-                          value={option}
-                        />
-                        <HelpText>{option}</HelpText>
-                      </li>
-                    </Flexer>
-                  )
-                })}
-              </ul>
-            )}
-            {formData.listStyle === 'Numbered' && (
-              <ol>
-                {formData.options.map((option) => {
-                  return (
-                    <Flexer fd="row" a='center'>
-                      <li style={{flexDirection: 'row', alignItems: 'center'}}>
-                        <input
-                          type={
-                            formData.type === "Single" ? "radio" : "checkbox"
-                          }
-                          value={option}
-                        />
-                        </li>
-                        <HelpText>{option}</HelpText>
-                    </Flexer>
-                  )
-                })}
-              </ol>
-            )}
-            {formData.listStyle === 'Alphabetical' && (
-              <ol type="A">
-                {formData.options.map((option) => {
-                  return (
-                    <Flexer>
-                      <li>
-                        <input
-                          type={
-                            formData.type === "Single" ? "radio" : "checkbox"
-                          }
-                          value={option}
-                        />
-                        <HelpText>{option}</HelpText>
-                      </li>
-                    </Flexer>
-                  )
-                })}
-              </ol>
-            )}
+        <h2 style={{marginLeft: '25px', marginBottom: '-10px'}}>{formData.question}</h2>
+        <Pollv2List
+          style={formData.listStyle}
+          options={formData.options}
+          type={formData.type}
+       />
+        
       </BaseSection>
     </BaseBuilder>
   );
