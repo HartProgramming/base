@@ -10,10 +10,12 @@ import MappedSelectField from "./MappedSelectField";
 import Pollv2List from "./Pollv2List";
 
 import { handleDataChange } from "../../../utils/dataHandlers/dataHandlers";
+import Pollv2Tile from "./Pollv2Tile";
 
 const initialPollFormData = {
   style: "List",
   listStyle: "",
+  tileStyle: "",
   question: "",
   type: "Single",
   votes: "Select Number of Votes",
@@ -35,9 +37,16 @@ const listStyleOptions = [
   { label: "Alphabetical", value: "Alphabetical" },
 ];
 
+const tileStyleOptions = [
+  { label: "Rectangle", value: "Rectangle" },
+  { label: "Square", value: "Square" },
+];
+
 export default function Pollv2() {
   const [formData, setFormData] = useState(initialPollFormData);
   const [optionVal, setOptionVal] = useState(null);
+  const [voteBtn, setVoteBtn] = useState(false);
+  const [vote, setVote] = useState(null)
 
   const changeFormData = (e) => {
     handleDataChange(e, setFormData, formData);
@@ -49,6 +58,7 @@ export default function Pollv2() {
   };
 
   const addOption = (e) => {
+    setVoteBtn(true);
     setFormData({
       ...formData,
       options: [...formData.options, optionVal],
@@ -56,6 +66,12 @@ export default function Pollv2() {
     setOptionVal("");
     console.log([...formData.options, optionVal]);
     console.log(formData);
+  };
+
+  const handleVote = (e) => {
+    e.preventDefault()
+    console.log(vote)
+    console.log(e.target.value)
   };
 
   return (
@@ -83,6 +99,15 @@ export default function Pollv2() {
             optionsArray={listStyleOptions}
           />
         )}
+        {formData.style === "Tile" && (
+          <MappedSelectField
+            value={formData.tileStyle}
+            name="tileStyle"
+            onChange={changeFormData}
+            helpText="Select Tile Style"
+            optionsArray={tileStyleOptions}
+          />
+        )}
         <HelpText>Create a Question</HelpText>
         <FormField
           required
@@ -104,7 +129,7 @@ export default function Pollv2() {
             name="votes"
             onChange={changeFormData}
             helpText="Select Number of Votes"
-            optionsArray={Array.from({ length: 69 }, (_, i) => ({
+            optionsArray={Array.from({ length: 4 }, (_, i) => ({
               label: `${i + 1}`,
               value: `${i + 1}`,
             }))}
@@ -121,25 +146,61 @@ export default function Pollv2() {
           <AddButton label="Option" addFunc={addOption} disabled={!optionVal} />
         </Flexer>
       </BaseSection>
-
-      <BaseSection
-        header="Poll Preview"
-        headerAlign="center"
-        fd="column"
-        justifyChildren="center"
-        a='center'
-        pad={0}
-        boxShadow={0}
-        pt={2}
+      <div
+        style={{ border: "1px solid black", display: "flex", margin: "auto" }}
       >
-        <h2 style={{marginLeft: '25px', marginBottom: '-10px'}}>{formData.question}</h2>
-        <Pollv2List
-          style={formData.listStyle}
-          options={formData.options}
-          type={formData.type}
-       />
-        
-      </BaseSection>
+        <BaseSection
+          header="Poll Preview"
+          headerAlign="center"
+          fd="column"
+          justifyChildren="center"
+          a="center"
+          pad={0}
+          boxShadow={0}
+          pt={2}
+        >
+          <h2 style={{ marginLeft: "25px", marginBottom: "-10px" }}>
+            {formData.question}
+          </h2>
+          <form onSubmit={handleVote}>
+            {formData.style === "List" && (
+              <Pollv2List
+                style={formData.listStyle}
+                options={formData.options}
+                type={formData.type}
+              />
+            )}
+            {formData.style === "Tile" && (
+              <Pollv2Tile
+                style={formData.tileStyle}
+                options={formData.options}
+                type={formData.type}
+              />
+            )}
+            <div
+              style={{
+                width: "80%",
+                display: "flex",
+                justifyContent: "flex-end",
+              }}
+            >
+              {voteBtn && (
+                <button
+                  type='submit'
+                  style={{
+                    padding: "5px",
+                    letterSpacing: "1.2px",
+                    fontWeight: 600,
+                    borderRadius: "4px",
+                  }}
+                >
+                  Vote
+                </button>
+              )}
+            </div>
+          </form>
+        </BaseSection>
+      </div>
     </BaseBuilder>
   );
 }
