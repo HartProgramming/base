@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import AddButton from "../Parts/Buttons/AddButton";
 import BaseBuilder from "../Parts/Layout/BaseBuilder";
@@ -46,7 +46,13 @@ export default function Pollv2() {
   const [formData, setFormData] = useState(initialPollFormData);
   const [optionVal, setOptionVal] = useState(null);
   const [voteBtn, setVoteBtn] = useState(false);
-  const [vote, setVote] = useState(null)
+  const [vote, setVote] = useState()
+  const [results, setResults] = useState()
+  const [display, setDisplay] = useState()
+
+  useEffect(() => {
+    console.log(vote)
+  }, [vote])
 
   const changeFormData = (e) => {
     handleDataChange(e, setFormData, formData);
@@ -71,8 +77,17 @@ export default function Pollv2() {
   const handleVote = (e) => {
     e.preventDefault()
     console.log(vote)
+    if(vote.single !== undefined){
+      setResults(vote.single)
+    }else{
+      setResults(vote.multiple)
+    }
     console.log(e.target.value)
   };
+
+  useEffect(() => {
+    setDisplay(results)
+  }, [results])
 
   return (
     <BaseBuilder header="Poll Builder" headerType="h2">
@@ -168,6 +183,7 @@ export default function Pollv2() {
                 style={formData.listStyle}
                 options={formData.options}
                 type={formData.type}
+                vote={setVote}
               />
             )}
             {formData.style === "Tile" && (
@@ -200,6 +216,9 @@ export default function Pollv2() {
             </div>
           </form>
         </BaseSection>
+      </div>
+      <div>
+        <p>{display}</p>
       </div>
     </BaseBuilder>
   );
