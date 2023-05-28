@@ -21,6 +21,7 @@ const handleDataChange = (event, setData, data) => {
       event.target.type === "checkbox"
         ? event.target.checked
         : event.target.value,
+    
   });
 };
 

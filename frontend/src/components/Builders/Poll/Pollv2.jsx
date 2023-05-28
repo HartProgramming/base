@@ -82,7 +82,6 @@ export default function Pollv2() {
     }else{
       setResults(vote.multiple)
     }
-    console.log(e.target.value)
   };
 
   useEffect(() => {

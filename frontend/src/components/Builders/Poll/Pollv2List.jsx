@@ -1,34 +1,45 @@
 import { useEffect, useState } from "react";
 import Flexer from "../../Elements/Layout/Container/Flexer";
 import HelpText from "../Parts/Text/HelpText";
+import { handleDataChange } from "../../../utils/dataHandlers/dataHandlers";
 export default function Pollv2List({ style, options, type, vote }) {
   const [voteSelected, setVoteSelected] = useState();
-  const [multArr, setMultArr] = useState();
+  const [multArr, setMultArr] = useState([]);
   const [single, setSingle] = useState();
   const [voteData, setVoteData] = useState();
 
-  const handleVote = async (e) => {
-      console.log(single, e.target.value)
-      if (type === "Single") {
-        setSingle(e.target.value);
-        console.log(single);
-      } else {
-        setVoteSelected(e.target.value);
-        setMultArr([voteSelected]);
-        console.log(voteSelected);
-        console.log(arr);
-      }   
+  const handleVote = (e) => {
+    let voteDetails = {
+      single: "",
+      multiple: "",
+    };
+    setSingle(e.target.value);
+    if (type === "Single") {
+      setSingle(e.target.value);
+      setVoteData({ single: e.target.value, multiple: null });
+    } else if (e.target.checked === true) {
+      console.log(e.target.value);
+      setMultArr((prev) => [e.target.value, ...prev]);
+      setVoteData({ single: null, multiple: multArr });
+      console.log(multArr);
+    } else if (e.target.checked === false) {
+      console.log(e.target.value);
+      
+      setVoteData({ single: null, multiple: multArr });
+      console.log(multArr);
+    }
   };
 
   useEffect(() => {
-    let voteDetails = {
-      single: single,
-      multiple: multArr,
-    };
-    setVoteData(voteDetails)
-    console.log(voteData);
-    vote(voteData)
-  }, [single, multArr]);
+    if (type === "Single") {
+      vote({ single: single, multiple: null });
+      console.log(voteData);
+      console.log(single);
+    } else {
+      vote({ single: null, multiple: multArr });
+      console.log(multArr);
+    }
+  }, [single, multArr, voteData]);
 
   return (
     <>
@@ -38,6 +49,7 @@ export default function Pollv2List({ style, options, type, vote }) {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
+            listStyle: "none",
           }}
         >
           {options.map((option) => {
