@@ -1,4 +1,5 @@
 import Demo from "../../Elements/Demo/Demo";
+<<<<<<< HEAD
 import FeatureCTA from "../Features/FeatureCTA/FeatureCTA";
 import Partners from "../Partners/Partners";
 import HelpText from "../../Builders/Parts/Text/HelpText";
@@ -10,14 +11,21 @@ import {
   useTheme,
 } from "@material-ui/core";
 import InteractiveInfo from "../InteractiveInfo/Interactive";
+=======
+import FeatureCTA from "./Features/FeatureCTA/FeatureCTA";
+import Partners from "./Partners/Partners";
+import { useTheme } from "@material-ui/core";
+import Magazine from "./Magazine/Magazine";
+import LayeredGradientBackground from "../../Elements/Layout/GradientContent";
+import { useState } from "react";
+import Loading from "../../Elements/Layout/Loading/Loading";
+>>>>>>> 4136e8a30da2bed41699941e5d3d128c5ff4a642
 import TableBuilder from "../../Builders/Tables/TableBuilder";
 import ListBuilder from "../../Builders/Lists/ListBuilder";
 import FAQBuilder from "../../Builders/FAQs/FAQBuilder";
 import TaskListBuilder from "../../Builders/TaskList/TaskListBuilder";
-import DemoItem from "../../Elements/Demo/DemoItem";
 import CardBuilder from "../../Builders/Cards/CardBuilder";
-import ElementSetBuilder from "../../Builders/ElementSet/ElementSetBuilder";
-import Poll from "../../Builders/Poll/Poll";
+import Tracker from "../Tracker/Tracker";
 import Pollv2 from "../../Builders/Poll/Pollv2";
 import { useState } from "react";
 
@@ -52,16 +60,16 @@ export default function WIPDemo() {
   }
 
   return (
-    <div style={{ maxWidth: "100vw", background: theme.palette.primary.main }}>
+    <div style={{ maxWidth: "100vw", background: "#F5F5F5" }}>
       <div style={{ paddingTop: 0, marginBottom: 48 }}>
         <Pollv2 />
       </div>
       <div style={{ paddingTop: 0, marginBottom: 48 }}>
-        <Poll />
+        <Tracker />
       </div>
-      <div style={{ paddingTop: 0, marginBottom: 48 }}>
+      {/* <div style={{ paddingTop: 0, marginBottom: 48 }}>
         <DemoItem item="avatar-list" />
-      </div>
+      </div> */}
       <div style={{ paddingTop: 0, marginBottom: 48 }}>
         <TaskListBuilder />
       </div>

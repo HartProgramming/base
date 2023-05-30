@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { useEffect, useState } from "react";
 import Flexer from "../../Elements/Layout/Container/Flexer";
 import HelpText from "../Parts/Text/HelpText";
@@ -41,6 +42,19 @@ export default function Pollv2List({ style, options, type, vote }) {
     }
   }, [single, multArr, voteData]);
 
+=======
+import React, { useEffect, useState } from "react";
+import Flexer from "../../Elements/Layout/Container/Flexer";
+import HelpText from "../Parts/Text/HelpText";
+
+export default function Pollv2List({
+  style,
+  options,
+  type,
+  vote,
+  handleChange,
+}) {
+>>>>>>> 4136e8a30da2bed41699941e5d3d128c5ff4a642
   return (
     <>
       {style === "None" && (
@@ -60,7 +74,11 @@ export default function Pollv2List({ style, options, type, vote }) {
                     <span style={{ display: "flex", alignItems: "center" }}>
                       <input
                         name="vote"
+<<<<<<< HEAD
                         onChange={handleVote}
+=======
+                        onChange={handleChange}
+>>>>>>> 4136e8a30da2bed41699941e5d3d128c5ff4a642
                         type={type === "Single" ? "radio" : "checkbox"}
                         value={option}
                       />
@@ -89,7 +107,11 @@ export default function Pollv2List({ style, options, type, vote }) {
                     <span style={{ display: "flex", alignItems: "center" }}>
                       <input
                         name="vote"
+<<<<<<< HEAD
                         onChange={handleVote}
+=======
+                        onChange={handleChange}
+>>>>>>> 4136e8a30da2bed41699941e5d3d128c5ff4a642
                         type={type === "Single" ? "radio" : "checkbox"}
                         value={option}
                       />
@@ -119,7 +141,11 @@ export default function Pollv2List({ style, options, type, vote }) {
                     <span style={{ display: "flex", alignItems: "center" }}>
                       <input
                         name="vote"
+<<<<<<< HEAD
                         onChange={handleVote}
+=======
+                        onChange={handleChange}
+>>>>>>> 4136e8a30da2bed41699941e5d3d128c5ff4a642
                         type={type === "Single" ? "radio" : "checkbox"}
                         value={option}
                       />
