@@ -1,17 +1,4 @@
 import Demo from "../../Elements/Demo/Demo";
-<<<<<<< HEAD
-import FeatureCTA from "../Features/FeatureCTA/FeatureCTA";
-import Partners from "../Partners/Partners";
-import HelpText from "../../Builders/Parts/Text/HelpText";
-import {
-  Button,
-  Grid,
-  makeStyles,
-  Typography,
-  useTheme,
-} from "@material-ui/core";
-import InteractiveInfo from "../InteractiveInfo/Interactive";
-=======
 import FeatureCTA from "./Features/FeatureCTA/FeatureCTA";
 import Partners from "./Partners/Partners";
 import { useTheme } from "@material-ui/core";
@@ -19,7 +6,6 @@ import Magazine from "./Magazine/Magazine";
 import LayeredGradientBackground from "../../Elements/Layout/GradientContent";
 import { useState } from "react";
 import Loading from "../../Elements/Layout/Loading/Loading";
->>>>>>> 4136e8a30da2bed41699941e5d3d128c5ff4a642
 import TableBuilder from "../../Builders/Tables/TableBuilder";
 import ListBuilder from "../../Builders/Lists/ListBuilder";
 import FAQBuilder from "../../Builders/FAQs/FAQBuilder";
@@ -27,13 +13,9 @@ import TaskListBuilder from "../../Builders/TaskList/TaskListBuilder";
 import CardBuilder from "../../Builders/Cards/CardBuilder";
 import Tracker from "../Tracker/Tracker";
 import Pollv2 from "../../Builders/Poll/Pollv2";
-import { useState } from "react";
-
 
 const wipComponents = [
-  {
-    component: InteractiveInfo,
-  },
+  
   {
     component: FeatureCTA,
     title: "FeatureCTA",
@@ -42,9 +24,7 @@ const wipComponents = [
     component: Partners,
     title: "Partners",
   },
-  {
-    component: Poll,
-  }
+
 ];
 
 export default function WIPDemo() {

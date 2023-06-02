@@ -11,10 +11,7 @@ import Pollv2List from "./Pollv2List";
 
 import { handleDataChange } from "../../../utils/dataHandlers/dataHandlers";
 import Pollv2Tile from "./Pollv2Tile";
-<<<<<<< HEAD
-=======
 import Text from "../../Elements/Layout/Text/Text";
->>>>>>> 4136e8a30da2bed41699941e5d3d128c5ff4a642
 
 const initialPollFormData = {
   style: "List",
@@ -52,23 +49,9 @@ export default function Pollv2() {
   const [submitFormData, setSubmitFormData] = useState([]);
   const [optionVal, setOptionVal] = useState(null);
   const [voteBtn, setVoteBtn] = useState(false);
-<<<<<<< HEAD
-  const [vote, setVote] = useState()
-  const [results, setResults] = useState()
-  const [display, setDisplay] = useState()
-
-  useEffect(() => {
-    console.log(vote)
-  }, [vote])
-=======
   const [vote, setVote] = useState();
-  const [results, setResults] = useState();
-  const [display, setDisplay] = useState();
-
-  useEffect(() => {
-    console.log(vote);
-  }, [vote]);
->>>>>>> 4136e8a30da2bed41699941e5d3d128c5ff4a642
+  const [displayResults, setDisplayResults] = useState(false);
+  const [mapResults, setMapResults] = useState(false)
 
   const changeFormData = (e) => {
     handleDataChange(e, setFormData, formData);
@@ -88,34 +71,21 @@ export default function Pollv2() {
     setOptionVal("");
     console.log([...formData.options, optionVal]);
     console.log(formData);
-<<<<<<< HEAD
-  };
-
-  const handleVote = (e) => {
-    e.preventDefault()
-    console.log(vote)
-    if(vote.single !== undefined){
-      setResults(vote.single)
-    }else{
-      setResults(vote.multiple)
-    }
-  };
-
-  useEffect(() => {
-    setDisplay(results)
-  }, [results])
-=======
   };
 
   const handleVote = (e) => {
     e.preventDefault();
-    console.log(vote);
-    if (vote.single !== undefined) {
-      setResults(vote.single);
-    } else {
-      setResults(vote.multiple);
-    }
+    setDisplayResults(true);
+    console.log(submitFormData)
   };
+
+  useEffect(() => {
+    if(displayResults === true){
+      setMapResults(true)
+      console.log(mapResults)
+    }
+    console.log(displayResults)
+  }, [displayResults])
 
   const handleChange = (e) => {
     if (formData.type === "Multiple") {
@@ -130,6 +100,7 @@ export default function Pollv2() {
         ...submitFormData,
         [e.target.name]: updatedValue,
       });
+      console.log(submitFormData);
     } else {
       console.log("New Value: ", [e.target.value]);
       setSubmitFormData({
@@ -137,12 +108,8 @@ export default function Pollv2() {
         [e.target.name]: [e.target.value],
       });
     }
+    console.log(submitFormData);
   };
-
-  useEffect(() => {
-    setDisplay(results);
-  }, [results]);
->>>>>>> 4136e8a30da2bed41699941e5d3d128c5ff4a642
 
   return (
     <BaseBuilder header="Poll Builder" headerType="h2">
@@ -216,64 +183,6 @@ export default function Pollv2() {
           <AddButton label="Option" addFunc={addOption} disabled={!optionVal} />
         </Flexer>
       </BaseSection>
-<<<<<<< HEAD
-      <div
-        style={{ border: "1px solid black", display: "flex", margin: "auto" }}
-      >
-        <BaseSection
-          header="Poll Preview"
-          headerAlign="center"
-          fd="column"
-          justifyChildren="center"
-          a="center"
-          pad={0}
-          boxShadow={0}
-          pt={2}
-        >
-          <h2 style={{ marginLeft: "25px", marginBottom: "-10px" }}>
-            {formData.question}
-          </h2>
-          <form onSubmit={handleVote}>
-            {formData.style === "List" && (
-              <Pollv2List
-                style={formData.listStyle}
-                options={formData.options}
-                type={formData.type}
-                vote={setVote}
-              />
-            )}
-            {formData.style === "Tile" && (
-              <Pollv2Tile
-                style={formData.tileStyle}
-                options={formData.options}
-                type={formData.type}
-              />
-            )}
-            <div
-              style={{
-                width: "80%",
-                display: "flex",
-                justifyContent: "flex-end",
-              }}
-            >
-              {voteBtn && (
-                <button
-                  type='submit'
-                  style={{
-                    padding: "5px",
-                    letterSpacing: "1.2px",
-                    fontWeight: 600,
-                    borderRadius: "4px",
-                  }}
-                >
-                  Vote
-                </button>
-              )}
-            </div>
-          </form>
-        </BaseSection>
-      </div>
-=======
       <BaseSection
         header="Poll Preview"
         headerAlign="center"
@@ -310,6 +219,8 @@ export default function Pollv2() {
               style={formData.tileStyle}
               options={formData.options}
               type={formData.type}
+              vote={setVote}
+              handleChange={handleChange}
             />
           )}
           <Flexer j="c">
@@ -329,11 +240,13 @@ export default function Pollv2() {
           </Flexer>
         </form>
       </BaseSection>
-
->>>>>>> 4136e8a30da2bed41699941e5d3d128c5ff4a642
-      <div>
-        <p>{display}</p>
-      </div>
+                {displayResults && (
+                  <div>
+                    {submitFormData.vote.map(item => { return (
+                       <p>{item}</p>
+                    )})}
+                  </div>
+                )}
     </BaseBuilder>
   );
 }
